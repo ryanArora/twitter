@@ -1,3 +1,3 @@
-# Twitter
+# `twitter`
 
 A Twitter clone.
