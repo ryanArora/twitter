@@ -3,7 +3,7 @@ module.exports = {
   overrides: [
     {
       files: ["*.js", "*.cjs"],
-      plugins: ["@typescript-eslint", "import"],
+      plugins: ["@typescript-eslint"],
       extends: [
         "eslint:recommended",
         "./import.cjs",
@@ -26,7 +26,7 @@ module.exports = {
     },
     {
       files: ["*.jsx"],
-      plugins: ["@typescript-eslint", "import", "react", "react-hooks"],
+      plugins: ["@typescript-eslint", "react", "react-hooks"],
       extends: [
         "eslint:recommended",
         "./import.cjs",
@@ -46,7 +46,7 @@ module.exports = {
     },
     {
       files: ["*.ts"],
-      plugins: ["@typescript-eslint", "import"],
+      plugins: ["@typescript-eslint"],
       extends: [
         "eslint:recommended",
         "plugin:@typescript-eslint/recommended",
@@ -58,7 +58,7 @@ module.exports = {
     },
     {
       files: ["*.tsx"],
-      plugins: ["@typescript-eslint", "import", "react", "react-hooks"],
+      plugins: ["@typescript-eslint", "react", "react-hooks"],
       extends: [
         "eslint:recommended",
         "plugin:@typescript-eslint/recommended",
