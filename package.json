@@ -1,0 +1,13 @@
+{
+  "name": "twitter",
+  "private": true,
+  "scripts": {
+    "build": "turbo build",
+    "dev": "turbo dev",
+    "lint": "turbo lint",
+    "format": "turbo format"
+  },
+  "devDependencies": {
+    "turbo": "^1.11.3"
+  }
+}
