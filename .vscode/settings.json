@@ -1,4 +1,5 @@
 {
+  "prettier.configPath": "tooling/prettier-config/index.cjs",
   "prettier.ignorePath": "tooling/prettier-config/.prettierignore",
   "editor.formatOnSave": true,
   "editor.codeActionsOnSave": {

@@ -10,7 +10,6 @@
     "lint:fix": "turbo lint:fix",
     "typecheck": "turbo typecheck"
   },
-  "prettier": "@repo/prettier-config",
   "devDependencies": {
     "@repo/prettier-config": "workspace:*",
     "turbo": "^1.11.3",
