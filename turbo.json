@@ -7,29 +7,23 @@
     },
     "build": {
       "dependsOn": ["^build"],
-      "outputs": [
-        ".next/**",
-        "!.next/cache/**",
-        "next-env.d.ts"
-      ]
+      "outputs": [".next/**", "!.next/cache/**", "next-env.d.ts"]
     },
     "dev": {
       "persistent": true,
       "cache": false
     },
     "format": {
-      "outputs": ["node_modules/.cache/.prettiercache"]
+      "cache": false
     },
     "format:fix": {
-      "outputs": ["node_modules/.cache/.prettiercache"]
+      "cache": false
     },
     "lint": {
-      "dependsOn": ["^topo"],
-      "outputs": ["node_modules/.cache/.eslintcache"]
+      "dependsOn": ["^topo"]
     },
     "lint:fix": {
-      "dependsOn": ["^topo"],
-      "outputs": ["node_modules/.cache/.eslintcache"]
+      "dependsOn": ["^topo"]
     },
     "typecheck": {
       "dependsOn": ["^topo"],
