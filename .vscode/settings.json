@@ -1,3 +1,7 @@
 {
-  "prettier.ignorePath": "tooling/prettier-config/.prettierignore"
+  "prettier.ignorePath": "tooling/prettier-config/.prettierignore",
+  "editor.formatOnSave": true,
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": "explicit"
+  }
 }
