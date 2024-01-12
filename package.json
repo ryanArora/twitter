@@ -6,6 +6,7 @@
     "db:generate": "turbo db:generate",
     "db:push": "turbo db:push",
     "db:start": "turbo db:start",
+    "db:stop": "turbo db:stop",
     "dev": "turbo dev",
     "format": "turbo format",
     "format:fix": "turbo format:fix",

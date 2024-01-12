@@ -7,6 +7,7 @@
     "db:generate": "prisma generate",
     "db:push": "prisma db push --skip-generate",
     "db:start": "./start.sh",
+    "db:stop": "./stop.sh",
     "dev": "prisma studio --browser none",
     "lint": "eslint .",
     "lint:fix": "eslint --fix .",
