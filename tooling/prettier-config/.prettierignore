@@ -4,3 +4,5 @@ next-env.d.ts
 node_modules/
 .turbo/
 build/
+.next/
+out/
