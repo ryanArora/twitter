@@ -28,6 +28,16 @@
     "typecheck": {
       "dependsOn": ["^topo"],
       "outputs": ["node_modules/.cache/tsbuildinfo.json"]
+    },
+    "db:start": {
+      "persistent": true,
+      "cache": false
+    },
+    "db:generate": {
+      "cache": false
+    },
+    "db:push": {
+      "cache": false
     }
   },
   "globalEnv": []

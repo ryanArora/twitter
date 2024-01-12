@@ -1,5 +1,18 @@
-import { ButtonProps } from "@repo/ui";
+import { PrismaClient } from "@repo/db";
 
-export default function Home() {
-  return <p>Hello, world!</p>;
+const prisma = new PrismaClient();
+
+export default async function Home() {
+  const users = await prisma.user.findMany();
+
+  return (
+    <div>
+      <h3>Users List</h3>
+      <ul>
+        {users.map((user) => (
+          <li>{user.id}</li>
+        ))}
+      </ul>
+    </div>
+  );
 }
