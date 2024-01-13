@@ -1,18 +1,12 @@
-import { PrismaClient } from "@repo/db";
-
-const prisma = new PrismaClient();
+import { api } from "@/trpc/server";
 
 export default async function Home() {
-  const users = await prisma.user.findMany();
+  const session = await api.auth.getSession();
 
   return (
     <div>
-      <h3>Users List</h3>
-      <ul>
-        {users.map((user) => (
-          <li key={user.id}>{user.id}</li>
-        ))}
-      </ul>
+      <h3>Session</h3>
+      {session}
     </div>
   );
 }

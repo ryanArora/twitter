@@ -1,0 +1,20 @@
+{
+  "name": "@repo/types",
+  "private": true,
+  "main": "src/types.ts",
+  "types": "src/types.ts",
+  "scripts": {
+    "lint": "eslint .",
+    "lint:fix": "eslint --fix .",
+    "typecheck": "tsc --noEmit"
+  },
+  "eslintConfig": {
+    "extends": "@repo/eslint-config"
+  },
+  "devDependencies": {
+    "@repo/eslint-config": "workspace:*",
+    "@repo/tailwind-config": "workspace:*",
+    "@repo/tsconfig": "workspace:*",
+    "tailwindcss": "^3.4.1"
+  }
+}
