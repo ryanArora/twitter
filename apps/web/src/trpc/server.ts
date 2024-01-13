@@ -1,5 +1,5 @@
-import { createCaller, createTRPCContext } from "@repo/api";
-import { headers } from "next/headers";
+import { createCaller, createTRPCContext, getSession } from "@repo/api";
+import { cookies, headers } from "next/headers";
 import { cache } from "react";
 
 /**
@@ -10,10 +10,8 @@ const createContext = cache(async () => {
   const heads = new Headers(headers());
   heads.set("x-trpc-source", "rsc");
 
-  // @TODO server session
-
   return createTRPCContext({
-    session: "abacus",
+    session: await getSession(cookies().get("session-token")?.value),
     headers: heads,
   });
 });

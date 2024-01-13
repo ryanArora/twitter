@@ -8,7 +8,7 @@
     "db:push": "prisma db push --skip-generate",
     "db:start": "./start.sh",
     "db:stop": "./stop.sh",
-    "dev": "prisma studio --browser none",
+    "dev": "prisma studio --port 5555 --browser none",
     "lint": "eslint .",
     "lint:fix": "eslint --fix .",
     "typecheck": "tsc --noEmit"

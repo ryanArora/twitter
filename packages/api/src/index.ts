@@ -33,3 +33,6 @@ type RouterOutputs = inferRouterOutputs<AppRouter>;
 
 export { createTRPCContext, appRouter, createCaller };
 export type { AppRouter, RouterInputs, RouterOutputs };
+
+export { getSession } from "./session";
+export type { Session } from "./session";

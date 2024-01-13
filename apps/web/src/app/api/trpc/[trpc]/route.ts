@@ -1,4 +1,4 @@
-import { appRouter, createTRPCContext } from "@repo/api";
+import { appRouter, createTRPCContext, getSession } from "@repo/api";
 import { fetchRequestHandler } from "@trpc/server/adapters/fetch";
 import { type NextRequest } from "next/server";
 
@@ -9,7 +9,7 @@ import { type NextRequest } from "next/server";
  */
 const createContext = async (req: NextRequest) => {
   return createTRPCContext({
-    session: "babacus",
+    session: await getSession(req.cookies.get("session-token")?.value),
     headers: req.headers,
   });
 };

@@ -11,7 +11,7 @@ import { db } from "@repo/db";
 import { initTRPC, TRPCError } from "@trpc/server";
 import superjson from "superjson";
 import { ZodError } from "zod";
-import { type Session } from "./auth";
+import { type Session } from "./session";
 
 /**
  * 1. CONTEXT
@@ -32,10 +32,8 @@ export const createTRPCContext = async (opts: {
 }) => {
   const session = opts.session;
   const source = opts.headers.get("x-trpc-source") ?? "unknown";
-  const token = opts.headers.get("x-session-token");
 
   console.log(">>> tRPC Request from", source, "by", session?.user);
-  console.log(`Session Token: ${token}`);
 
   return {
     session,
