@@ -1,15 +1,38 @@
 {
   "name": "@repo/ui",
   "private": true,
-  "main": "src/index.tsx",
-  "types": "src/index.tsx",
+  "exports": {
+    "./components/button": "./src/components/button.tsx",
+    "./components/card": "./src/components/card.tsx",
+    "./components/form": "./src/components/form.tsx",
+    "./components/input": "./src/components/input.tsx",
+    "./components/label": "./src/components/label.tsx",
+    "./components/toast": "./src/components/toast.tsx",
+    "./components/toaster": "./src/components/toaster.tsx",
+    "./components/use-toast": "./src/components/use-toast.tsx",
+    "./utils": "./src/utils.tsx"
+  },
   "scripts": {
+    "add": "pnpm dlx shadcn-ui add",
     "lint": "eslint .",
     "lint:fix": "eslint --fix .",
     "typecheck": "tsc --noEmit"
   },
   "eslintConfig": {
     "extends": "@repo/eslint-config"
+  },
+  "dependencies": {
+    "@hookform/resolvers": "^3.3.4",
+    "@radix-ui/react-label": "^2.0.2",
+    "@radix-ui/react-slot": "^1.0.2",
+    "@radix-ui/react-toast": "^1.1.5",
+    "class-variance-authority": "^0.7.0",
+    "clsx": "^2.1.0",
+    "lucide-react": "^0.309.0",
+    "react-hook-form": "^7.49.3",
+    "tailwind-merge": "^2.2.0",
+    "tailwindcss-animate": "^1.0.7",
+    "zod": "^3.22.4"
   },
   "devDependencies": {
     "@repo/eslint-config": "workspace:*",

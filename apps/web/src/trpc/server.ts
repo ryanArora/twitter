@@ -1,4 +1,5 @@
-import { createCaller, createTRPCContext, getSession } from "@repo/api";
+import { createCaller, createTRPCContext } from "@repo/api";
+import { getSession } from "@repo/api/session";
 import { cookies, headers } from "next/headers";
 import { cache } from "react";
 

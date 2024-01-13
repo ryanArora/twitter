@@ -3,8 +3,8 @@
   "private": true,
   "main": "index.cjs",
   "scripts": {
-    "format": "prettier --cache --ignore-path .prettierignore --check ../../",
-    "format:fix": "prettier --cache --ignore-path .prettierignore --write ../../",
+    "format": "prettier --cache --config index.cjs --ignore-path .prettierignore --check ../../",
+    "format:fix": "prettier --cache --config index.cjs --ignore-path .prettierignore --write ../../",
     "lint": "eslint .",
     "lint:fix": "eslint --fix .",
     "typecheck": "tsc --noEmit"

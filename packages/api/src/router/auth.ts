@@ -1,4 +1,19 @@
+import { randomBytes } from "node:crypto";
+import { db } from "@repo/db";
+import { TRPCError } from "@trpc/server";
+import argon2 from "argon2";
+import { loginValidator, signupValidator } from "../schemas/auth";
 import { createTRPCRouter, protectedProcedure, publicProcedure } from "../trpc";
+
+function createSession() {
+  const session = {
+    expires: new Date(Date.now() + 1000 * 60 * 60 * 24 * 7 * 52),
+    cancelled: false,
+    token: randomBytes(128).toString("base64"),
+  };
+
+  return session;
+}
 
 export const authRouter = createTRPCRouter({
   getSession: publicProcedure.query(({ ctx }) => {
@@ -6,5 +21,55 @@ export const authRouter = createTRPCRouter({
   }),
   getSecretMessage: protectedProcedure.query(() => {
     return "Hello, world!";
+  }),
+  signup: publicProcedure.input(signupValidator).mutation(async ({ input }) => {
+    const session = createSession();
+
+    await db.user.create({
+      data: {
+        username: input.username,
+        passwordHash: await argon2.hash(input.password),
+        sessions: {
+          create: session,
+        },
+      },
+    });
+
+    return {
+      token: session.token,
+    };
+  }),
+  login: publicProcedure.input(loginValidator).mutation(async ({ input }) => {
+    const user = await db.user.findUnique({
+      where: { username: input.username },
+    });
+
+    if (!user) {
+      throw new TRPCError({
+        code: "UNAUTHORIZED",
+      });
+    }
+
+    const match = await argon2.verify(user.passwordHash, input.password);
+    if (!match) {
+      throw new TRPCError({
+        code: "UNAUTHORIZED",
+      });
+    }
+
+    const session = createSession();
+
+    await db.user.update({
+      where: { id: user.id },
+      data: {
+        sessions: {
+          create: session,
+        },
+      },
+    });
+
+    return {
+      token: session.token,
+    };
   }),
 });

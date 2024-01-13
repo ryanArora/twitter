@@ -17,8 +17,6 @@ export const getSession = async (token?: string) => {
   if (session.expires < new Date(Date.now())) return null;
 
   return {
-    token: session.token,
-    expires: session.expires,
     user: {
       id: session.user.id,
     },

@@ -1,4 +1,5 @@
-import { appRouter, createTRPCContext, getSession } from "@repo/api";
+import { appRouter, createTRPCContext } from "@repo/api";
+import { getSession } from "@repo/api/session";
 import { fetchRequestHandler } from "@trpc/server/adapters/fetch";
 import { type NextRequest } from "next/server";
 
