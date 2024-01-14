@@ -44,6 +44,7 @@ export const authRouter = createTRPCRouter({
           id: user.id,
           username: user.username,
           name: user.name,
+          profilePictureUrl: user.profilePictureUrl,
         },
       };
     }),
@@ -85,6 +86,7 @@ export const authRouter = createTRPCRouter({
           id: updatedUser.id,
           username: updatedUser.username,
           name: updatedUser.name,
+          profilePictureUrl: updatedUser.profilePictureUrl,
         },
       };
     }),

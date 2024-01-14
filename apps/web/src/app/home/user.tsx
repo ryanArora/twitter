@@ -2,8 +2,11 @@
 
 import { type Session } from "@repo/api/session";
 import { type Expand } from "@repo/types";
-import { Avatar, AvatarFallback } from "@repo/ui/components/avatar";
-import { Button } from "@repo/ui/components/button";
+import {
+  Avatar,
+  AvatarFallback,
+  AvatarImage,
+} from "@repo/ui/components/avatar";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -15,6 +18,17 @@ import { LogOut, MoreVertical, Settings, User as UserIcon } from "lucide-react";
 import Link from "next/link";
 import { api } from "@/trpc/react";
 
+function getInitials(name: string) {
+  let initials = "";
+  for (const n of name.split(" ")) {
+    if (n[0] !== "") {
+      initials += n[0];
+    }
+  }
+
+  return initials;
+}
+
 export const User = ({ user }: { user: Expand<Session["user"]> }) => {
   const logout = api.auth.logout.useMutation();
   const { toast } = useToast();
@@ -25,7 +39,10 @@ export const User = ({ user }: { user: Expand<Session["user"]> }) => {
         <div className="flex items-center justify-between p-2 m-2 hover:bg-accent hover:cursor-text rounded-3xl w-64">
           <div className="flex items-center truncate">
             <Avatar>
-              <AvatarFallback>{user.username[0]}</AvatarFallback>
+              {user.profilePictureUrl ? (
+                <AvatarImage src={user.profilePictureUrl} />
+              ) : null}
+              <AvatarFallback>{getInitials(user.name)}</AvatarFallback>
             </Avatar>
             <div className="mx-2 truncate">
               <p className="text-md truncate">{user.name}</p>
