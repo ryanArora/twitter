@@ -3,7 +3,7 @@ import { type ExpandRecursively, type Expand } from "@repo/types";
 
 export type Session = Expand<
   { token: string; expires: Date } & ExpandRecursively<{
-    user: Pick<User, "id" | "username">;
+    user: Pick<User, "id" | "username" | "name">;
   }>
 >;
 
@@ -29,6 +29,7 @@ export const getSession = async (token?: string): Promise<Session | null> => {
     user: {
       id: session.user.id,
       username: session.user.username,
+      name: session.user.name,
     },
   };
 };

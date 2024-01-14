@@ -1,7 +1,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { signupValidator } from "@repo/api/schemas/auth";
+import { loginValidator } from "@repo/api/schemas/auth";
 import { Button } from "@repo/ui/components/button";
 import { Card, CardContent, CardHeader } from "@repo/ui/components/card";
 import {
@@ -19,24 +19,29 @@ import { useForm } from "react-hook-form";
 import { type z } from "zod";
 import { api } from "@/trpc/react";
 
-export default function Login() {
+export default function LoginForm() {
   const login = api.auth.login.useMutation();
 
   const { toast } = useToast();
 
-  const form = useForm<z.infer<typeof signupValidator>>({
-    resolver: zodResolver(signupValidator),
+  const form = useForm<z.infer<typeof loginValidator>>({
+    resolver: zodResolver(loginValidator),
     defaultValues: {
       username: "",
       password: "",
     },
   });
 
-  function onSubmit(values: z.infer<typeof signupValidator>) {
+  function onSubmit(values: z.infer<typeof loginValidator>) {
     login.mutate(values, {
       onError: (err) => {
+        if (err.data && err.data.code === "UNAUTHORIZED") {
+          form.setError("password", { message: "Wrong password!" });
+          return;
+        }
+
         toast({
-          title: "Internal Server Error",
+          title: "Error",
           description: err.message,
         });
       },

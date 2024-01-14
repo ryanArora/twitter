@@ -2,9 +2,10 @@ import { randomBytes } from "node:crypto";
 import { db } from "@repo/db";
 import { TRPCError } from "@trpc/server";
 import argon2 from "argon2";
+import { z } from "zod";
 import { loginValidator, signupValidator } from "../schemas/auth";
 import { type Session } from "../session";
-import { createTRPCRouter, publicProcedure } from "../trpc";
+import { createTRPCRouter, protectedProcedure, publicProcedure } from "../trpc";
 
 function createSession() {
   const session = {
@@ -28,6 +29,7 @@ export const authRouter = createTRPCRouter({
       const user = await db.user.create({
         data: {
           username: input.username,
+          name: input.name,
           passwordHash: await argon2.hash(input.password),
           sessions: {
             create: session,
@@ -41,6 +43,7 @@ export const authRouter = createTRPCRouter({
         user: {
           id: user.id,
           username: user.username,
+          name: user.name,
         },
       };
     }),
@@ -81,7 +84,16 @@ export const authRouter = createTRPCRouter({
         user: {
           id: updatedUser.id,
           username: updatedUser.username,
+          name: updatedUser.name,
         },
       };
     }),
+  logout: protectedProcedure.input(z.null()).mutation(async ({ ctx }) => {
+    await db.session.update({
+      where: { token: ctx.session.token },
+      data: {
+        cancelled: true,
+      },
+    });
+  }),
 });

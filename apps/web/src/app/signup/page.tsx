@@ -20,7 +20,7 @@ import { useForm } from "react-hook-form";
 import { type z } from "zod";
 import { api } from "@/trpc/react";
 
-export default function Signup() {
+export default function SignupForm() {
   const signup = api.auth.signup.useMutation();
 
   const { toast } = useToast();
@@ -42,7 +42,7 @@ export default function Signup() {
         }
 
         toast({
-          title: "Internal Server Error",
+          title: "Error",
           description: err.message,
         });
       },
@@ -62,6 +62,20 @@ export default function Signup() {
         <CardContent>
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+              <FormField
+                control={form.control}
+                name="name"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Name</FormLabel>
+                    <FormControl>
+                      <Input type="text" autoComplete="off" {...field} />
+                    </FormControl>
+                    <FormDescription>This is your name.</FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
               <FormField
                 control={form.control}
                 name="username"

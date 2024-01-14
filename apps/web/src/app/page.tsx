@@ -1,13 +1,14 @@
 import { Button } from "@repo/ui/components/button";
-import {
-  TypographyH1,
-  TypographyH2,
-  TypographyH4,
-} from "@repo/ui/components/typography";
+import { TypographyH1, TypographyH2 } from "@repo/ui/components/typography";
 import Image from "next/image";
 import Link from "next/link";
+import { redirect } from "next/navigation";
+import { api } from "@/trpc/server";
 
-export default function Landing() {
+export default async function Landing() {
+  const session = await api.auth.getSession();
+  if (session) redirect("/home");
+
   return (
     <div className="flex h-screen">
       <div className="flex items-center justify-center w-[50%] h-screen">
