@@ -23,11 +23,11 @@ export default function RootLayout({
 }) {
   return (
     <TRPCReactProvider headersPromise={getHeaders()}>
-      <html lang="en">
+      <html className="w-screen h-screen" lang="en">
         <body
-          className={`${inter.className} dark bg-background text-foreground`}
+          className={`${inter.className} w-screen h-screen dark bg-background text-foreground`}
         >
-          <main>{children}</main>
+          <main className="w-screen h-screen">{children}</main>
           <Toaster />
         </body>
       </html>

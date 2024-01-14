@@ -1,7 +1,13 @@
-import { db } from "@repo/db";
-import { type Expand } from "@repo/types";
+import { type User, db } from "@repo/db";
+import { type ExpandRecursively, type Expand } from "@repo/types";
 
-export const getSession = async (token?: string) => {
+export type Session = Expand<
+  { token: string; expires: Date } & ExpandRecursively<{
+    user: Pick<User, "id" | "username">;
+  }>
+>;
+
+export const getSession = async (token?: string): Promise<Session | null> => {
   if (!token) return null;
 
   const session = await db.session.findUnique({
@@ -18,13 +24,11 @@ export const getSession = async (token?: string) => {
   if (session.expires < new Date(Date.now())) return null;
 
   return {
+    token: session.token,
+    expires: session.expires,
     user: {
       id: session.user.id,
+      username: session.user.username,
     },
   };
 };
-
-export type Session = NonNullable<Awaited<ReturnType<typeof getSession>>>;
-export type SessionWithToken = Expand<
-  { token: string; expires: Date } & Session
->;

@@ -48,11 +48,7 @@ export default function Signup() {
       },
       onSuccess: (data) => {
         document.cookie = `session-token=${data.token}; expires=${data.expires}`;
-
-        toast({
-          title: "Success",
-          description: data.token,
-        });
+        window.location.replace("/home");
       },
     });
   }
@@ -73,7 +69,7 @@ export default function Signup() {
                   <FormItem>
                     <FormLabel>Username</FormLabel>
                     <FormControl>
-                      <Input type="text" {...field} />
+                      <Input type="text" autoComplete="off" {...field} />
                     </FormControl>
                     <FormDescription>This is your username.</FormDescription>
                     <FormMessage />
@@ -87,7 +83,7 @@ export default function Signup() {
                   <FormItem>
                     <FormLabel>Password</FormLabel>
                     <FormControl>
-                      <Input type="password" {...field} />
+                      <Input type="password" autoComplete="off" {...field} />
                     </FormControl>
                     <FormDescription>This is your password.</FormDescription>
                     <FormMessage />

@@ -3,7 +3,8 @@ import { db } from "@repo/db";
 import { TRPCError } from "@trpc/server";
 import argon2 from "argon2";
 import { loginValidator, signupValidator } from "../schemas/auth";
-import { createTRPCRouter, protectedProcedure, publicProcedure } from "../trpc";
+import { type Session } from "../session";
+import { createTRPCRouter, publicProcedure } from "../trpc";
 
 function createSession() {
   const session = {
@@ -16,70 +17,71 @@ function createSession() {
 }
 
 export const authRouter = createTRPCRouter({
-  getSession: publicProcedure.query(({ ctx }) => {
+  getSession: publicProcedure.query(({ ctx }): Session | null => {
     return ctx.session;
   }),
-  getSecretMessage: protectedProcedure.query(() => {
-    return "Hello, world!";
-  }),
-  signup: publicProcedure.input(signupValidator).mutation(async ({ input }) => {
-    const session = createSession();
+  signup: publicProcedure
+    .input(signupValidator)
+    .mutation(async ({ input }): Promise<Session> => {
+      const session = createSession();
 
-    const user = await db.user.create({
-      data: {
-        username: input.username,
-        passwordHash: await argon2.hash(input.password),
-        sessions: {
-          create: session,
+      const user = await db.user.create({
+        data: {
+          username: input.username,
+          passwordHash: await argon2.hash(input.password),
+          sessions: {
+            create: session,
+          },
         },
-      },
-    });
-
-    return {
-      token: session.token,
-      expires: session.expires,
-      user: {
-        id: user.id,
-        username: user.username,
-      },
-    };
-  }),
-  login: publicProcedure.input(loginValidator).mutation(async ({ input }) => {
-    const user = await db.user.findUnique({
-      where: { username: input.username },
-    });
-
-    if (!user) {
-      throw new TRPCError({
-        code: "UNAUTHORIZED",
       });
-    }
 
-    const match = await argon2.verify(user.passwordHash, input.password);
-    if (!match) {
-      throw new TRPCError({
-        code: "UNAUTHORIZED",
-      });
-    }
-
-    const session = createSession();
-
-    const updatedUser = await db.user.update({
-      where: { id: user.id },
-      data: {
-        sessions: {
-          create: session,
+      return {
+        token: session.token,
+        expires: session.expires,
+        user: {
+          id: user.id,
+          username: user.username,
         },
-      },
-    });
+      };
+    }),
+  login: publicProcedure
+    .input(loginValidator)
+    .mutation(async ({ input }): Promise<Session> => {
+      const user = await db.user.findUnique({
+        where: { username: input.username },
+      });
 
-    return {
-      token: session.token,
-      expires: session.expires,
-      user: {
-        id: updatedUser.id,
-        username: updatedUser.username,
-      },
-    };
-  }),
+      if (!user) {
+        throw new TRPCError({
+          code: "UNAUTHORIZED",
+        });
+      }
+
+      const match = await argon2.verify(user.passwordHash, input.password);
+      if (!match) {
+        throw new TRPCError({
+          code: "UNAUTHORIZED",
+        });
+      }
+
+      const session = createSession();
+
+      const updatedUser = await db.user.update({
+        where: { id: user.id },
+        data: {
+          sessions: {
+            create: session,
+          },
+        },
+      });
+
+      return {
+        token: session.token,
+        expires: session.expires,
+        user: {
+          id: updatedUser.id,
+          username: updatedUser.username,
+        },
+      };
+    }),
 });

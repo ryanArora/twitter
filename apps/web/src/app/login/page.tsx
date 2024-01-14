@@ -42,11 +42,7 @@ export default function Login() {
       },
       onSuccess: (data) => {
         document.cookie = `session-token=${data.token}; expires=${data.expires}`;
-
-        toast({
-          title: "Success",
-          description: data.token,
-        });
+        window.location.replace("/home");
       },
     });
   }
