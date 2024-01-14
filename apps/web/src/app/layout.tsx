@@ -24,7 +24,9 @@ export default function RootLayout({
   return (
     <TRPCReactProvider headersPromise={getHeaders()}>
       <html lang="en">
-        <body className={inter.className}>
+        <body
+          className={`${inter.className} dark bg-background text-foreground`}
+        >
           <main>{children}</main>
           <Toaster />
         </body>

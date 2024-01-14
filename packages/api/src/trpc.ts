@@ -7,6 +7,7 @@
  * Tl;dr - this is where all the tRPC server stuff is created and plugged in.
  * The pieces you will need to use are documented accordingly near the end
  */
+import { Prisma } from "@repo/db";
 import { initTRPC, TRPCError } from "@trpc/server";
 import superjson from "superjson";
 import { ZodError } from "zod";
@@ -52,6 +53,16 @@ const t = initTRPC.context<typeof createTRPCContext>().create({
     data: {
       ...shape.data,
       zodError: error.cause instanceof ZodError ? error.cause.flatten() : null,
+      prismaUniqueConstraintErrors:
+        error.cause instanceof Prisma.PrismaClientKnownRequestError &&
+        error.cause.code === "P2002" &&
+        error.cause.meta &&
+        Array.isArray(error.cause.meta.target) &&
+        (error.cause.meta.target as unknown[]).every(
+          (u) => typeof u === "string",
+        )
+          ? (error.cause.meta?.target as string[])
+          : [],
     },
   }),
 });

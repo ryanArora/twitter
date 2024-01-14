@@ -7,7 +7,6 @@ import { Card, CardContent, CardHeader } from "@repo/ui/components/card";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -20,8 +19,8 @@ import { useForm } from "react-hook-form";
 import { type z } from "zod";
 import { api } from "@/trpc/react";
 
-export default function Signup() {
-  const signup = api.auth.signup.useMutation();
+export default function Login() {
+  const login = api.auth.login.useMutation();
 
   const { toast } = useToast();
 
@@ -34,13 +33,8 @@ export default function Signup() {
   });
 
   function onSubmit(values: z.infer<typeof signupValidator>) {
-    signup.mutate(values, {
+    login.mutate(values, {
       onError: (err) => {
-        if (err.data?.prismaUniqueConstraintErrors.includes("username")) {
-          form.setError("username", { message: "That username is taken." });
-          return;
-        }
-
         toast({
           title: "Internal Server Error",
           description: err.message,
@@ -61,7 +55,7 @@ export default function Signup() {
     <div className="flex justify-center items-center h-screen">
       <Card className="w-[380px]">
         <CardHeader className="flex items-center">
-          <TypographyH2>Sign Up</TypographyH2>
+          <TypographyH2>Log In</TypographyH2>
         </CardHeader>
         <CardContent>
           <Form {...form}>
@@ -75,7 +69,6 @@ export default function Signup() {
                     <FormControl>
                       <Input type="text" {...field} />
                     </FormControl>
-                    <FormDescription>This is your username.</FormDescription>
                     <FormMessage />
                   </FormItem>
                 )}
@@ -89,7 +82,6 @@ export default function Signup() {
                     <FormControl>
                       <Input type="password" {...field} />
                     </FormControl>
-                    <FormDescription>This is your password.</FormDescription>
                     <FormMessage />
                   </FormItem>
                 )}

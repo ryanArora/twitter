@@ -9,6 +9,7 @@
     "./components/label": "./src/components/label.tsx",
     "./components/toast": "./src/components/toast.tsx",
     "./components/toaster": "./src/components/toaster.tsx",
+    "./components/typography": "./src/components/typography.tsx",
     "./components/use-toast": "./src/components/use-toast.tsx",
     "./utils": "./src/utils.tsx"
   },

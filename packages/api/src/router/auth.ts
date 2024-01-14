@@ -25,7 +25,7 @@ export const authRouter = createTRPCRouter({
   signup: publicProcedure.input(signupValidator).mutation(async ({ input }) => {
     const session = createSession();
 
-    await db.user.create({
+    const user = await db.user.create({
       data: {
         username: input.username,
         passwordHash: await argon2.hash(input.password),
@@ -37,6 +37,11 @@ export const authRouter = createTRPCRouter({
 
     return {
       token: session.token,
+      expires: session.expires,
+      user: {
+        id: user.id,
+        username: user.username,
+      },
     };
   }),
   login: publicProcedure.input(loginValidator).mutation(async ({ input }) => {
@@ -59,7 +64,7 @@ export const authRouter = createTRPCRouter({
 
     const session = createSession();
 
-    await db.user.update({
+    const updatedUser = await db.user.update({
       where: { id: user.id },
       data: {
         sessions: {
@@ -70,6 +75,11 @@ export const authRouter = createTRPCRouter({
 
     return {
       token: session.token,
+      expires: session.expires,
+      user: {
+        id: updatedUser.id,
+        username: updatedUser.username,
+      },
     };
   }),
 });
