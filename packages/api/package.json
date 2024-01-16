@@ -17,6 +17,7 @@
   },
   "dependencies": {
     "@repo/db": "workspace:*",
+    "@repo/utils": "workspace:*",
     "@trpc/server": "11.0.0-next-alpha.170",
     "argon2": "^0.31.2",
     "superjson": "^2.2.1",
@@ -25,7 +26,6 @@
   "devDependencies": {
     "@repo/eslint-config": "workspace:*",
     "@repo/tsconfig": "workspace:*",
-    "@repo/types": "workspace:*",
     "@types/node": "^20.11.0"
   }
 }

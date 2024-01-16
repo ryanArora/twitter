@@ -1,5 +1,5 @@
 import { type User, db } from "@repo/db";
-import { type ExpandRecursively, type Expand } from "@repo/types";
+import { type ExpandRecursively, type Expand } from "@repo/utils/types";
 
 export type Session = Expand<
   { token: string; expires: Date } & ExpandRecursively<{
