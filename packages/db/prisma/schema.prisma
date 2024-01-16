@@ -9,11 +9,11 @@ model User {
   profilePictureUrl String?
   createdAt         DateTime @default(now())
 
-  sessions  Session[] @relation("sessions")
-  tweets    Tweet[]   @relation("tweets")
-  retweets  Tweet[]   @relation("retweets")
-  likes     Tweet[]   @relation("likes")
-  views     Tweet[]   @relation("views")
+  sessions  Session[]
+  tweets    Tweet[]
+  retweets  Retweet[]
+  likes     Like[]
+  views     View[]
   following Follow[]  @relation("following")
   followers Follow[]  @relation("followers")
 }
@@ -23,7 +23,7 @@ model Session {
   expires   DateTime
   createdAt DateTime @default(now())
 
-  user   User   @relation("sessions", fields: [userId], references: [id], onDelete: Cascade)
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId String
 }
 
@@ -33,16 +33,52 @@ model Tweet {
   attachments String[]
   createdAt   DateTime @default(now())
 
-  author   User   @relation("tweets", fields: [authorId], references: [id], onDelete: Cascade)
+  author   User   @relation(fields: [authorId], references: [id], onDelete: Cascade)
   authorId String
 
   replies  Tweet[] @relation("replies")
   parent   Tweet?  @relation("replies", fields: [parentId], references: [id], onDelete: Cascade)
   parentId String?
 
-  retweets User[] @relation("retweets")
-  likes    User[] @relation("likes")
-  views    User[] @relation("views")
+  retweets Retweet[]
+  likes    Like[]
+  views    View[]
+}
+
+model Retweet {
+  createdAt DateTime @default(now())
+
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId String
+
+  tweet   Tweet  @relation(fields: [tweetId], references: [id], onDelete: Cascade)
+  tweetId String
+
+  @@id([userId, tweetId])
+}
+
+model Like {
+  createdAt DateTime @default(now())
+
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId String
+
+  tweet   Tweet  @relation(fields: [tweetId], references: [id], onDelete: Cascade)
+  tweetId String
+
+  @@id([userId, tweetId])
+}
+
+model View {
+  createdAt DateTime @default(now())
+
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId String
+
+  tweet   Tweet  @relation(fields: [tweetId], references: [id], onDelete: Cascade)
+  tweetId String
+
+  @@id([userId, tweetId])
 }
 
 model Follow {
