@@ -1,7 +1,6 @@
 "use client";
 
 import { Button } from "@repo/ui/components/button";
-import { useToast } from "@repo/ui/components/use-toast";
 import { formatNumberShort } from "@repo/utils/str";
 import {
   BarChart2Icon,
@@ -52,100 +51,91 @@ export const Tweet: FC<{
   };
 }> = ({ tweet }) => {
   const utils = api.useUtils();
-  const like = api.tweet.like.useMutation();
-  const dislike = api.tweet.dislike.useMutation();
-  const { toast } = useToast();
   const session = useSession();
-
   const liked = tweet.likes.some((like) => like.user.id === session.user.id);
 
-  function likeTweet() {
-    like.mutate(
-      {
-        tweetId: tweet.id,
-      },
-      {
-        onError: (err) => {
-          toast({
-            title: "Error",
-            description: err.message,
-          });
-        },
-        onSuccess: async () => {
-          await utils.tweet.getTimeline.cancel();
+  const like = api.tweet.like.useMutation({
+    onMutate: async () => {
+      await utils.tweet.getTimeline.cancel();
+      const previousTweets = utils.tweet.getTimeline.getInfiniteData();
 
-          utils.tweet.getTimeline.setInfiniteData({ limit: 10 }, (data) => {
-            if (!data) return;
+      utils.tweet.getTimeline.setInfiniteData({ limit: 10 }, (data) => {
+        if (!data) return;
+        return {
+          pages: data.pages.map((page) => ({
+            ...page,
+            tweets: page.tweets.map((t) => {
+              if (t.id !== tweet.id) return t;
+              return {
+                ...t,
+                _count: {
+                  ...t._count,
+                  likes: t._count.likes + 1,
+                },
+                likes: [
+                  {
+                    createdAt: new Date(Date.now()),
+                    user: session.user,
+                  },
+                  ...t.likes,
+                ],
+              };
+            }),
+          })),
+          pageParams: [],
+        };
+      });
 
-            return {
-              pages: data.pages.map((page) => ({
-                ...page,
-                tweets: page.tweets.map((t) => {
-                  if (t.id !== tweet.id) return t;
-                  return {
-                    ...t,
-                    _count: {
-                      ...t._count,
-                      likes: t._count.likes + 1,
-                    },
-                    likes: [
-                      {
-                        createdAt: new Date(Date.now()),
-                        user: session.user,
-                      },
-                      ...t.likes,
-                    ],
-                  };
-                }),
-              })),
-              pageParams: [],
-            };
-          });
-        },
-      },
-    );
-  }
+      return { previousTweets };
+    },
+    onError: (err, input, context) => {
+      // roll back on error
+      utils.tweet.getTimeline.setInfiniteData(
+        { limit: 10 },
+        context!.previousTweets,
+      );
+    },
+  });
 
-  function dislikeTweet() {
-    dislike.mutate(
-      { tweetId: tweet.id },
-      {
-        onError: (err) => {
-          toast({
-            title: "Error",
-            description: err.message,
-          });
-        },
-        onSuccess: async () => {
-          await utils.tweet.getTimeline.cancel();
+  const dislike = api.tweet.dislike.useMutation({
+    onMutate: async () => {
+      await utils.tweet.getTimeline.cancel();
+      const previousTweets = utils.tweet.getTimeline.getInfiniteData();
 
-          utils.tweet.getTimeline.setInfiniteData({ limit: 10 }, (data) => {
-            if (!data) return;
+      utils.tweet.getTimeline.setInfiniteData({ limit: 10 }, (data) => {
+        if (!data) return;
 
-            return {
-              pages: data.pages.map((page) => ({
-                ...page,
-                tweets: page.tweets.map((t) => {
-                  if (t.id !== tweet.id) return t;
-                  return {
-                    ...t,
-                    _count: {
-                      ...t._count,
-                      likes: t._count.likes - 1,
-                    },
-                    likes: t.likes.filter(
-                      (like) => like.user.id !== session.user.id,
-                    ),
-                  };
-                }),
-              })),
-              pageParams: [],
-            };
-          });
-        },
-      },
-    );
-  }
+        return {
+          pages: data.pages.map((page) => ({
+            ...page,
+            tweets: page.tweets.map((t) => {
+              if (t.id !== tweet.id) return t;
+              return {
+                ...t,
+                _count: {
+                  ...t._count,
+                  likes: t._count.likes - 1,
+                },
+                likes: t.likes.filter(
+                  (like) => like.user.id !== session.user.id,
+                ),
+              };
+            }),
+          })),
+          pageParams: [],
+        };
+      });
+
+      return { previousTweets };
+    },
+    onError: (err, input, context) => {
+      // roll back on error
+      utils.tweet.getTimeline.setInfiniteData(
+        { limit: 10 },
+        context!.previousTweets,
+      );
+    },
+  });
 
   return (
     <div className="flex items-start border p-2">
@@ -168,14 +158,13 @@ export const Tweet: FC<{
             <p>{formatNumberShort(tweet._count.retweets, 1)}</p>
           </Button>
           <Button
+            type="button"
             variant="ghost"
-            onClick={(e) => {
-              e.preventDefault();
-
+            onClick={() => {
               if (!liked) {
-                likeTweet();
+                like.mutate({ tweetId: tweet.id });
               } else {
-                dislikeTweet();
+                dislike.mutate({ tweetId: tweet.id });
               }
             }}
           >
