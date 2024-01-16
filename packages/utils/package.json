@@ -2,7 +2,7 @@
   "name": "@repo/utils",
   "private": true,
   "exports": {
-    "./number-format": "./src/number-format.ts",
+    "./str": "./src/str.ts",
     "./types": "./src/types.ts"
   },
   "scripts": {

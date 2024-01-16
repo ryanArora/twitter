@@ -13,22 +13,12 @@ import {
   DropdownMenuItem,
 } from "@repo/ui/components/dropdown-menu";
 import { useToast } from "@repo/ui/components/use-toast";
+import { getInitials } from "@repo/utils/str";
 import { type Expand } from "@repo/utils/types";
 import { LogOut, MoreVertical, Settings, User as UserIcon } from "lucide-react";
 import Link from "next/link";
 import { type FC } from "react";
 import { api } from "@/trpc/react";
-
-export function getInitials(name: string) {
-  let initials = "";
-  for (const n of name.split(" ")) {
-    if (n[0] !== "") {
-      initials += n[0];
-    }
-  }
-
-  return initials;
-}
 
 export const User: FC<{ user: Expand<Session["user"]> }> = ({ user }) => {
   const logout = api.auth.logout.useMutation();

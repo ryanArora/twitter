@@ -11,12 +11,11 @@ import {
 import Image from "next/image";
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import { PostTweet } from "./post-tweet";
-import { Timeline } from "./timeline";
+import React, { type FC, type ReactNode } from "react";
 import { User } from "./user";
 import { api } from "@/trpc/server";
 
-export default async function Home() {
+const NavbarLayout: FC<{ children: ReactNode }> = async ({ children }) => {
   const session = await api.auth.getSession();
   if (!session) redirect("/");
 
@@ -92,12 +91,11 @@ export default async function Home() {
         </div>
       </div>
       <div className="flex-1 overflow-hidden h-full flex w-[40%]">
-        <div className="w-full h-full flex-1 overflow-y-scroll">
-          <PostTweet user={session.user} />
-          <Timeline />
-        </div>
+        {children}
       </div>
-      <div className="h-full flex w-[30%]">Hi</div>
+      <div className="h-full flex w-[30%]"></div>
     </div>
   );
-}
+};
+
+export default NavbarLayout;
