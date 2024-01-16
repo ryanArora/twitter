@@ -11,6 +11,8 @@ import {
 import Image from "next/image";
 import Link from "next/link";
 import { redirect } from "next/navigation";
+import { PostTweet } from "./post-tweet";
+import { Timeline } from "./timeline";
 import { User } from "./user";
 import { api } from "@/trpc/server";
 
@@ -89,8 +91,11 @@ export default async function Home() {
           </div>
         </div>
       </div>
-      <div className="h-full flex w-[40%]">
-        <div className="w-full h-16">Hello, world!</div>
+      <div className="flex-1 overflow-hidden h-full flex w-[40%]">
+        <div className="w-full h-full flex-1 overflow-y-scroll">
+          <PostTweet user={session.user} />
+          <Timeline />
+        </div>
       </div>
       <div className="h-full flex w-[30%]">Hi</div>
     </div>

@@ -1,5 +1,6 @@
 import { randomBytes } from "node:crypto";
 import { db } from "@repo/db";
+import { type Expand } from "@repo/types";
 import { TRPCError } from "@trpc/server";
 import argon2 from "argon2";
 import { z } from "zod";
@@ -7,10 +8,9 @@ import { loginValidator, signupValidator } from "../schemas/auth";
 import { type Session } from "../session";
 import { createTRPCRouter, protectedProcedure, publicProcedure } from "../trpc";
 
-function createSession() {
+function createSession(): Expand<Omit<Session, "user">> {
   const session = {
     expires: new Date(Date.now() + 1000 * 60 * 60 * 24 * 7 * 52),
-    cancelled: false,
     token: randomBytes(128).toString("base64"),
   };
 
@@ -35,17 +35,17 @@ export const authRouter = createTRPCRouter({
             create: session,
           },
         },
+        select: {
+          id: true,
+          username: true,
+          name: true,
+          profilePictureUrl: true,
+        },
       });
 
       return {
-        token: session.token,
-        expires: session.expires,
-        user: {
-          id: user.id,
-          username: user.username,
-          name: user.name,
-          profilePictureUrl: user.profilePictureUrl,
-        },
+        ...session,
+        user,
       };
     }),
   login: publicProcedure
@@ -53,6 +53,10 @@ export const authRouter = createTRPCRouter({
     .mutation(async ({ input }): Promise<Session> => {
       const user = await db.user.findUnique({
         where: { username: input.username },
+        select: {
+          id: true,
+          passwordHash: true,
+        },
       });
 
       if (!user) {
@@ -70,32 +74,25 @@ export const authRouter = createTRPCRouter({
 
       const session = createSession();
 
-      const updatedUser = await db.user.update({
-        where: { id: user.id },
-        data: {
-          sessions: {
-            create: session,
+      return await db.session.create({
+        data: { ...session, userId: user.id },
+        select: {
+          token: true,
+          expires: true,
+          user: {
+            select: {
+              id: true,
+              username: true,
+              name: true,
+              profilePictureUrl: true,
+            },
           },
         },
       });
-
-      return {
-        token: session.token,
-        expires: session.expires,
-        user: {
-          id: updatedUser.id,
-          username: updatedUser.username,
-          name: updatedUser.name,
-          profilePictureUrl: updatedUser.profilePictureUrl,
-        },
-      };
     }),
   logout: protectedProcedure.input(z.null()).mutation(async ({ ctx }) => {
-    await db.session.update({
+    await db.session.delete({
       where: { token: ctx.session.token },
-      data: {
-        cancelled: true,
-      },
     });
   }),
 });

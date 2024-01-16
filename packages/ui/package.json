@@ -9,6 +9,7 @@
     "./components/form": "./src/components/form.tsx",
     "./components/input": "./src/components/input.tsx",
     "./components/label": "./src/components/label.tsx",
+    "./components/textarea": "./src/components/textarea.tsx",
     "./components/toast": "./src/components/toast.tsx",
     "./components/toaster": "./src/components/toaster.tsx",
     "./components/typography": "./src/components/typography.tsx",

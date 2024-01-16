@@ -1,0 +1,20 @@
+{
+  "name": "@repo/utils",
+  "private": true,
+  "exports": {
+    "./number-format": "./src/number-format.ts"
+  },
+  "scripts": {
+    "lint": "eslint .",
+    "lint:fix": "eslint --fix .",
+    "typecheck": "tsc --noEmit"
+  },
+  "eslintConfig": {
+    "extends": "@repo/eslint-config"
+  },
+  "devDependencies": {
+    "@repo/eslint-config": "workspace:*",
+    "@repo/tailwind-config": "workspace:*",
+    "@repo/tsconfig": "workspace:*"
+  }
+}

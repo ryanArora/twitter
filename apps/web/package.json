@@ -21,6 +21,7 @@
     "@repo/db": "workspace:*",
     "@repo/types": "workspace:*",
     "@repo/ui": "workspace:*",
+    "@repo/utils": "workspace:*",
     "@tanstack/react-query": "^5.17.7",
     "@tanstack/react-query-devtools": "^5.17.7",
     "@tanstack/react-query-next-experimental": "5.17.7",

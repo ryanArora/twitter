@@ -10,27 +10,24 @@ export type Session = Expand<
 export const getSession = async (token?: string): Promise<Session | null> => {
   if (!token) return null;
 
-  const session = await db.session.findUnique({
+  return await db.session.findUnique({
     where: {
       token,
+      expires: {
+        gt: new Date(Date.now()),
+      },
     },
-    include: {
-      user: true,
+    select: {
+      token: true,
+      expires: true,
+      user: {
+        select: {
+          id: true,
+          username: true,
+          name: true,
+          profilePictureUrl: true,
+        },
+      },
     },
   });
-
-  if (!session) return null;
-  if (session.cancelled) return null;
-  if (session.expires < new Date(Date.now())) return null;
-
-  return {
-    token: session.token,
-    expires: session.expires,
-    user: {
-      id: session.user.id,
-      username: session.user.username,
-      name: session.user.name,
-      profilePictureUrl: session.user.profilePictureUrl,
-    },
-  };
 };

@@ -16,9 +16,10 @@ import {
 import { useToast } from "@repo/ui/components/use-toast";
 import { LogOut, MoreVertical, Settings, User as UserIcon } from "lucide-react";
 import Link from "next/link";
+import { type FC } from "react";
 import { api } from "@/trpc/react";
 
-function getInitials(name: string) {
+export function getInitials(name: string) {
   let initials = "";
   for (const n of name.split(" ")) {
     if (n[0] !== "") {
@@ -29,7 +30,7 @@ function getInitials(name: string) {
   return initials;
 }
 
-export const User = ({ user }: { user: Expand<Session["user"]> }) => {
+export const User: FC<{ user: Expand<Session["user"]> }> = ({ user }) => {
   const logout = api.auth.logout.useMutation();
   const { toast } = useToast();
 

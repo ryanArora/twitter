@@ -2,22 +2,59 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 model User {
-  id                String  @id @default(uuid())
-  username          String  @unique
+  id                String   @id @default(uuid())
+  username          String   @unique
   name              String
   passwordHash      String
   profilePictureUrl String?
+  createdAt         DateTime @default(now())
 
-  sessions Session[]
+  sessions  Session[] @relation("sessions")
+  tweets    Tweet[]   @relation("tweets")
+  retweets  Tweet[]   @relation("retweets")
+  likes     Tweet[]   @relation("likes")
+  views     Tweet[]   @relation("views")
+  following Follow[]  @relation("following")
+  followers Follow[]  @relation("followers")
 }
 
 model Session {
   token     String   @id
   expires   DateTime
-  cancelled Boolean
+  createdAt DateTime @default(now())
 
-  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user   User   @relation("sessions", fields: [userId], references: [id], onDelete: Cascade)
   userId String
+}
+
+model Tweet {
+  id          String   @id @default(uuid())
+  content     String
+  attachments String[]
+  createdAt   DateTime @default(now())
+
+  author   User   @relation("tweets", fields: [authorId], references: [id], onDelete: Cascade)
+  authorId String
+
+  replies  Tweet[] @relation("replies")
+  parent   Tweet?  @relation("replies", fields: [parentId], references: [id], onDelete: Cascade)
+  parentId String?
+
+  retweets User[] @relation("retweets")
+  likes    User[] @relation("likes")
+  views    User[] @relation("views")
+}
+
+model Follow {
+  createdAt DateTime @default(now())
+
+  follower   User   @relation("following", fields: [followerId], references: [id], onDelete: Cascade)
+  followerId String
+
+  followed   User   @relation("followers", fields: [followedId], references: [id], onDelete: Cascade)
+  followedId String
+
+  @@id([followerId, followedId])
 }
 
 generator client {

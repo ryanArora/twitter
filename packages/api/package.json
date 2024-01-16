@@ -4,7 +4,8 @@
   "exports": {
     ".": "./src/index.ts",
     "./session": "./src/session.ts",
-    "./schemas/auth": "./src/schemas/auth.ts"
+    "./schemas/auth": "./src/schemas/auth.ts",
+    "./schemas/tweet": "./src/schemas/tweet.ts"
   },
   "scripts": {
     "lint": "eslint .",
