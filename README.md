@@ -27,7 +27,7 @@ This repository is a monorepo using [turborepo](https://turbo.build/) and [pnpm 
 
 Folders in the apps directory each spawn their own process.
 
-- `web` - A NextJS project.
+- `web` - The main website with [NextJS](https://nextjs.org/).
 
 ### `packages`
 
