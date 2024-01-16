@@ -1,7 +1,7 @@
 "use client";
 
 import { Button } from "@repo/ui/components/button";
-import { shortNumber } from "@repo/utils/number-format";
+import { formatNumberShort } from "@repo/utils/str";
 import {
   BarChart2Icon,
   HeartIcon,
@@ -45,19 +45,19 @@ export const Tweet: FC<{
         <div>
           <Button variant="ghost">
             <MessageCircleIcon />
-            <p>{shortNumber(tweet._count.replies, 1)}</p>
+            <p>{formatNumberShort(tweet._count.replies, 1)}</p>
           </Button>
           <Button variant="ghost">
             <Repeat2Icon />
-            <p>{shortNumber(tweet._count.retweets, 1)}</p>
+            <p>{formatNumberShort(tweet._count.retweets, 1)}</p>
           </Button>
           <Button variant="ghost">
             <HeartIcon />
-            <p>{shortNumber(tweet._count.likes, 1)}</p>
+            <p>{formatNumberShort(tweet._count.likes, 1)}</p>
           </Button>
           <Button variant="ghost">
             <BarChart2Icon />
-            <p>{shortNumber(tweet._count.views, 1)}</p>
+            <p>{formatNumberShort(tweet._count.views, 1)}</p>
           </Button>
         </div>
       </div>

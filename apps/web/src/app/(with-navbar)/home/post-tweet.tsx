@@ -1,7 +1,6 @@
 "use client";
 
 import { type postTweetSchema } from "@repo/api/schemas/tweet";
-import { type Session } from "@repo/api/session";
 import {
   Avatar,
   AvatarFallback,
@@ -16,14 +15,17 @@ import {
 } from "@repo/ui/components/form";
 import { Input } from "@repo/ui/components/input";
 import { useToast } from "@repo/ui/components/use-toast";
-import { type Expand } from "@repo/utils/types";
+import { getInitials } from "@repo/utils/str";
 import { type FC } from "react";
 import { useForm } from "react-hook-form";
 import { type z } from "zod";
-import { getInitials } from "./user";
+import { useSession } from "@/context/session";
 import { api } from "@/trpc/react";
 
-export const PostTweet: FC<{ user: Expand<Session["user"]> }> = ({ user }) => {
+export const PostTweet: FC = () => {
+  const session = useSession();
+  const user = session.user;
+
   const form = useForm<z.infer<typeof postTweetSchema>>({
     defaultValues: {
       content: "",

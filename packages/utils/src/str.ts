@@ -1,6 +1,5 @@
 // https://stackoverflow.com/a/9462382
-
-export function shortNumber(num: number, digits: number) {
+export function formatNumberShort(num: number, digits: number) {
   const lookup = [
     { value: 1, symbol: "" },
     { value: 1e3, symbol: "K" },
@@ -16,4 +15,15 @@ export function shortNumber(num: number, digits: number) {
   return item
     ? (num / item.value).toFixed(digits).replace(regexp, "").concat(item.symbol)
     : "0";
+}
+
+export function getInitials(name: string) {
+  let initials = "";
+  for (const n of name.split(" ")) {
+    if (n[0] !== "") {
+      initials += n[0];
+    }
+  }
+
+  return initials;
 }
