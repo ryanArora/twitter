@@ -153,6 +153,9 @@ importers:
       '@repo/tsconfig':
         specifier: workspace:*
         version: link:../../tooling/tsconfig
+      '@types/node':
+        specifier: ^20.11.0
+        version: 20.11.0
       prisma:
         specifier: ^5.8.1
         version: 5.8.1
