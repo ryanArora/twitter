@@ -18,6 +18,7 @@ import { type Expand } from "@repo/utils/types";
 import { LogOut, MoreVertical, Settings, User as UserIcon } from "lucide-react";
 import Link from "next/link";
 import { type FC } from "react";
+import { UserAvatar } from "./home/user-avatar";
 import { api } from "@/trpc/react";
 
 export const User: FC<{ user: Expand<Session["user"]> }> = ({ user }) => {
@@ -29,12 +30,7 @@ export const User: FC<{ user: Expand<Session["user"]> }> = ({ user }) => {
       <DropdownMenuTrigger asChild>
         <div className="flex items-center justify-between p-2 m-2 hover:bg-accent hover:cursor-text rounded-3xl w-64">
           <div className="flex items-center truncate">
-            <Avatar>
-              {user.profilePictureUrl ? (
-                <AvatarImage src={user.profilePictureUrl} />
-              ) : null}
-              <AvatarFallback>{getInitials(user.name)}</AvatarFallback>
-            </Avatar>
+            <UserAvatar user={user} />
             <div className="mx-2 truncate">
               <p className="text-md truncate">{user.name}</p>
               <p className="text-sm truncate">@{user.username}</p>

@@ -68,7 +68,7 @@ const NavbarLayout: FC<{ children: ReactNode }> = async ({ children }) => {
               </Link>
               <Link
                 className="flex p-4 rounded-3xl hover:bg-accent w-fit"
-                href="/profile"
+                href={`/${session.user.username}`}
               >
                 <UserIcon className="mr-2" />
                 <TypographyH4 className="ml-2">Profile</TypographyH4>
