@@ -2,7 +2,6 @@
 
 import { type postTweetSchema } from "@repo/api/schemas/tweet";
 import { type Session } from "@repo/api/session";
-import { type Expand } from "@repo/types";
 import {
   Avatar,
   AvatarFallback,
@@ -17,6 +16,7 @@ import {
 } from "@repo/ui/components/form";
 import { Input } from "@repo/ui/components/input";
 import { useToast } from "@repo/ui/components/use-toast";
+import { type Expand } from "@repo/utils/types";
 import { type FC } from "react";
 import { useForm } from "react-hook-form";
 import { type z } from "zod";

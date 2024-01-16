@@ -2,7 +2,8 @@
   "name": "@repo/utils",
   "private": true,
   "exports": {
-    "./number-format": "./src/number-format.ts"
+    "./number-format": "./src/number-format.ts",
+    "./types": "./src/types.ts"
   },
   "scripts": {
     "lint": "eslint .",

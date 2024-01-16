@@ -39,9 +39,6 @@ importers:
       '@repo/db':
         specifier: workspace:*
         version: link:../../packages/db
-      '@repo/types':
-        specifier: workspace:*
-        version: link:../../packages/types
       '@repo/ui':
         specifier: workspace:*
         version: link:../../packages/ui
@@ -118,6 +115,9 @@ importers:
       '@repo/db':
         specifier: workspace:*
         version: link:../db
+      '@repo/utils':
+        specifier: workspace:*
+        version: link:../utils
       '@trpc/server':
         specifier: 11.0.0-next-alpha.170
         version: 11.0.0-next-alpha.170
@@ -137,9 +137,6 @@ importers:
       '@repo/tsconfig':
         specifier: workspace:*
         version: link:../../tooling/tsconfig
-      '@repo/types':
-        specifier: workspace:*
-        version: link:../types
       '@types/node':
         specifier: ^20.11.0
         version: 20.11.0
@@ -159,21 +156,6 @@ importers:
       prisma:
         specifier: ^5.8.0
         version: 5.8.0
-
-  packages/types:
-    devDependencies:
-      '@repo/eslint-config':
-        specifier: workspace:*
-        version: link:../../tooling/eslint-config
-      '@repo/tailwind-config':
-        specifier: workspace:*
-        version: link:../../tooling/tailwind-config
-      '@repo/tsconfig':
-        specifier: workspace:*
-        version: link:../../tooling/tsconfig
-      tailwindcss:
-        specifier: ^3.4.1
-        version: 3.4.1
 
   packages/ui:
     dependencies:

@@ -1,7 +1,6 @@
 "use client";
 
 import { type Session } from "@repo/api/session";
-import { type Expand } from "@repo/types";
 import {
   Avatar,
   AvatarFallback,
@@ -14,6 +13,7 @@ import {
   DropdownMenuItem,
 } from "@repo/ui/components/dropdown-menu";
 import { useToast } from "@repo/ui/components/use-toast";
+import { type Expand } from "@repo/utils/types";
 import { LogOut, MoreVertical, Settings, User as UserIcon } from "lucide-react";
 import Link from "next/link";
 import { type FC } from "react";

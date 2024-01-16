@@ -1,6 +1,6 @@
 import { randomBytes } from "node:crypto";
 import { db } from "@repo/db";
-import { type Expand } from "@repo/types";
+import { type Expand } from "@repo/utils/types";
 import { TRPCError } from "@trpc/server";
 import argon2 from "argon2";
 import { z } from "zod";
