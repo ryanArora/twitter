@@ -2,18 +2,12 @@
 
 import { type Session } from "@repo/api/session";
 import {
-  Avatar,
-  AvatarFallback,
-  AvatarImage,
-} from "@repo/ui/components/avatar";
-import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuTrigger,
   DropdownMenuItem,
 } from "@repo/ui/components/dropdown-menu";
 import { useToast } from "@repo/ui/components/use-toast";
-import { getInitials } from "@repo/utils/str";
 import { type Expand } from "@repo/utils/types";
 import { LogOut, MoreVertical, Settings, User as UserIcon } from "lucide-react";
 import Link from "next/link";
