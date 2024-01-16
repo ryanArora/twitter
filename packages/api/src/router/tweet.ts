@@ -12,8 +12,8 @@ export const tweetRouter = createTRPCRouter({
           authorId: ctx.session.user.id,
           content: input.content,
           views: {
-            connect: {
-              id: ctx.session.user.id,
+            create: {
+              userId: ctx.session.user.id,
             },
           },
         },
@@ -58,6 +58,56 @@ export const tweetRouter = createTRPCRouter({
               profilePictureUrl: true,
             },
           },
+          likes: {
+            where: {
+              OR: [
+                { userId: ctx.session.user.id },
+                {
+                  user: {
+                    followers: {
+                      some: { followerId: { equals: ctx.session.user.id } },
+                    },
+                  },
+                },
+              ],
+            },
+            select: {
+              createdAt: true,
+              user: {
+                select: {
+                  id: true,
+                  username: true,
+                  name: true,
+                  profilePictureUrl: true,
+                },
+              },
+            },
+          },
+          retweets: {
+            where: {
+              OR: [
+                { userId: ctx.session.user.id },
+                {
+                  user: {
+                    followers: {
+                      some: { followerId: { equals: ctx.session.user.id } },
+                    },
+                  },
+                },
+              ],
+            },
+            select: {
+              createdAt: true,
+              user: {
+                select: {
+                  id: true,
+                  username: true,
+                  name: true,
+                  profilePictureUrl: true,
+                },
+              },
+            },
+          },
         },
         orderBy: {
           createdAt: "desc",
@@ -80,5 +130,29 @@ export const tweetRouter = createTRPCRouter({
         tweets,
         nextCursor,
       };
+    }),
+  like: protectedProcedure
+    .input(z.object({ tweetId: z.string() }))
+    .mutation(async ({ ctx, input }) => {
+      await db.like.create({
+        data: {
+          userId: ctx.session.user.id,
+          tweetId: input.tweetId,
+        },
+        select: { tweetId: true }, // Need to select something...
+      });
+    }),
+  dislike: protectedProcedure
+    .input(z.object({ tweetId: z.string() }))
+    .mutation(async ({ ctx, input }) => {
+      await db.like.delete({
+        where: {
+          userId_tweetId: {
+            userId: ctx.session.user.id,
+            tweetId: input.tweetId,
+          },
+        },
+        select: { tweetId: true }, // Need to select something...
+      });
     }),
 });

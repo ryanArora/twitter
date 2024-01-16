@@ -56,13 +56,21 @@ export const PostTweet: FC = () => {
               retweets: 0,
               views: 1,
             },
+            id,
+            content: values.content,
             attachments: values.attachments,
             author: user,
-            content: values.content,
-            id,
+            retweets: [],
+            likes: [],
           };
 
-          if (!data) return;
+          if (!data) {
+            return {
+              pages: [{ tweets: [tweet], nextCursor: undefined }],
+              pageParams: [],
+            };
+          }
+
           return {
             pages: [{ tweets: [tweet], nextCursor: undefined }, ...data.pages],
             pageParams: [],
