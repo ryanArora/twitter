@@ -155,4 +155,28 @@ export const tweetRouter = createTRPCRouter({
         select: { tweetId: true }, // Need to select something...
       });
     }),
+  retweet: protectedProcedure
+    .input(z.object({ tweetId: z.string() }))
+    .mutation(async ({ ctx, input }) => {
+      await db.retweet.create({
+        data: {
+          userId: ctx.session.user.id,
+          tweetId: input.tweetId,
+        },
+        select: { tweetId: true }, // Need to select something...
+      });
+    }),
+  unretweet: protectedProcedure
+    .input(z.object({ tweetId: z.string() }))
+    .mutation(async ({ ctx, input }) => {
+      await db.retweet.delete({
+        where: {
+          userId_tweetId: {
+            userId: ctx.session.user.id,
+            tweetId: input.tweetId,
+          },
+        },
+        select: { tweetId: true }, // Need to select something...
+      });
+    }),
 });
