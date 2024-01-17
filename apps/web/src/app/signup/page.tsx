@@ -36,7 +36,10 @@ export default function SignupForm() {
   function onSubmit(values: z.infer<typeof signupValidator>) {
     signup.mutate(values, {
       onError: (err) => {
-        if (err.data?.prismaUniqueConstraintErrors.includes("username")) {
+        if (
+          err.data?.prismaUniqueConstraintErrors.includes("username") ||
+          err.data?.prismaUniqueConstraintErrors.includes("usernameLower")
+        ) {
           form.setError("username", { message: "That username is taken." });
           return;
         }
