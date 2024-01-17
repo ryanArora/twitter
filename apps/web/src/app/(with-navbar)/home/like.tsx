@@ -92,21 +92,33 @@ export const Like: FC<{ tweet: TweetProps["tweet"] }> = ({ tweet }) => {
   });
 
   const liked = tweet.likes.some((like) => like.user.id === session.user.id);
+  const likesCountFormatted = formatNumberShort(tweet._count.likes, 1);
 
-  return (
-    <Button
-      type="button"
-      variant="ghost"
-      onClick={() => {
-        if (!liked) {
+  if (!liked) {
+    return (
+      <Button
+        type="button"
+        variant="ghost"
+        onClick={() => {
           like.mutate({ tweetId: tweet.id });
-        } else {
+        }}
+      >
+        <HeartIcon />
+        <p>{likesCountFormatted}</p>
+      </Button>
+    );
+  } else {
+    return (
+      <Button
+        type="button"
+        variant="ghost"
+        onClick={() => {
           dislike.mutate({ tweetId: tweet.id });
-        }
-      }}
-    >
-      <HeartIcon fill={liked ? "red" : undefined} />
-      <p>{formatNumberShort(tweet._count.likes, 1)}</p>
-    </Button>
-  );
+        }}
+      >
+        <HeartIcon fill="red" color="red" />
+        <p>{likesCountFormatted}</p>
+      </Button>
+    );
+  }
 };
