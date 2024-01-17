@@ -12,10 +12,10 @@ export const Retweet: FC<{ tweet: TweetProps["tweet"] }> = ({ tweet }) => {
 
   const retweet = api.tweet.retweet.useMutation({
     onMutate: async () => {
-      await utils.tweet.getTimeline.cancel();
-      const previousTweets = utils.tweet.getTimeline.getInfiniteData();
+      await utils.tweet.timeline.cancel();
+      const previousTweets = utils.tweet.timeline.getInfiniteData();
 
-      utils.tweet.getTimeline.setInfiniteData({ limit: 10 }, (data) => {
+      utils.tweet.timeline.setInfiniteData({ limit: 10 }, (data) => {
         if (!data) return;
         return {
           pages: data.pages.map((page) => ({
@@ -45,7 +45,7 @@ export const Retweet: FC<{ tweet: TweetProps["tweet"] }> = ({ tweet }) => {
       return { previousTweets };
     },
     onError: (err, input, context) => {
-      utils.tweet.getTimeline.setInfiniteData(
+      utils.tweet.timeline.setInfiniteData(
         { limit: 10 },
         context!.previousTweets,
       );
@@ -54,10 +54,10 @@ export const Retweet: FC<{ tweet: TweetProps["tweet"] }> = ({ tweet }) => {
 
   const unretweet = api.tweet.unretweet.useMutation({
     onMutate: async () => {
-      await utils.tweet.getTimeline.cancel();
-      const previousTweets = utils.tweet.getTimeline.getInfiniteData();
+      await utils.tweet.timeline.cancel();
+      const previousTweets = utils.tweet.timeline.getInfiniteData();
 
-      utils.tweet.getTimeline.setInfiniteData({ limit: 10 }, (data) => {
+      utils.tweet.timeline.setInfiniteData({ limit: 10 }, (data) => {
         if (!data) return;
 
         return {
@@ -84,7 +84,7 @@ export const Retweet: FC<{ tweet: TweetProps["tweet"] }> = ({ tweet }) => {
       return { previousTweets };
     },
     onError: (err, input, context) => {
-      utils.tweet.getTimeline.setInfiniteData(
+      utils.tweet.timeline.setInfiniteData(
         { limit: 10 },
         context!.previousTweets,
       );
