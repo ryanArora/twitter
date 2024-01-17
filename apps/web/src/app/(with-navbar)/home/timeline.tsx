@@ -1,6 +1,8 @@
 "use client";
 
+import { Button } from "@repo/ui/components/button";
 import { type FC, Fragment } from "react";
+import ClipLoader from "react-spinners/ClipLoader";
 import { Tweet } from "./tweet";
 import { api } from "@/trpc/react";
 
@@ -10,7 +12,6 @@ export const Timeline: FC = () => {
     error,
     fetchNextPage,
     hasNextPage,
-    isFetching,
     isFetchingNextPage,
     status,
   } = api.tweet.timeline.useInfiniteQuery(
@@ -20,11 +21,19 @@ export const Timeline: FC = () => {
     },
   );
 
-  return status === "pending" ? (
-    <p>Loading...</p>
-  ) : status === "error" ? (
-    <p>Error: {error.message}</p>
-  ) : (
+  if (status === "pending") {
+    return (
+      <div className="flex justify-center m-2">
+        <ClipLoader color="white" size={20} />
+      </div>
+    );
+  }
+
+  if (status === "error") {
+    return <p>Error: {error.message}</p>;
+  }
+
+  return (
     <>
       {data.pages.map((group, i) => (
         <Fragment key={i}>
@@ -33,19 +42,15 @@ export const Timeline: FC = () => {
           ))}
         </Fragment>
       ))}
-      <div>
-        <button
-          onClick={() => fetchNextPage()}
-          disabled={!hasNextPage || isFetchingNextPage}
-        >
-          {isFetchingNextPage
-            ? "Loading more..."
-            : hasNextPage
-              ? "Load More"
-              : "Nothing more to load"}
-        </button>
+      <div className="flex justify-center m-2">
+        {isFetchingNextPage ? (
+          <ClipLoader color="white" size={20} />
+        ) : (
+          <Button onClick={() => fetchNextPage()} disabled={!hasNextPage}>
+            {hasNextPage ? "Load More" : "Nothing more to load"}
+          </Button>
+        )}
       </div>
-      <div>{isFetching && !isFetchingNextPage ? "Fetching..." : null}</div>
     </>
   );
 };
