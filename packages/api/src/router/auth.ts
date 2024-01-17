@@ -29,6 +29,7 @@ export const authRouter = createTRPCRouter({
       const user = await db.user.create({
         data: {
           username: input.username,
+          usernameLower: input.username.toLowerCase(),
           name: input.name,
           passwordHash: await argon2.hash(input.password),
           sessions: {

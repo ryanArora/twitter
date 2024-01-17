@@ -54,9 +54,13 @@ const t = initTRPC.context<typeof createTRPCContext>().create({
       ...shape.data,
       zodError: error.cause instanceof ZodError ? error.cause.flatten() : null,
       prismaUniqueConstraintErrors:
-        error.cause instanceof Prisma.PrismaClientKnownRequestError &&
+        error.cause &&
+        "code" in error.cause &&
         error.cause.code === "P2002" &&
-        error.cause.meta &&
+        "meta" in error.cause &&
+        typeof error.cause.meta === "object" &&
+        error.cause.meta !== null &&
+        "target" in error.cause.meta &&
         Array.isArray(error.cause.meta.target) &&
         (error.cause.meta.target as unknown[]).every(
           (u) => typeof u === "string",
