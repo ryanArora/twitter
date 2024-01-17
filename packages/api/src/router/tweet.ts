@@ -4,7 +4,7 @@ import { postTweetSchema } from "../schemas/tweet";
 import { createTRPCRouter, protectedProcedure } from "../trpc";
 
 export const tweetRouter = createTRPCRouter({
-  post: protectedProcedure
+  create: protectedProcedure
     .input(postTweetSchema)
     .mutation(async ({ ctx, input }) => {
       return await db.tweet.create({
@@ -130,53 +130,5 @@ export const tweetRouter = createTRPCRouter({
         tweets,
         nextCursor,
       };
-    }),
-  like: protectedProcedure
-    .input(z.object({ tweetId: z.string() }))
-    .mutation(async ({ ctx, input }) => {
-      await db.like.create({
-        data: {
-          userId: ctx.session.user.id,
-          tweetId: input.tweetId,
-        },
-        select: { tweetId: true }, // Need to select something...
-      });
-    }),
-  unlike: protectedProcedure
-    .input(z.object({ tweetId: z.string() }))
-    .mutation(async ({ ctx, input }) => {
-      await db.like.delete({
-        where: {
-          userId_tweetId: {
-            userId: ctx.session.user.id,
-            tweetId: input.tweetId,
-          },
-        },
-        select: { tweetId: true }, // Need to select something...
-      });
-    }),
-  retweet: protectedProcedure
-    .input(z.object({ tweetId: z.string() }))
-    .mutation(async ({ ctx, input }) => {
-      await db.retweet.create({
-        data: {
-          userId: ctx.session.user.id,
-          tweetId: input.tweetId,
-        },
-        select: { tweetId: true }, // Need to select something...
-      });
-    }),
-  unretweet: protectedProcedure
-    .input(z.object({ tweetId: z.string() }))
-    .mutation(async ({ ctx, input }) => {
-      await db.retweet.delete({
-        where: {
-          userId_tweetId: {
-            userId: ctx.session.user.id,
-            tweetId: input.tweetId,
-          },
-        },
-        select: { tweetId: true }, // Need to select something...
-      });
     }),
 });

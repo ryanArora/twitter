@@ -10,7 +10,7 @@ export const Retweet: FC<{ tweet: TweetProps["tweet"] }> = ({ tweet }) => {
   const utils = api.useUtils();
   const session = useSession();
 
-  const retweet = api.tweet.retweet.useMutation({
+  const retweet = api.retweet.create.useMutation({
     onMutate: async () => {
       await utils.tweet.timeline.cancel();
       const previousTweets = utils.tweet.timeline.getInfiniteData();
@@ -52,7 +52,7 @@ export const Retweet: FC<{ tweet: TweetProps["tweet"] }> = ({ tweet }) => {
     },
   });
 
-  const unretweet = api.tweet.unretweet.useMutation({
+  const unretweet = api.retweet.delete.useMutation({
     onMutate: async () => {
       await utils.tweet.timeline.cancel();
       const previousTweets = utils.tweet.timeline.getInfiniteData();

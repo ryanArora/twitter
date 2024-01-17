@@ -10,7 +10,7 @@ export const Like: FC<{ tweet: TweetProps["tweet"] }> = ({ tweet }) => {
   const session = useSession();
   const utils = api.useUtils();
 
-  const like = api.tweet.like.useMutation({
+  const like = api.like.create.useMutation({
     onMutate: async () => {
       await utils.tweet.timeline.cancel();
       const previousTweets = utils.tweet.timeline.getInfiniteData();
@@ -52,7 +52,7 @@ export const Like: FC<{ tweet: TweetProps["tweet"] }> = ({ tweet }) => {
     },
   });
 
-  const unlike = api.tweet.unlike.useMutation({
+  const unlike = api.like.delete.useMutation({
     onMutate: async () => {
       await utils.tweet.timeline.cancel();
       const previousTweets = utils.tweet.timeline.getInfiniteData();
