@@ -142,7 +142,7 @@ export const tweetRouter = createTRPCRouter({
         select: { tweetId: true }, // Need to select something...
       });
     }),
-  dislike: protectedProcedure
+  unlike: protectedProcedure
     .input(z.object({ tweetId: z.string() }))
     .mutation(async ({ ctx, input }) => {
       await db.like.delete({

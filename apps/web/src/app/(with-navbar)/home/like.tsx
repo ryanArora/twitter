@@ -52,7 +52,7 @@ export const Like: FC<{ tweet: TweetProps["tweet"] }> = ({ tweet }) => {
     },
   });
 
-  const dislike = api.tweet.dislike.useMutation({
+  const unlike = api.tweet.unlike.useMutation({
     onMutate: async () => {
       await utils.tweet.getTimeline.cancel();
       const previousTweets = utils.tweet.getTimeline.getInfiniteData();
@@ -113,7 +113,7 @@ export const Like: FC<{ tweet: TweetProps["tweet"] }> = ({ tweet }) => {
         type="button"
         variant="ghost"
         onClick={() => {
-          dislike.mutate({ tweetId: tweet.id });
+          unlike.mutate({ tweetId: tweet.id });
         }}
       >
         <HeartIcon fill="red" color="red" />
