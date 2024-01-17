@@ -33,7 +33,7 @@ export const PostTweet: FC = () => {
     },
   });
 
-  const postTweet = api.tweet.post.useMutation({});
+  const postTweet = api.tweet.create.useMutation({});
   const { toast } = useToast();
   const utils = api.useUtils();
 
