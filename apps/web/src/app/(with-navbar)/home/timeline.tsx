@@ -1,7 +1,7 @@
 "use client";
 
-import { Button } from "@repo/ui/components/button";
 import { type FC, Fragment } from "react";
+import { useInView } from "react-intersection-observer";
 import ClipLoader from "react-spinners/ClipLoader";
 import { Tweet } from "./tweet";
 import { api } from "@/trpc/react";
@@ -21,10 +21,16 @@ export const Timeline: FC = () => {
     },
   );
 
+  const { ref, inView } = useInView();
+
+  if (inView && hasNextPage && !isFetchingNextPage) {
+    fetchNextPage();
+  }
+
   if (status === "pending") {
     return (
       <div className="flex justify-center m-2">
-        <ClipLoader color="white" size={20} />
+        <ClipLoader color="primary" size={30} />
       </div>
     );
   }
@@ -42,15 +48,11 @@ export const Timeline: FC = () => {
           ))}
         </Fragment>
       ))}
-      <div className="flex justify-center m-2">
-        {isFetchingNextPage ? (
-          <ClipLoader color="white" size={20} />
-        ) : (
-          <Button onClick={() => fetchNextPage()} disabled={!hasNextPage}>
-            {hasNextPage ? "Load More" : "Nothing more to load"}
-          </Button>
-        )}
-      </div>
+      {hasNextPage && (
+        <div ref={ref} className="flex justify-center m-2">
+          <ClipLoader color="primary" size={30} />
+        </div>
+      )}
     </>
   );
 };
