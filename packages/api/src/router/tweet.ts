@@ -22,7 +22,7 @@ export const tweetRouter = createTRPCRouter({
         },
       });
     }),
-  getTimeline: protectedProcedure
+  timeline: protectedProcedure
     .input(
       z.object({
         limit: z.number().min(1).max(10),

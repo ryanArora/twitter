@@ -46,9 +46,9 @@ export const PostTweet: FC = () => {
         });
       },
       onSuccess: async ({ id }) => {
-        await utils.tweet.getTimeline.cancel();
+        await utils.tweet.timeline.cancel();
 
-        utils.tweet.getTimeline.setInfiniteData({ limit: 10 }, (data) => {
+        utils.tweet.timeline.setInfiniteData({ limit: 10 }, (data) => {
           const tweet = {
             _count: {
               likes: 0,

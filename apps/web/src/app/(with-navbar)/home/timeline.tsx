@@ -13,7 +13,7 @@ export const Timeline: FC = () => {
     isFetching,
     isFetchingNextPage,
     status,
-  } = api.tweet.getTimeline.useInfiniteQuery(
+  } = api.tweet.timeline.useInfiniteQuery(
     { limit: 10 },
     {
       getNextPageParam: (lastPage) => lastPage.nextCursor,
