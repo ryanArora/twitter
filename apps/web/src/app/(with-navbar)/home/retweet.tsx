@@ -1,16 +1,16 @@
 import { Button } from "@repo/ui/components/button";
 import { formatNumberShort } from "@repo/utils/str";
-import { HeartIcon } from "lucide-react";
+import { Repeat2Icon } from "lucide-react";
 import { type FC } from "react";
 import { type TweetProps } from "./tweet";
 import { useSession } from "@/context/session";
 import { api } from "@/trpc/react";
 
-export const Like: FC<{ tweet: TweetProps["tweet"] }> = ({ tweet }) => {
-  const session = useSession();
+export const Retweet: FC<{ tweet: TweetProps["tweet"] }> = ({ tweet }) => {
   const utils = api.useUtils();
+  const session = useSession();
 
-  const like = api.tweet.like.useMutation({
+  const retweet = api.tweet.retweet.useMutation({
     onMutate: async () => {
       await utils.tweet.getTimeline.cancel();
       const previousTweets = utils.tweet.getTimeline.getInfiniteData();
@@ -26,14 +26,14 @@ export const Like: FC<{ tweet: TweetProps["tweet"] }> = ({ tweet }) => {
                 ...t,
                 _count: {
                   ...t._count,
-                  likes: t._count.likes + 1,
+                  retweets: t._count.retweets + 1,
                 },
-                likes: [
+                retweets: [
                   {
                     createdAt: new Date(Date.now()),
                     user: session.user,
                   },
-                  ...t.likes,
+                  ...t.retweets,
                 ],
               };
             }),
@@ -52,7 +52,7 @@ export const Like: FC<{ tweet: TweetProps["tweet"] }> = ({ tweet }) => {
     },
   });
 
-  const unlike = api.tweet.unlike.useMutation({
+  const unretweet = api.tweet.unretweet.useMutation({
     onMutate: async () => {
       await utils.tweet.getTimeline.cancel();
       const previousTweets = utils.tweet.getTimeline.getInfiniteData();
@@ -69,9 +69,11 @@ export const Like: FC<{ tweet: TweetProps["tweet"] }> = ({ tweet }) => {
                 ...t,
                 _count: {
                   ...t._count,
-                  likes: t._count.likes - 1,
+                  retweets: t._count.retweets - 1,
                 },
-                likes: t.likes.filter((l) => l.user.id !== session.user.id),
+                retweets: t.retweets.filter(
+                  (rt) => rt.user.id !== session.user.id,
+                ),
               };
             }),
           })),
@@ -89,20 +91,20 @@ export const Like: FC<{ tweet: TweetProps["tweet"] }> = ({ tweet }) => {
     },
   });
 
-  const liked = tweet.likes.some((l) => l.user.id === session.user.id);
-  const likesCountFormatted = formatNumberShort(tweet._count.likes, 1);
+  const retweeted = tweet.retweets.some((rt) => rt.user.id === session.user.id);
+  const retweetsCountFormatted = formatNumberShort(tweet._count.retweets, 1);
 
-  if (!liked) {
+  if (!retweeted) {
     return (
       <Button
         type="button"
         variant="ghost"
         onClick={() => {
-          like.mutate({ tweetId: tweet.id });
+          retweet.mutate({ tweetId: tweet.id });
         }}
       >
-        <HeartIcon />
-        <p>{likesCountFormatted}</p>
+        <Repeat2Icon />
+        <p>{retweetsCountFormatted}</p>
       </Button>
     );
   } else {
@@ -111,11 +113,11 @@ export const Like: FC<{ tweet: TweetProps["tweet"] }> = ({ tweet }) => {
         type="button"
         variant="ghost"
         onClick={() => {
-          unlike.mutate({ tweetId: tweet.id });
+          unretweet.mutate({ tweetId: tweet.id });
         }}
       >
-        <HeartIcon fill="red" color="red" />
-        <p>{likesCountFormatted}</p>
+        <Repeat2Icon color="lime" />
+        <p>{retweetsCountFormatted}</p>
       </Button>
     );
   }

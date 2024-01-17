@@ -1,8 +1,9 @@
 import { Button } from "@repo/ui/components/button";
 import { formatNumberShort } from "@repo/utils/str";
-import { BarChart2Icon, MessageCircleIcon, Repeat2Icon } from "lucide-react";
+import { BarChart2Icon, MessageCircleIcon } from "lucide-react";
 import { type FC } from "react";
 import { Like } from "./like";
+import { Retweet } from "./retweet";
 import { UserAvatar } from "./user-avatar";
 
 export type TweetProps = {
@@ -60,10 +61,7 @@ export const Tweet: FC<TweetProps> = ({ tweet }) => {
             <MessageCircleIcon />
             <p>{formatNumberShort(tweet._count.replies, 1)}</p>
           </Button>
-          <Button variant="ghost">
-            <Repeat2Icon />
-            <p>{formatNumberShort(tweet._count.retweets, 1)}</p>
-          </Button>
+          <Retweet tweet={tweet} />
           <Like tweet={tweet} />
           <Button variant="ghost">
             <BarChart2Icon />
