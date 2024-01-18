@@ -99,7 +99,8 @@ export const Retweet: FC<{ tweet: TweetProps["tweet"] }> = ({ tweet }) => {
       <Button
         type="button"
         variant="ghost"
-        onClick={() => {
+        onClick={(e) => {
+          e.stopPropagation();
           retweet.mutate({ tweetId: tweet.id });
         }}
       >
@@ -112,7 +113,8 @@ export const Retweet: FC<{ tweet: TweetProps["tweet"] }> = ({ tweet }) => {
       <Button
         type="button"
         variant="ghost"
-        onClick={() => {
+        onClick={(e) => {
+          e.stopPropagation();
           unretweet.mutate({ tweetId: tweet.id });
         }}
       >

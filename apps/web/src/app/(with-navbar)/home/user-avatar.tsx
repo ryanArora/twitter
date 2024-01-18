@@ -4,12 +4,13 @@ import {
   AvatarImage,
 } from "@repo/ui/components/avatar";
 import { getInitials } from "@repo/utils/str";
-import { type FC } from "react";
+import React, { type FC } from "react";
 
-export const UserAvatar: FC<{
-  user: { name: string; profilePictureUrl: string | null };
-  className?: string;
-}> = ({ user, ...props }) => {
+export const UserAvatar: FC<
+  React.ComponentProps<typeof Avatar> & {
+    user: { name: string; profilePictureUrl: string | null };
+  }
+> = ({ user, ...props }) => {
   return (
     <Avatar {...props}>
       {user.profilePictureUrl ? (
