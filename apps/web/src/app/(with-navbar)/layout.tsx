@@ -21,7 +21,7 @@ const NavbarLayout: FC<{ children: ReactNode }> = async ({ children }) => {
 
   return (
     <div className="h-screen w-screen flex">
-      <div className="h-full flex justify-end w-[30%]">
+      <div className="h-full w-[31.5%] flex justify-end">
         <div className="flex flex-col justify-between h-full">
           <div>
             <div className="w-fit">
@@ -68,15 +68,10 @@ const NavbarLayout: FC<{ children: ReactNode }> = async ({ children }) => {
               <Button className="flex w-full rounded-2xl h-12">Tweet</Button>
             </div>
           </div>
-          <div>
-            <User user={session.user} />
-          </div>
+          <User user={session.user} />
         </div>
       </div>
-      <div className="flex-1 overflow-hidden h-full flex w-[35%]">
-        {children}
-      </div>
-      <div className="h-full flex w-[35%]"></div>
+      <div className="h-full w-[600px]">{children}</div>
     </div>
   );
 };

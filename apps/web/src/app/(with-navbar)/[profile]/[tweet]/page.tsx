@@ -20,7 +20,7 @@ export default async function TweetPage({
   }
 
   return (
-    <div className="p-2">
+    <div className="p-2 truncate">
       <TypographyP>{`Tweet: ${tweet.content}`}</TypographyP>
     </div>
   );

@@ -11,6 +11,7 @@ export const selectUserBasic = {
 
 export const selectUserProfile = {
   ...selectUserBasic,
+  bannerUrl: true,
   createdAt: true,
   _count: {
     select: {

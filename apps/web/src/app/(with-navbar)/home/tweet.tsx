@@ -5,7 +5,7 @@ import { BarChart2Icon, MessageCircleIcon } from "lucide-react";
 import { type FC } from "react";
 import { Like } from "./like";
 import { Retweet } from "./retweet";
-import { UserAvatar } from "./user-avatar";
+import { UserAvatar } from "../user-avatar";
 
 export type TweetProps = {
   tweet: RouterOutputs["tweet"]["timeline"]["tweets"][number];
