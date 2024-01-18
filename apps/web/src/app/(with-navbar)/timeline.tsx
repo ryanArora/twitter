@@ -40,7 +40,7 @@ export const Timeline: FC = () => {
   }
 
   return (
-    <>
+    <div>
       {data.pages.map((group, i) => (
         <Fragment key={i}>
           {group.tweets.map((tweet) => (
@@ -53,6 +53,6 @@ export const Timeline: FC = () => {
           <ClipLoader color="primary" size={30} />
         </div>
       )}
-    </>
+    </div>
   );
 };

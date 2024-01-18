@@ -2,9 +2,9 @@ import { Button } from "@repo/ui/components/button";
 import { formatNumberShort } from "@repo/utils/str";
 import { BarChart2Icon, MessageCircleIcon } from "lucide-react";
 import { type FC } from "react";
+import { UserAvatar } from "./home/user-avatar";
 import { Like } from "./like";
 import { Retweet } from "./retweet";
-import { UserAvatar } from "./user-avatar";
 
 export type TweetProps = {
   tweet: {

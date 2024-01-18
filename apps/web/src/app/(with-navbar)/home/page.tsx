@@ -1,5 +1,5 @@
 import { PostTweet } from "./post-tweet";
-import { Timeline } from "./timeline";
+import { Timeline } from "../timeline";
 
 export default function HomePage() {
   return (
