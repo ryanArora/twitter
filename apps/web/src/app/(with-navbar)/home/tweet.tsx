@@ -5,7 +5,7 @@ import { BarChart2Icon, MessageCircleIcon } from "lucide-react";
 import { type FC } from "react";
 import { Like } from "./like";
 import { Retweet } from "./retweet";
-import { UserAvatar } from "../user-avatar";
+import { UserAvatarWithLink } from "../user-avatar";
 
 export type TweetProps = {
   tweet: RouterOutputs["tweet"]["timeline"]["tweets"][number];
@@ -20,13 +20,9 @@ export const Tweet: FC<TweetProps> = ({ tweet }) => {
         window.location.href = `/${tweet.author.username}/${tweet.id}`;
       }}
     >
-      <UserAvatar
+      <UserAvatarWithLink
         className="m-2 hover:cursor-pointer"
         user={tweet.author}
-        onClick={(e) => {
-          e.stopPropagation();
-          window.location.href = `/${tweet.author.username}`;
-        }}
       />
       <div className="flex flex-col">
         <div
@@ -36,7 +32,7 @@ export const Tweet: FC<TweetProps> = ({ tweet }) => {
             window.location.href = `/${tweet.author.username}`;
           }}
         >
-          <span className="p-2">{tweet.author.name}</span>
+          <span className="p-2 hover:underline">{tweet.author.name}</span>
           <span className="p-2">{`@${tweet.author.username}`}</span>
         </div>
         <div className="break-all w-fit">

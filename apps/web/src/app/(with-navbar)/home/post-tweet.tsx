@@ -1,11 +1,6 @@
 "use client";
 
 import { type postTweetSchema } from "@repo/api/schemas/tweet";
-import {
-  Avatar,
-  AvatarFallback,
-  AvatarImage,
-} from "@repo/ui/components/avatar";
 import { Button } from "@repo/ui/components/button";
 import {
   FormControl,
@@ -13,12 +8,12 @@ import {
   FormItem,
   Form,
 } from "@repo/ui/components/form";
-import { Input } from "@repo/ui/components/input";
+import { Textarea } from "@repo/ui/components/textarea";
 import { useToast } from "@repo/ui/components/use-toast";
-import { getInitials } from "@repo/utils/str";
 import { type FC } from "react";
 import { useForm } from "react-hook-form";
 import { type z } from "zod";
+import { UserAvatarWithLink } from "../user-avatar";
 import { useSession } from "@/context/session";
 import { api } from "@/trpc/react";
 
@@ -84,22 +79,16 @@ export const PostTweet: FC = () => {
   return (
     <Form {...form}>
       <form className="p-2 border" onSubmit={form.handleSubmit(onSubmit)}>
-        <div className="flex items-center p-2">
-          <Avatar className="my-2 mr-1">
-            {user.profilePictureUrl ? (
-              <AvatarImage src={user.profilePictureUrl} />
-            ) : null}
-            <AvatarFallback>{getInitials(user.name)}</AvatarFallback>
-          </Avatar>
+        <div className="flex p-2 h-full">
+          <UserAvatarWithLink className="my-2 mr-1" user={user} />
           <FormField
             control={form.control}
             name="content"
             render={({ field }) => (
-              <FormItem className="w-full my-2 ml-1 h-12">
+              <FormItem className="w-full mt-2 ml-1">
                 <FormControl>
-                  <Input
-                    className="h-full w-full text-lg"
-                    type="text"
+                  <Textarea
+                    className="text-xl min-h-[50px] h-[50px] border-none"
                     placeholder="What is happening?!"
                     autoComplete="off"
                     {...field}
