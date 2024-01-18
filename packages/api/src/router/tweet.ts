@@ -1,7 +1,64 @@
-import { db } from "@repo/db";
+import { db, type Prisma } from "@repo/db";
 import { z } from "zod";
+import { selectUserBasic } from "./user";
 import { postTweetSchema } from "../schemas/tweet";
 import { createTRPCRouter, protectedProcedure } from "../trpc";
+
+const selectTweetBasic = (sessionUserId: string) => {
+  return {
+    id: true,
+    content: true,
+    attachments: true,
+    createdAt: true,
+    _count: {
+      select: {
+        replies: true,
+        retweets: true,
+        likes: true,
+        views: true,
+      },
+    },
+    author: {
+      select: selectUserBasic,
+    },
+    likes: {
+      where: {
+        OR: [
+          { userId: sessionUserId },
+          {
+            user: {
+              followers: {
+                some: { followerId: { equals: sessionUserId } },
+              },
+            },
+          },
+        ],
+      },
+      select: {
+        createdAt: true,
+        user: { select: selectUserBasic },
+      },
+    },
+    retweets: {
+      where: {
+        OR: [
+          { userId: sessionUserId },
+          {
+            user: {
+              followers: {
+                some: { followerId: { equals: sessionUserId } },
+              },
+            },
+          },
+        ],
+      },
+      select: {
+        createdAt: true,
+        user: { select: selectUserBasic },
+      },
+    },
+  } satisfies Prisma.TweetSelect;
+};
 
 export const tweetRouter = createTRPCRouter({
   create: protectedProcedure
@@ -21,6 +78,25 @@ export const tweetRouter = createTRPCRouter({
           id: true,
         },
       });
+    }),
+  find: protectedProcedure
+    .input(z.object({ id: z.string(), username: z.string() }))
+    .query(async ({ ctx, input }) => {
+      const tweet = await db.tweet.findUnique({
+        where: {
+          id: input.id,
+        },
+        select: selectTweetBasic(ctx.session.user.id),
+      });
+
+      if (!tweet) return null;
+
+      const realUsernameLower = tweet.author.username.toLowerCase();
+      const fakeUsernameLower = input.username.toLowerCase();
+
+      if (realUsernameLower !== fakeUsernameLower) return null;
+
+      return tweet;
     }),
   timeline: protectedProcedure
     .input(
@@ -43,72 +119,7 @@ export const tweetRouter = createTRPCRouter({
             },
           },
         },
-        select: {
-          id: true,
-          content: true,
-          attachments: true,
-          _count: {
-            select: { likes: true, replies: true, retweets: true, views: true },
-          },
-          author: {
-            select: {
-              id: true,
-              username: true,
-              name: true,
-              profilePictureUrl: true,
-            },
-          },
-          likes: {
-            where: {
-              OR: [
-                { userId: ctx.session.user.id },
-                {
-                  user: {
-                    followers: {
-                      some: { followerId: { equals: ctx.session.user.id } },
-                    },
-                  },
-                },
-              ],
-            },
-            select: {
-              createdAt: true,
-              user: {
-                select: {
-                  id: true,
-                  username: true,
-                  name: true,
-                  profilePictureUrl: true,
-                },
-              },
-            },
-          },
-          retweets: {
-            where: {
-              OR: [
-                { userId: ctx.session.user.id },
-                {
-                  user: {
-                    followers: {
-                      some: { followerId: { equals: ctx.session.user.id } },
-                    },
-                  },
-                },
-              ],
-            },
-            select: {
-              createdAt: true,
-              user: {
-                select: {
-                  id: true,
-                  username: true,
-                  name: true,
-                  profilePictureUrl: true,
-                },
-              },
-            },
-          },
-        },
+        select: selectTweetBasic(ctx.session.user.id),
         orderBy: {
           createdAt: "desc",
         },

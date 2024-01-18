@@ -6,7 +6,11 @@ import { type TweetProps } from "./tweet";
 import { useSession } from "@/context/session";
 import { api } from "@/trpc/react";
 
-export const Like: FC<{ tweet: TweetProps["tweet"] }> = ({ tweet }) => {
+export type LikeProps = {
+  tweet: TweetProps["tweet"];
+};
+
+export const Like: FC<LikeProps> = ({ tweet }) => {
   const session = useSession();
   const utils = api.useUtils();
 

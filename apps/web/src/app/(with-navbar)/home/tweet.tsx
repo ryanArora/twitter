@@ -1,3 +1,4 @@
+import { type RouterOutputs } from "@repo/api";
 import { Button } from "@repo/ui/components/button";
 import { formatNumberShort } from "@repo/utils/str";
 import { BarChart2Icon, MessageCircleIcon } from "lucide-react";
@@ -7,41 +8,7 @@ import { Retweet } from "./retweet";
 import { UserAvatar } from "./user-avatar";
 
 export type TweetProps = {
-  tweet: {
-    id: string;
-    content: string;
-    attachments: string[];
-    author: {
-      id: string;
-      username: string;
-      name: string;
-      profilePictureUrl: string | null;
-    };
-    _count: {
-      replies: number;
-      retweets: number;
-      likes: number;
-      views: number;
-    };
-    likes: {
-      user: {
-        id: string;
-        username: string;
-        name: string;
-        profilePictureUrl: string | null;
-      };
-      createdAt: Date;
-    }[];
-    retweets: {
-      user: {
-        id: string;
-        username: string;
-        name: string;
-        profilePictureUrl: string | null;
-      };
-      createdAt: Date;
-    }[];
-  };
+  tweet: RouterOutputs["tweet"]["timeline"]["tweets"][number];
 };
 
 export const Tweet: FC<TweetProps> = ({ tweet }) => {

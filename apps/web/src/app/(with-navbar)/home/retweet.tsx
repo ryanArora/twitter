@@ -6,7 +6,11 @@ import { type TweetProps } from "./tweet";
 import { useSession } from "@/context/session";
 import { api } from "@/trpc/react";
 
-export const Retweet: FC<{ tweet: TweetProps["tweet"] }> = ({ tweet }) => {
+export type RetweetProps = {
+  tweet: TweetProps["tweet"];
+};
+
+export const Retweet: FC<RetweetProps> = ({ tweet }) => {
   const utils = api.useUtils();
   const session = useSession();
 
