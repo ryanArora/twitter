@@ -101,7 +101,8 @@ export const Like: FC<LikeProps> = ({ tweet }) => {
       <Button
         type="button"
         variant="ghost"
-        onClick={() => {
+        onClick={(e) => {
+          e.stopPropagation();
           like.mutate({ tweetId: tweet.id });
         }}
       >
@@ -114,7 +115,8 @@ export const Like: FC<LikeProps> = ({ tweet }) => {
       <Button
         type="button"
         variant="ghost"
-        onClick={() => {
+        onClick={(e) => {
+          e.stopPropagation();
           unlike.mutate({ tweetId: tweet.id });
         }}
       >
