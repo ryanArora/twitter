@@ -41,6 +41,7 @@ export const PostTweet: FC = () => {
         });
       },
       onSuccess: async ({ id }) => {
+        form.reset();
         await utils.tweet.timeline.cancel();
 
         utils.tweet.timeline.setInfiniteData({ limit: 10 }, (data) => {

@@ -35,8 +35,10 @@ export const Tweet: FC<TweetProps> = ({ tweet }) => {
           <span className="p-2 hover:underline">{tweet.author.name}</span>
           <span className="p-2">{`@${tweet.author.username}`}</span>
         </div>
-        <div className="break-all w-fit">
-          <p className="p-2">{tweet.content}</p>
+        <div className="p-2">
+          <p className="line-clamp-4 whitespace-pre-wrap break-all">
+            {tweet.content}
+          </p>
         </div>
         <div>
           <Button
