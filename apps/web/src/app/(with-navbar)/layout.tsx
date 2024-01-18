@@ -73,10 +73,10 @@ const NavbarLayout: FC<{ children: ReactNode }> = async ({ children }) => {
           </div>
         </div>
       </div>
-      <div className="flex-1 overflow-hidden h-full flex w-[40%]">
+      <div className="flex-1 overflow-hidden h-full flex w-[35%]">
         {children}
       </div>
-      <div className="h-full flex w-[30%]"></div>
+      <div className="h-full flex w-[35%]"></div>
     </div>
   );
 };
