@@ -3,7 +3,7 @@
 import { type FC, Fragment } from "react";
 import { useInView } from "react-intersection-observer";
 import ClipLoader from "react-spinners/ClipLoader";
-import { Tweet } from "./tweet";
+import { Tweet } from "../tweet";
 import { api } from "@/trpc/react";
 
 export const Timeline: FC = () => {
