@@ -1,8 +1,8 @@
 "use client";
 
+import { Spinner } from "@repo/ui/components/spinner";
 import { type FC, Fragment } from "react";
 import { useInView } from "react-intersection-observer";
-import ClipLoader from "react-spinners/ClipLoader";
 import { Tweet } from "./tweet";
 import { api } from "@/trpc/react";
 
@@ -28,11 +28,7 @@ export const Timeline: FC = () => {
   }
 
   if (status === "pending") {
-    return (
-      <div className="flex justify-center m-2">
-        <ClipLoader color="primary" size={30} />
-      </div>
-    );
+    return <Spinner />;
   }
 
   if (status === "error") {
@@ -48,11 +44,7 @@ export const Timeline: FC = () => {
           ))}
         </Fragment>
       ))}
-      {hasNextPage && (
-        <div ref={ref} className="flex justify-center m-2">
-          <ClipLoader color="primary" size={30} />
-        </div>
-      )}
+      {hasNextPage && <Spinner ref={ref} />}
     </>
   );
 };

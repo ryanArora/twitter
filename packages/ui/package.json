@@ -9,6 +9,7 @@
     "./components/form": "./src/components/form.tsx",
     "./components/input": "./src/components/input.tsx",
     "./components/label": "./src/components/label.tsx",
+    "./components/spinner": "./src/components/spinner.tsx",
     "./components/textarea": "./src/components/textarea.tsx",
     "./components/toast": "./src/components/toast.tsx",
     "./components/toaster": "./src/components/toaster.tsx",
@@ -37,6 +38,7 @@
     "clsx": "^2.1.0",
     "lucide-react": "^0.309.0",
     "react-hook-form": "^7.49.3",
+    "react-spinners": "^0.13.8",
     "tailwind-merge": "^2.2.0",
     "tailwindcss-animate": "^1.0.7",
     "zod": "^3.22.4"
