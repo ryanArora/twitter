@@ -57,6 +57,7 @@ export const PostTweet: FC = () => {
               views: 1,
             },
             id,
+            createdAt: new Date(Date.now()),
             content: values.content,
             attachments: values.attachments,
             author: user,
