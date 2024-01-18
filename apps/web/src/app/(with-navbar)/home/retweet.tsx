@@ -104,7 +104,7 @@ export const Retweet: FC<RetweetProps> = ({ tweet }) => {
         type="button"
         variant="ghost"
         onClick={(e) => {
-          e.stopPropagation();
+          e.preventDefault();
           retweet.mutate({ tweetId: tweet.id });
         }}
       >
@@ -118,7 +118,7 @@ export const Retweet: FC<RetweetProps> = ({ tweet }) => {
         type="button"
         variant="ghost"
         onClick={(e) => {
-          e.stopPropagation();
+          e.preventDefault();
           unretweet.mutate({ tweetId: tweet.id });
         }}
       >

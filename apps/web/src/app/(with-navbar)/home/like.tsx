@@ -102,7 +102,7 @@ export const Like: FC<LikeProps> = ({ tweet }) => {
         type="button"
         variant="ghost"
         onClick={(e) => {
-          e.stopPropagation();
+          e.preventDefault();
           like.mutate({ tweetId: tweet.id });
         }}
       >
@@ -116,7 +116,7 @@ export const Like: FC<LikeProps> = ({ tweet }) => {
         type="button"
         variant="ghost"
         onClick={(e) => {
-          e.stopPropagation();
+          e.preventDefault();
           unlike.mutate({ tweetId: tweet.id });
         }}
       >
