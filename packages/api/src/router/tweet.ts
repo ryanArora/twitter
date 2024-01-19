@@ -4,7 +4,11 @@ import { selectUserBasic } from "./user";
 import { postTweetSchema } from "../schemas/tweet";
 import { createTRPCRouter, protectedProcedure } from "../trpc";
 
-const selectTweetBasic = (sessionUserId: string) => {
+export type TweetBasic = Prisma.TweetGetPayload<{
+  select: ReturnType<typeof selectTweetBasic>;
+}>;
+
+export const selectTweetBasic = (sessionUserId: string) => {
   return {
     id: true,
     content: true,
@@ -97,49 +101,5 @@ export const tweetRouter = createTRPCRouter({
       if (realUsernameLower !== fakeUsernameLower) return null;
 
       return tweet;
-    }),
-  timeline: protectedProcedure
-    .input(
-      z.object({
-        limit: z.number().min(1).max(10),
-        cursor: z.string().nullish(),
-      }),
-    )
-    .query(async ({ ctx, input }) => {
-      const tweets = await db.tweet.findMany({
-        where: {
-          parent: null,
-          author: {
-            followers: {
-              some: {
-                followerId: {
-                  equals: ctx.session.user.id,
-                },
-              },
-            },
-          },
-        },
-        select: selectTweetBasic(ctx.session.user.id),
-        orderBy: {
-          createdAt: "desc",
-        },
-        cursor: input.cursor
-          ? {
-              id: input.cursor,
-            }
-          : undefined,
-        take: input.limit + 1,
-      });
-
-      let nextCursor: typeof input.cursor | undefined = undefined;
-      if (tweets.length > input.limit) {
-        const nextItem = tweets.pop()!;
-        nextCursor = nextItem.id;
-      }
-
-      return {
-        tweets,
-        nextCursor,
-      };
     }),
 });

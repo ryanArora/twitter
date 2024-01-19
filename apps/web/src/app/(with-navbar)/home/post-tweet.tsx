@@ -13,6 +13,7 @@ import { useToast } from "@repo/ui/components/use-toast";
 import { type FC } from "react";
 import { useForm } from "react-hook-form";
 import { type z } from "zod";
+import { useTimelineSource } from "../timeline/timelineSourceContext";
 import { UserAvatarWithLink } from "../user-avatar";
 import { useSession } from "@/context/session";
 import { api } from "@/trpc/react";
@@ -28,9 +29,10 @@ export const PostTweet: FC = () => {
     },
   });
 
-  const postTweet = api.tweet.create.useMutation({});
+  const postTweet = api.tweet.create.useMutation();
   const { toast } = useToast();
   const utils = api.useUtils();
+  const timelineSource = useTimelineSource();
 
   function onSubmit(values: z.infer<typeof postTweetSchema>) {
     postTweet.mutate(values, {
@@ -42,9 +44,9 @@ export const PostTweet: FC = () => {
       },
       onSuccess: async ({ id }) => {
         form.reset();
-        await utils.tweet.timeline.cancel();
+        await utils.timeline[timelineSource].cancel();
 
-        utils.tweet.timeline.setInfiniteData({ limit: 10 }, (data) => {
+        utils.timeline[timelineSource].setInfiniteData({}, (data) => {
           const tweet = {
             _count: {
               likes: 0,
