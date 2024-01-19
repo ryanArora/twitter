@@ -9,6 +9,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { type FC } from "react";
+import { Interaction } from "./interaction";
 import { UserAvatarWithLink } from "../user-avatar";
 
 export type TweetProps = {
@@ -41,54 +42,26 @@ export const Tweet: FC<TweetProps> = ({ tweet }) => {
             </div>
           </div>
           <div className="flex justify-between w-full">
-            <Button
-              className="m-0 p-2 rounded-full hover:text-twitter-blue hover:bg-twitter-blue/10 transition-colors"
-              type="button"
-              variant="ghost"
-              onClick={(e) => {
-                e.preventDefault();
-              }}
-            >
-              <MessageCircleIcon />
-              <p className="ml-1">
-                {formatNumberShort(tweet._count.replies, 1)}
-              </p>
-            </Button>
-            <Button
-              className="m-0 p-2 rounded-full hover:text-twitter-retweet hover:bg-twitter-retweet/10 transition-colors"
-              type="button"
-              variant="ghost"
-              onClick={(e) => {
-                e.preventDefault();
-              }}
-            >
-              <Repeat2Icon />
-              <p className="ml-1">
-                {formatNumberShort(tweet._count.retweets, 1)}
-              </p>
-            </Button>
-            <Button
-              className="m-0 p-2 rounded-full hover:text-twitter-like hover:bg-twitter-like/10 transition-colors"
-              type="button"
-              variant="ghost"
-              onClick={(e) => {
-                e.preventDefault();
-              }}
-            >
-              <HeartIcon />
-              <p className="ml-1">{formatNumberShort(tweet._count.likes, 1)}</p>
-            </Button>
-            <Button
-              className="m-0 p-2 rounded-full hover:text-twitter-blue hover:bg-twitter-blue/10 transition-colors"
-              type="button"
-              variant="ghost"
-              onClick={(e) => {
-                e.preventDefault();
-              }}
-            >
-              <BarChart2Icon />
-              <p className="ml-1">{formatNumberShort(tweet._count.views, 1)}</p>
-            </Button>
+            <Interaction
+              color="twitter-blue"
+              count={tweet._count.replies}
+              icon={<MessageCircleIcon />}
+            />
+            <Interaction
+              color="twitter-retweet"
+              count={tweet._count.retweets}
+              icon={<Repeat2Icon />}
+            />
+            <Interaction
+              color="twitter-like"
+              count={tweet._count.likes}
+              icon={<HeartIcon />}
+            />
+            <Interaction
+              color="twitter-blue"
+              count={tweet._count.views}
+              icon={<BarChart2Icon />}
+            />
             <div></div>
           </div>
         </div>
