@@ -80,14 +80,10 @@ export default function ProfileLayout({
         ) : (
           <div className="bg-red-900 w-full h-[200px]"></div>
         )}
-        <div className="mb-[64px]">
-          <div className="absolute">
-            <UserAvatar
-              user={profile}
-              className="w-[128px] h-[128px] relative bottom-[64px] left-[10px]"
-            />
-          </div>
-        </div>
+        <UserAvatar
+          user={profile}
+          className="w-[128px] h-[128px] mt-[-64px] ml-[10px]"
+        />
         <div className="p-2">
           <TypographyH3>{profile.name}</TypographyH3>
           <TypographyH4>{`@${profile.username}`}</TypographyH4>
