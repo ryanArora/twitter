@@ -23,41 +23,45 @@ export const RetweetInteraction = forwardRef<
 
   const retweetMutation = api.retweet.create.useMutation({
     onMutate: async () => {
-      await utils.timeline[timelineSource].cancel();
-      const previousTweets = utils.timeline[timelineSource].getInfiniteData();
+      await utils.timeline[timelineSource.path].cancel();
+      const previousTweets =
+        utils.timeline[timelineSource.path].getInfiniteData();
 
-      utils.timeline[timelineSource].setInfiniteData({}, (data) => {
-        if (!data) return;
-        return {
-          pages: data.pages.map((page) => ({
-            ...page,
-            tweets: page.tweets.map((t) => {
-              if (t.id !== tweet.id) return t;
-              return {
-                ...t,
-                _count: {
-                  ...t._count,
-                  retweets: t._count.retweets + 1,
-                },
-                retweets: [
-                  {
-                    createdAt: new Date(Date.now()),
-                    user: session.user,
+      utils.timeline[timelineSource.path].setInfiniteData(
+        { ...timelineSource.payload },
+        (data) => {
+          if (!data) return;
+          return {
+            pages: data.pages.map((page) => ({
+              ...page,
+              tweets: page.tweets.map((t) => {
+                if (t.id !== tweet.id) return t;
+                return {
+                  ...t,
+                  _count: {
+                    ...t._count,
+                    retweets: t._count.retweets + 1,
                   },
-                  ...t.retweets,
-                ],
-              };
-            }),
-          })),
-          pageParams: [],
-        };
-      });
+                  retweets: [
+                    {
+                      createdAt: new Date(Date.now()),
+                      user: session.user,
+                    },
+                    ...t.retweets,
+                  ],
+                };
+              }),
+            })),
+            pageParams: [],
+          };
+        },
+      );
 
       return { previousTweets };
     },
     onError: (err, input, context) => {
-      utils.timeline[timelineSource].setInfiniteData(
-        {},
+      utils.timeline[timelineSource.path].setInfiniteData(
+        { ...timelineSource.payload },
         context!.previousTweets,
       );
     },
@@ -65,38 +69,42 @@ export const RetweetInteraction = forwardRef<
 
   const unretweetMutation = api.retweet.delete.useMutation({
     onMutate: async () => {
-      await utils.timeline[timelineSource].cancel();
-      const previousTweets = utils.timeline[timelineSource].getInfiniteData();
+      await utils.timeline[timelineSource.path].cancel();
+      const previousTweets =
+        utils.timeline[timelineSource.path].getInfiniteData();
 
-      utils.timeline[timelineSource].setInfiniteData({}, (data) => {
-        if (!data) return;
+      utils.timeline[timelineSource.path].setInfiniteData(
+        { ...timelineSource.payload },
+        (data) => {
+          if (!data) return;
 
-        return {
-          pages: data.pages.map((page) => ({
-            ...page,
-            tweets: page.tweets.map((t) => {
-              if (t.id !== tweet.id) return t;
-              return {
-                ...t,
-                _count: {
-                  ...t._count,
-                  retweets: t._count.retweets - 1,
-                },
-                retweets: t.retweets.filter(
-                  (rt) => rt.user.id !== session.user.id,
-                ),
-              };
-            }),
-          })),
-          pageParams: [],
-        };
-      });
+          return {
+            pages: data.pages.map((page) => ({
+              ...page,
+              tweets: page.tweets.map((t) => {
+                if (t.id !== tweet.id) return t;
+                return {
+                  ...t,
+                  _count: {
+                    ...t._count,
+                    retweets: t._count.retweets - 1,
+                  },
+                  retweets: t.retweets.filter(
+                    (rt) => rt.user.id !== session.user.id,
+                  ),
+                };
+              }),
+            })),
+            pageParams: [],
+          };
+        },
+      );
 
       return { previousTweets };
     },
     onError: (err, input, context) => {
-      utils.timeline[timelineSource].setInfiniteData(
-        {},
+      utils.timeline[timelineSource.path].setInfiniteData(
+        { ...timelineSource.payload },
         context!.previousTweets,
       );
     },

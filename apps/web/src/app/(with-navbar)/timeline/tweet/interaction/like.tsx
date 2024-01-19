@@ -23,41 +23,45 @@ export const LikeInteraction = forwardRef<
 
   const likeMutation = api.like.create.useMutation({
     onMutate: async () => {
-      await utils.timeline[timelineSource].cancel();
-      const previousTweets = utils.timeline[timelineSource].getInfiniteData();
+      await utils.timeline[timelineSource.path].cancel();
+      const previousTweets =
+        utils.timeline[timelineSource.path].getInfiniteData();
 
-      utils.timeline[timelineSource].setInfiniteData({}, (data) => {
-        if (!data) return;
-        return {
-          pages: data.pages.map((page) => ({
-            ...page,
-            tweets: page.tweets.map((t) => {
-              if (t.id !== tweet.id) return t;
-              return {
-                ...t,
-                _count: {
-                  ...t._count,
-                  likes: t._count.likes + 1,
-                },
-                likes: [
-                  {
-                    createdAt: new Date(Date.now()),
-                    user: session.user,
+      utils.timeline[timelineSource.path].setInfiniteData(
+        { ...timelineSource.payload },
+        (data) => {
+          if (!data) return;
+          return {
+            pages: data.pages.map((page) => ({
+              ...page,
+              tweets: page.tweets.map((t) => {
+                if (t.id !== tweet.id) return t;
+                return {
+                  ...t,
+                  _count: {
+                    ...t._count,
+                    likes: t._count.likes + 1,
                   },
-                  ...t.likes,
-                ],
-              };
-            }),
-          })),
-          pageParams: [],
-        };
-      });
+                  likes: [
+                    {
+                      createdAt: new Date(Date.now()),
+                      user: session.user,
+                    },
+                    ...t.likes,
+                  ],
+                };
+              }),
+            })),
+            pageParams: [],
+          };
+        },
+      );
 
       return { previousTweets };
     },
     onError: (err, input, context) => {
-      utils.timeline[timelineSource].setInfiniteData(
-        {},
+      utils.timeline[timelineSource.path].setInfiniteData(
+        { ...timelineSource.payload },
         context!.previousTweets,
       );
     },
@@ -65,36 +69,40 @@ export const LikeInteraction = forwardRef<
 
   const unlikeMutation = api.like.delete.useMutation({
     onMutate: async () => {
-      await utils.timeline[timelineSource].cancel();
-      const previousTweets = utils.timeline[timelineSource].getInfiniteData();
+      await utils.timeline[timelineSource.path].cancel();
+      const previousTweets =
+        utils.timeline[timelineSource.path].getInfiniteData();
 
-      utils.timeline[timelineSource].setInfiniteData({}, (data) => {
-        if (!data) return;
+      utils.timeline[timelineSource.path].setInfiniteData(
+        { ...timelineSource.payload },
+        (data) => {
+          if (!data) return;
 
-        return {
-          pages: data.pages.map((page) => ({
-            ...page,
-            tweets: page.tweets.map((t) => {
-              if (t.id !== tweet.id) return t;
-              return {
-                ...t,
-                _count: {
-                  ...t._count,
-                  likes: t._count.likes - 1,
-                },
-                likes: t.likes.filter((l) => l.user.id !== session.user.id),
-              };
-            }),
-          })),
-          pageParams: [],
-        };
-      });
+          return {
+            pages: data.pages.map((page) => ({
+              ...page,
+              tweets: page.tweets.map((t) => {
+                if (t.id !== tweet.id) return t;
+                return {
+                  ...t,
+                  _count: {
+                    ...t._count,
+                    likes: t._count.likes - 1,
+                  },
+                  likes: t.likes.filter((l) => l.user.id !== session.user.id),
+                };
+              }),
+            })),
+            pageParams: [],
+          };
+        },
+      );
 
       return { previousTweets };
     },
     onError: (err, input, context) => {
-      utils.timeline[timelineSource].setInfiniteData(
-        {},
+      utils.timeline[timelineSource.path].setInfiniteData(
+        { ...timelineSource.payload },
         context!.previousTweets,
       );
     },

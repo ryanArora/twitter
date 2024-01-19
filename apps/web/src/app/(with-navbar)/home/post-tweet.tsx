@@ -44,37 +44,43 @@ export const PostTweet: FC = () => {
       },
       onSuccess: async ({ id }) => {
         form.reset();
-        await utils.timeline[timelineSource].cancel();
+        await utils.timeline[timelineSource.path].cancel();
 
-        utils.timeline[timelineSource].setInfiniteData({}, (data) => {
-          const tweet = {
-            _count: {
-              likes: 0,
-              replies: 0,
-              retweets: 0,
-              views: 1,
-            },
-            id,
-            createdAt: new Date(Date.now()),
-            content: values.content,
-            attachments: values.attachments,
-            author: user,
-            retweets: [],
-            likes: [],
-          };
+        utils.timeline[timelineSource.path].setInfiniteData(
+          timelineSource.payload,
+          (data) => {
+            const tweet = {
+              _count: {
+                likes: 0,
+                replies: 0,
+                retweets: 0,
+                views: 1,
+              },
+              id,
+              createdAt: new Date(Date.now()),
+              content: values.content,
+              attachments: values.attachments,
+              author: user,
+              retweets: [],
+              likes: [],
+            };
 
-          if (!data) {
+            if (!data) {
+              return {
+                pages: [{ tweets: [tweet], nextCursor: undefined }],
+                pageParams: [],
+              };
+            }
+
             return {
-              pages: [{ tweets: [tweet], nextCursor: undefined }],
+              pages: [
+                { tweets: [tweet], nextCursor: undefined },
+                ...data.pages,
+              ],
               pageParams: [],
             };
-          }
-
-          return {
-            pages: [{ tweets: [tweet], nextCursor: undefined }, ...data.pages],
-            pageParams: [],
-          };
-        });
+          },
+        );
       },
     });
   }

@@ -18,8 +18,8 @@ export const Timeline: FC = () => {
     hasNextPage,
     isFetchingNextPage,
     status,
-  } = api.timeline[timelineSource].useInfiniteQuery(
-    {},
+  } = api.timeline[timelineSource.path].useInfiniteQuery(
+    { ...timelineSource.payload },
     {
       getNextPageParam: (lastPage) => lastPage.nextCursor,
     },

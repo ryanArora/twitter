@@ -51,7 +51,7 @@ export default function ProfileLayout({
   }
 
   return (
-    <div className="truncate border-x border-right h-full">
+    <div className="border-x border-right h-full w-full overflow-y-scroll">
       <div className="border-b">
         <div className="flex items-center">
           <Button
