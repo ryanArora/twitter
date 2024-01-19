@@ -5,12 +5,11 @@ import {
   AvatarImage,
 } from "@repo/ui/components/avatar";
 import { getInitials } from "@repo/utils/str";
-import { type Expand } from "@repo/utils/types";
 import Link from "next/link";
 import React, { forwardRef } from "react";
 
 export type UserAvatarProps = {
-  user: Expand<Pick<Session["user"], "name" | "profilePictureUrl">>;
+  user: Pick<Session["user"], "name" | "profilePictureUrl">;
 };
 
 const UserAvatar = forwardRef<
@@ -28,10 +27,8 @@ const UserAvatar = forwardRef<
 });
 UserAvatar.displayName = Avatar.displayName;
 
-export type UserAvatarWithLinkProps = {
-  user: Expand<
-    Pick<Session["user"], "username" | "name" | "profilePictureUrl">
-  >;
+export type UserAvatarWithLinkProps = UserAvatarProps & {
+  user: UserAvatarProps["user"] & Pick<Session["user"], "username">;
   href?: string;
 };
 
@@ -41,14 +38,14 @@ const UserAvatarWithLink = forwardRef<
     UserAvatarWithLinkProps
 >(({ user, href = `/${user.username}`, ...props }, ref) => {
   return (
-    <Link href={href} ref={ref} {...props}>
-      <Avatar>
+    <Avatar ref={ref} {...props}>
+      <Link className="w-fit h-fit" href={href}>
         {user.profilePictureUrl ? (
           <AvatarImage src={user.profilePictureUrl} />
         ) : null}
         <AvatarFallback>{getInitials(user.name)}</AvatarFallback>
-      </Avatar>
-    </Link>
+      </Link>
+    </Avatar>
   );
 });
 UserAvatarWithLink.displayName = Avatar.displayName;
