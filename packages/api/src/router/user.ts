@@ -2,12 +2,20 @@ import { type Prisma, db } from "@repo/db";
 import { z } from "zod";
 import { createTRPCRouter, protectedProcedure } from "../trpc";
 
+export type UserBasic = Prisma.UserGetPayload<{
+  select: typeof selectUserBasic;
+}>;
+
 export const selectUserBasic = {
   id: true,
   name: true,
   username: true,
   profilePictureUrl: true,
 } satisfies Prisma.UserSelect;
+
+export type UserProfile = Prisma.UserGetPayload<{
+  select: typeof selectUserProfile;
+}>;
 
 export const selectUserProfile = {
   ...selectUserBasic,

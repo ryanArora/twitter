@@ -3,10 +3,14 @@
 import { Spinner } from "@repo/ui/components/spinner";
 import { type FC, Fragment } from "react";
 import { useInView } from "react-intersection-observer";
-import { Tweet } from "./tweet";
+import { useTimelineSource } from "./timelineSourceContext";
+import { Tweet } from "./tweet/tweet";
+import { TweetProvider } from "./tweet/tweetContext";
 import { api } from "@/trpc/react";
 
 export const Timeline: FC = () => {
+  const timelineSource = useTimelineSource();
+
   const {
     data,
     error,
@@ -14,8 +18,8 @@ export const Timeline: FC = () => {
     hasNextPage,
     isFetchingNextPage,
     status,
-  } = api.tweet.timeline.useInfiniteQuery(
-    { limit: 10 },
+  } = api.timeline[timelineSource].useInfiniteQuery(
+    {},
     {
       getNextPageParam: (lastPage) => lastPage.nextCursor,
     },
@@ -40,7 +44,9 @@ export const Timeline: FC = () => {
       {data.pages.map((group, i) => (
         <Fragment key={i}>
           {group.tweets.map((tweet) => (
-            <Tweet key={tweet.id} tweet={tweet} />
+            <TweetProvider tweet={tweet} key={tweet.id}>
+              <Tweet />
+            </TweetProvider>
           ))}
         </Fragment>
       ))}
