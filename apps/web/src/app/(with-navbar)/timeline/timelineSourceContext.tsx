@@ -2,8 +2,13 @@
 
 import { type RouterInputs } from "@repo/api";
 import { type ReactNode, createContext, useContext } from "react";
+import { type TimelineInput } from "../../../../../../packages/api/src/router/timeline";
 
-export type TimelineSource = keyof RouterInputs["timeline"];
+export type TimelineSource = {
+  path: keyof RouterInputs["timeline"];
+  payload: TimelineInput;
+};
+
 export const TimelineSourceContext = createContext<TimelineSource | null>(null);
 
 export function TimelineSourceProvider({

@@ -10,13 +10,16 @@ export type TimelineReturn = {
   nextCursor: string | undefined;
 };
 
+export const timelineInputSchema = z.object({
+  cursor: z.string().optional(),
+  authorId: z.string(),
+});
+
+export type TimelineInput = z.infer<typeof timelineInputSchema>;
+
 export const timelineRouter = createTRPCRouter({
   home: protectedProcedure
-    .input(
-      z.object({
-        cursor: z.string().optional(),
-      }),
-    )
+    .input(timelineInputSchema)
     .query(async ({ ctx, input }): Promise<TimelineReturn> => {
       const tweets = await db.tweet.findMany({
         where: {
@@ -30,6 +33,33 @@ export const timelineRouter = createTRPCRouter({
               },
             },
           },
+        },
+        select: selectTweetBasic(ctx.session.user.id),
+        orderBy: {
+          createdAt: "desc",
+        },
+        cursor: input.cursor ? { id: input.cursor } : undefined,
+        take: TWEETS_PER_REQUEST + 1,
+      });
+
+      let nextCursor: typeof input.cursor = undefined;
+      if (tweets.length > TWEETS_PER_REQUEST) {
+        const nextItem = tweets.pop()!;
+        nextCursor = nextItem.id;
+      }
+
+      return {
+        tweets,
+        nextCursor,
+      };
+    }),
+  profile: protectedProcedure
+    .input(timelineInputSchema)
+    .query(async ({ ctx, input }): Promise<TimelineReturn> => {
+      const tweets = await db.tweet.findMany({
+        where: {
+          parent: null,
+          authorId: input.authorId,
         },
         select: selectTweetBasic(ctx.session.user.id),
         orderBy: {
