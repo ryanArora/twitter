@@ -1,6 +1,6 @@
 import { PostTweet } from "./post-tweet";
-import { Timeline } from "../timeline/timeline";
-import { TimelineSourceProvider } from "../timeline/timelineSourceContext";
+import { Timeline } from "../timeline";
+import { TimelineSourceProvider } from "../timelineSourceContext";
 
 export default function HomePage() {
   return (

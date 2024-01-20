@@ -13,8 +13,8 @@ import { useToast } from "@repo/ui/components/use-toast";
 import { type FC } from "react";
 import { useForm } from "react-hook-form";
 import { type z } from "zod";
-import { useTimelineSource } from "../timeline/timelineSourceContext";
-import { UserAvatarWithLink } from "../user-avatar";
+import { useTimelineSource } from "../timelineSourceContext";
+import { UserAvatarWithLink } from "@/app/(with-navbar)/user-avatar";
 import { useSession } from "@/context/session";
 import { api } from "@/trpc/react";
 

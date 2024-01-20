@@ -71,7 +71,7 @@ const NavbarLayout: FC<{ children: ReactNode }> = async ({ children }) => {
           <User user={session.user} />
         </div>
       </div>
-      <div className="h-full w-[600px]">{children}</div>
+      {children}
     </div>
   );
 };

@@ -10,7 +10,8 @@ import { useRouter } from "next/navigation";
 import { type ReactNode } from "react";
 import { FollowButton } from "./follow-button";
 import { ProfileProvider } from "./profileContext";
-import { UserAvatar } from "../../user-avatar";
+import { UserAvatar } from "@/app/(with-navbar)/user-avatar";
+import { useSession } from "@/context/session";
 import { api } from "@/trpc/react";
 
 export default function ProfileLayout({
@@ -29,6 +30,7 @@ export default function ProfileLayout({
   });
 
   const router = useRouter();
+  const session = useSession();
 
   if (status === "error") {
     return (
@@ -87,7 +89,13 @@ export default function ProfileLayout({
               className="w-[128px] h-[128px] mt-[-64px] ml-[10px]"
             />
             <div className="m-4">
-              <FollowButton />
+              {profile.id === session.user.id ? (
+                <Button className="rounded-full font-semibold" asChild>
+                  <Link href="/settings/profile">Edit profile</Link>
+                </Button>
+              ) : (
+                <FollowButton />
+              )}
             </div>
           </div>
           <div className="p-3">

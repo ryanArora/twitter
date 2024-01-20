@@ -1,8 +1,8 @@
 "use client";
 
 import { useProfile } from "../profileContext";
-import { Timeline } from "@/app/(with-navbar)/timeline/timeline";
-import { TimelineSourceProvider } from "@/app/(with-navbar)/timeline/timelineSourceContext";
+import { Timeline } from "@/app/(with-navbar)/(with-timeline)/timeline";
+import { TimelineSourceProvider } from "@/app/(with-navbar)/(with-timeline)/timelineSourceContext";
 
 export default function MediaPage() {
   const profile = useProfile();

@@ -1,8 +1,8 @@
 "use client";
 
 import { useProfile } from "./profileContext";
-import { Timeline } from "../../timeline/timeline";
-import { TimelineSourceProvider } from "../../timeline/timelineSourceContext";
+import { Timeline } from "../../timeline";
+import { TimelineSourceProvider } from "../../timelineSourceContext";
 
 export default function ProfilePage() {
   const profile = useProfile();
