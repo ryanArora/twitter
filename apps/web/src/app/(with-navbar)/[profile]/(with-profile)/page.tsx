@@ -8,12 +8,10 @@ export default function ProfilePage() {
   const profile = useProfile();
 
   return (
-    <div>
-      <TimelineSourceProvider
-        timelineSource={{ path: "profile", payload: { authorId: profile.id } }}
-      >
-        <Timeline />
-      </TimelineSourceProvider>
-    </div>
+    <TimelineSourceProvider
+      timelineSource={{ path: "profile", payload: { profileId: profile.id } }}
+    >
+      <Timeline />
+    </TimelineSourceProvider>
   );
 }
