@@ -22,6 +22,7 @@ export const selectUserProfile = (sessionUserId: string) => {
     ...selectUserBasic,
     bannerUrl: true,
     createdAt: true,
+    bio: true,
     _count: {
       select: {
         tweets: true,
