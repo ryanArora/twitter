@@ -27,7 +27,7 @@ export const User: FC<{ user: Expand<Session["user"]> }> = ({ user }) => {
             <UserAvatar user={user} />
             <div className="mx-2 truncate">
               <p className="text-md truncate">{user.name}</p>
-              <p className="text-sm truncate">@{user.username}</p>
+              <p className="text-sm text-primary/50 truncate">{`@${user.username}`}</p>
             </div>
           </div>
           <MoreVertical />

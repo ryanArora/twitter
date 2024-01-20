@@ -13,7 +13,7 @@ export const FollowButton = forwardRef<
 >(({ className, ...props }, ref) => {
   const profile = useProfile();
   const session = useSession();
-  const [isHovered, setHovered] = useState(false);
+  const [showUnfollowButton, setShowUnfollowButton] = useState(false);
   const utils = api.useUtils();
 
   const unfollowMutation = api.follow.delete.useMutation({
@@ -68,6 +68,8 @@ export const FollowButton = forwardRef<
         };
       });
 
+      setShowUnfollowButton(false);
+
       return { previousProfile };
     },
     onError: (err, input, context) => {
@@ -91,20 +93,22 @@ export const FollowButton = forwardRef<
         )}
         ref={ref}
         type="button"
-        variant={isHovered ? "destructive" : "outline"}
+        variant={showUnfollowButton ? "destructive" : "outline"}
         onMouseOver={() => {
-          setHovered(true);
+          setShowUnfollowButton(true);
         }}
         onMouseOut={() => {
-          setHovered(false);
+          setShowUnfollowButton(false);
         }}
         onClick={(e) => {
-          e.preventDefault();
-          unfollowMutation.mutate({ profileId: profile.id });
+          if (showUnfollowButton) {
+            e.preventDefault();
+            unfollowMutation.mutate({ profileId: profile.id });
+          }
         }}
         {...props}
       >
-        {isHovered ? "Unfollow" : "Following"}
+        {showUnfollowButton ? "Unfollow" : "Following"}
       </Button>
     );
   } else {

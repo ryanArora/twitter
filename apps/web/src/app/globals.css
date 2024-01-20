@@ -54,3 +54,7 @@
     --ring: 0 0% 83.1%;
   }
 }
+
+* {
+  text-decoration-skip-ink: none;
+}

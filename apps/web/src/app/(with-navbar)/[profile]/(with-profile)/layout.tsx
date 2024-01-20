@@ -2,7 +2,6 @@
 
 import { Button } from "@repo/ui/components/button";
 import { Spinner } from "@repo/ui/components/spinner";
-import { TypographyH3, TypographyH4 } from "@repo/ui/components/typography";
 import { formatNumberShort } from "@repo/utils/str";
 import { ArrowLeft, CalendarRangeIcon } from "lucide-react";
 import Image from "next/image";
@@ -65,11 +64,11 @@ export default function ProfileLayout({
               <ArrowLeft className="mx-1.5" />
             </Button>
             <div className="mx-4 my-2">
-              <TypographyH4>{profile.name}</TypographyH4>
-              <span>{`${formatNumberShort(
+              <p className="text-xl font-bold">{profile.name}</p>
+              <p className="text-sm text-primary/50">{`${formatNumberShort(
                 profile._count.tweets,
                 1,
-              )} tweets`}</span>
+              )} tweets`}</p>
             </div>
           </div>
           {profile.bannerUrl ? (
@@ -87,34 +86,45 @@ export default function ProfileLayout({
               user={profile}
               className="w-[128px] h-[128px] mt-[-64px] ml-[10px]"
             />
-            <div className="m-2">
+            <div className="m-4">
               <FollowButton />
             </div>
           </div>
-
-          <div className="p-2">
-            <TypographyH3>{profile.name}</TypographyH3>
-            <TypographyH4>{`@${profile.username}`}</TypographyH4>
+          <div className="p-3">
+            <div className="mb-3">
+              <p className="text-xl font-bold w-fit truncate">{profile.name}</p>
+              <p className="text-primary/50 w-fit truncate">{`@${profile.username}`}</p>
+            </div>
+            <div className="mb-3 flex items-center text-primary/50">
+              <CalendarRangeIcon className="p-1" />
+              <span className="ml-0.5 text-sm">
+                {`Joined ${profile.createdAt.toLocaleString("default", {
+                  month: "long",
+                  year: "numeric",
+                })}`}
+              </span>
+            </div>
+            <nav className="flex">
+              <Link
+                className="pr-2 hover:underline"
+                href={`/${profile.username}/following`}
+              >
+                <span className="font-bold text-sm">
+                  {profile._count.following}
+                </span>
+                <span className="text-primary/50 text-sm"> Following</span>
+              </Link>
+              <Link
+                className="pr-2 hover:underline"
+                href={`/${profile.username}/followers`}
+              >
+                <span className="font-bold text-sm">
+                  {profile._count.followers}
+                </span>
+                <span className="text-primary/50 text-sm"> Followers</span>
+              </Link>
+            </nav>
           </div>
-          <div className="p-2 flex items-center">
-            <CalendarRangeIcon className="mr-0.5" />
-            <span className="ml-0.5">
-              {`Joined ${profile.createdAt.toLocaleString("default", {
-                month: "long",
-                year: "numeric",
-              })}`}
-            </span>
-          </div>
-          <nav className="p-2 flex">
-            <Link
-              className="pr-2 hover:underline"
-              href={`/${profile.username}/following`}
-            >{`${profile._count.following} Following`}</Link>
-            <Link
-              className="pl-2 hover:underline"
-              href={`/${profile.username}/followers`}
-            >{`${profile._count.followers} Followers`}</Link>
-          </nav>
           <nav className="flex justify-evenly">
             <Link
               className="p-4 hover:bg-secondary/90 rounded-md"
