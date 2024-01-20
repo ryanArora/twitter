@@ -1,4 +1,5 @@
 import { authRouter } from "./router/auth";
+import { followRouter } from "./router/follow";
 import { likeRouter } from "./router/like";
 import { retweetRouter } from "./router/retweet";
 import { timelineRouter } from "./router/timeline";
@@ -8,6 +9,7 @@ import { createTRPCRouter } from "./trpc";
 
 export const appRouter = createTRPCRouter({
   auth: authRouter,
+  follow: followRouter,
   tweet: tweetRouter,
   like: likeRouter,
   retweet: retweetRouter,
