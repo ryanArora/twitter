@@ -9,6 +9,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { type ReactNode } from "react";
+import { FollowButton } from "./follow-button";
 import { ProfileProvider } from "./profileContext";
 import { UserAvatar } from "../../user-avatar";
 import { api } from "@/trpc/react";
@@ -51,90 +52,98 @@ export default function ProfileLayout({
   }
 
   return (
-    <div className="border-x border-right h-full w-full overflow-y-scroll">
-      <div className="border-b">
-        <div className="flex items-center">
-          <Button
-            className="p-0 mx-2 rounded-full"
-            type="button"
-            variant="ghost"
-            onClick={() => router.back()}
-          >
-            <ArrowLeft className="mx-1.5" />
-          </Button>
-          <div className="mx-4 my-2">
-            <TypographyH4>{profile.name}</TypographyH4>
-            <span>{`${formatNumberShort(
-              profile._count.tweets,
-              1,
-            )} tweets`}</span>
+    <ProfileProvider profile={profile}>
+      <div className="border-x border-right h-full w-full overflow-y-scroll">
+        <div className="border-b">
+          <div className="flex items-center">
+            <Button
+              className="p-0 mx-2 rounded-full"
+              type="button"
+              variant="ghost"
+              onClick={() => router.back()}
+            >
+              <ArrowLeft className="mx-1.5" />
+            </Button>
+            <div className="mx-4 my-2">
+              <TypographyH4>{profile.name}</TypographyH4>
+              <span>{`${formatNumberShort(
+                profile._count.tweets,
+                1,
+              )} tweets`}</span>
+            </div>
           </div>
+          {profile.bannerUrl ? (
+            <Image
+              src={profile.bannerUrl}
+              alt={profile.bannerUrl}
+              width={600}
+              height={200}
+            />
+          ) : (
+            <div className="bg-red-900 w-full h-[200px]"></div>
+          )}
+          <div className="flex justify-between">
+            <UserAvatar
+              user={profile}
+              className="w-[128px] h-[128px] mt-[-64px] ml-[10px]"
+            />
+            <div className="m-2">
+              <FollowButton />
+            </div>
+          </div>
+
+          <div className="p-2">
+            <TypographyH3>{profile.name}</TypographyH3>
+            <TypographyH4>{`@${profile.username}`}</TypographyH4>
+          </div>
+          <div className="p-2 flex items-center">
+            <CalendarRangeIcon className="mr-0.5" />
+            <span className="ml-0.5">
+              {`Joined ${profile.createdAt.toLocaleString("default", {
+                month: "long",
+                year: "numeric",
+              })}`}
+            </span>
+          </div>
+          <nav className="p-2 flex">
+            <Link
+              className="pr-2 hover:underline"
+              href={`/${profile.username}/following`}
+            >{`${profile._count.following} Following`}</Link>
+            <Link
+              className="pl-2 hover:underline"
+              href={`/${profile.username}/followers`}
+            >{`${profile._count.followers} Followers`}</Link>
+          </nav>
+          <nav className="flex justify-evenly">
+            <Link
+              className="p-4 hover:bg-secondary/90 rounded-md"
+              href={`/${profile.username}`}
+            >
+              Tweets
+            </Link>
+            <Link
+              className="p-4 hover:bg-secondary/90 rounded-md"
+              href={`/${profile.username}/replies`}
+            >
+              Replies
+            </Link>
+            <Link
+              className="p-4 hover:bg-secondary/90 rounded-md"
+              href={`/${profile.username}/media`}
+            >
+              Media
+            </Link>
+            <Link
+              className="p-4 hover:bg-secondary/90 rounded-md"
+              href={`/${profile.username}/likes`}
+            >
+              Likes
+            </Link>
+          </nav>
         </div>
-        {profile.bannerUrl ? (
-          <Image
-            src={profile.bannerUrl}
-            alt={profile.bannerUrl}
-            width={600}
-            height={200}
-          />
-        ) : (
-          <div className="bg-red-900 w-full h-[200px]"></div>
-        )}
-        <UserAvatar
-          user={profile}
-          className="w-[128px] h-[128px] mt-[-64px] ml-[10px]"
-        />
-        <div className="p-2">
-          <TypographyH3>{profile.name}</TypographyH3>
-          <TypographyH4>{`@${profile.username}`}</TypographyH4>
-        </div>
-        <div className="p-2 flex items-center">
-          <CalendarRangeIcon className="mr-0.5" />
-          <span className="ml-0.5">
-            {`Joined ${profile.createdAt.toLocaleString("default", {
-              month: "long",
-              year: "numeric",
-            })}`}
-          </span>
-        </div>
-        <nav className="p-2 flex">
-          <Link
-            className="pr-2 hover:underline"
-            href={`/${profile.username}/following`}
-          >{`${profile._count.following} Following`}</Link>
-          <Link
-            className="pl-2 hover:underline"
-            href={`/${profile.username}/followers`}
-          >{`${profile._count.following} Followers`}</Link>
-        </nav>
-        <nav className="flex justify-evenly">
-          <Link
-            className="p-4 hover:bg-secondary/90 rounded-md"
-            href={`/${profile.username}`}
-          >
-            Tweets
-          </Link>
-          <Link
-            className="p-4 hover:bg-secondary/90 rounded-md"
-            href={`/${profile.username}/replies`}
-          >
-            Replies
-          </Link>
-          <Link
-            className="p-4 hover:bg-secondary/90 rounded-md"
-            href={`/${profile.username}/media`}
-          >
-            Media
-          </Link>
-          <Link
-            className="p-4 hover:bg-secondary/90 rounded-md"
-            href={`/${profile.username}/likes`}
-          >
-            Likes
-          </Link>
-        </nav>
+        {children}
       </div>
-      <ProfileProvider profile={profile}>{children}</ProfileProvider>
-    </div>
+    </ProfileProvider>
   );
 }
