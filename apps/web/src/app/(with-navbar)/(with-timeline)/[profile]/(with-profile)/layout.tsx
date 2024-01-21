@@ -103,11 +103,7 @@ export default function ProfileLayout({
               <p className="text-xl font-bold w-fit truncate">{profile.name}</p>
               <p className="text-primary/50 w-fit truncate">{`@${profile.username}`}</p>
             </div>
-            {profile.bio && (
-              <p className="mb-3 whitespace-pre-wrap break-all">
-                {profile.bio}
-              </p>
-            )}
+            {profile.bio && <p className="mb-3 break-words">{profile.bio}</p>}
             <div className="mb-3 flex items-center text-primary/50">
               <CalendarRangeIcon className="p-1" />
               <span className="ml-0.5 text-sm">
