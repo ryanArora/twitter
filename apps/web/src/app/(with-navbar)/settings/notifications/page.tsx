@@ -1,7 +1,12 @@
-export default function NotificaitonsPage() {
+export default function NotificationsSettingsPage() {
   return (
-    <div>
-      <p>Notifications Settings Page</p>
-    </div>
+    <>
+      <div className="border-b">
+        <p className="text-xl m-4 font-semibold">Notifications</p>
+      </div>
+      <div className="m-4">
+        <p>Notifications Settings</p>
+      </div>
+    </>
   );
 }

@@ -78,4 +78,24 @@ export const userRouter = createTRPCRouter({
         select: selectUserProfile(ctx.session.user.id),
       });
     }),
+  update: protectedProcedure
+    .input(
+      z.object({
+        username: z.string().optional(),
+        name: z.string().optional(),
+        bio: z.string().optional(),
+      }),
+    )
+    .query(async ({ ctx, input }) => {
+      return await db.user.update({
+        where: {
+          id: ctx.session.user.id,
+        },
+        data: {
+          username: input.username,
+          name: input.name,
+          bio: input.bio,
+        },
+      });
+    }),
 });
