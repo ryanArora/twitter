@@ -58,7 +58,7 @@ export const LayoutClient: FC<{ children: ReactNode }> = ({ children }) => {
             We do this to take advantage of the AvatarFallback component.
           */}
         <Avatar className="rounded-none w-full h-[200px]">
-          <AvatarImage src={bannerUrl} />
+          <AvatarImage src={bannerUrl} alt={`${profile.username}'s banner`} />
           <AvatarFallback className="rounded-none w-full h-[200px]" />
         </Avatar>
         <div className="flex justify-between">
