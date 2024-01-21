@@ -115,6 +115,9 @@ importers:
 
   packages/api:
     dependencies:
+      '@repo/aws':
+        specifier: workspace:*
+        version: link:../aws
       '@repo/db':
         specifier: workspace:*
         version: link:../db
@@ -127,15 +130,28 @@ importers:
       argon2:
         specifier: ^0.31.2
         version: 0.31.2
-      aws-sdk:
-        specifier: ^2.1540.0
-        version: 2.1540.0
       superjson:
         specifier: ^2.2.1
         version: 2.2.1
       zod:
         specifier: ^3.22.4
         version: 3.22.4
+    devDependencies:
+      '@repo/eslint-config':
+        specifier: workspace:*
+        version: link:../../tooling/eslint-config
+      '@repo/tsconfig':
+        specifier: workspace:*
+        version: link:../../tooling/tsconfig
+      '@types/node':
+        specifier: ^20.11.0
+        version: 20.11.0
+
+  packages/aws:
+    dependencies:
+      aws-sdk:
+        specifier: ^2.1540.0
+        version: 2.1540.0
     devDependencies:
       '@repo/eslint-config':
         specifier: workspace:*

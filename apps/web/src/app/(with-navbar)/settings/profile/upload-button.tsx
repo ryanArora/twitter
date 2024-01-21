@@ -11,7 +11,7 @@ import {
 import { api } from "@/trpc/react";
 
 export type UploadButtonProps = {
-  path: RouterInputs["asset"]["getUploadUrl"]["path"];
+  path: RouterInputs["asset"]["getPutUrl"]["path"];
 };
 
 export const UploadButton = forwardRef<
@@ -44,7 +44,7 @@ export const UploadButton = forwardRef<
           const file = files.item(0);
           if (!file) return;
 
-          const urlPromise = utils.asset.getUploadUrl.fetch({ path });
+          const urlPromise = utils.asset.getPutUrl.fetch({ path });
           const bufferPromise = file.arrayBuffer();
           const [url, buffer] = await Promise.all([urlPromise, bufferPromise]);
 
