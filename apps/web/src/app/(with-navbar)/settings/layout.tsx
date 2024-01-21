@@ -31,7 +31,7 @@ export default function SettingsLayout({ children }: { children: ReactNode }) {
         <div className="border-b">
           <p className="text-xl m-4 font-semibold">Settings</p>
         </div>
-        <nav className="h-full flex flex-col">
+        <nav className="flex flex-col overflow-y-scroll">
           <NavbarLink href="/settings/account" title="Account" />
           <NavbarLink href="/settings/profile" title="Profile" />
           <NavbarLink
@@ -41,7 +41,9 @@ export default function SettingsLayout({ children }: { children: ReactNode }) {
           <NavbarLink href="/settings/notifications" title="Notifications" />
         </nav>
       </div>
-      <div className="w-[600px] h-full border-x">{children}</div>
+      <div className="w-[600px] h-full border-x overflow-y-scroll">
+        {children}
+      </div>
     </>
   );
 }

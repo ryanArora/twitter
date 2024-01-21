@@ -5,7 +5,8 @@
     ".": "./src/index.ts",
     "./session": "./src/session.ts",
     "./schemas/auth": "./src/schemas/auth.ts",
-    "./schemas/tweet": "./src/schemas/tweet.ts"
+    "./schemas/tweet": "./src/schemas/tweet.ts",
+    "./schemas/user": "./src/schemas/user.ts"
   },
   "scripts": {
     "lint": "eslint .",

@@ -1,4 +1,5 @@
 import { EditProfile } from "./edit-profile";
+import { EditProfileForm } from "./edit-profile-form";
 import { api } from "@/trpc/server";
 
 export default async function ProfileSettingsPage() {
@@ -16,6 +17,9 @@ export default async function ProfileSettingsPage() {
       <div className="p-4 border-b">
         <p className="mb-4 font-semibold">Preview</p>
         <EditProfile profile={profile} />
+      </div>
+      <div className="p-4">
+        <EditProfileForm profile={profile} />
       </div>
     </>
   );

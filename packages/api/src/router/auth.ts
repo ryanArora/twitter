@@ -5,7 +5,7 @@ import { TRPCError } from "@trpc/server";
 import argon2 from "argon2";
 import { z } from "zod";
 import { selectUserBasic } from "./user";
-import { loginValidator, signupValidator } from "../schemas/auth";
+import { loginSchema, signupSchema } from "../schemas/auth";
 import { type Session } from "../session";
 import { createTRPCRouter, protectedProcedure, publicProcedure } from "../trpc";
 
@@ -23,7 +23,7 @@ export const authRouter = createTRPCRouter({
     return ctx.session;
   }),
   signup: publicProcedure
-    .input(signupValidator)
+    .input(signupSchema)
     .mutation(async ({ input }): Promise<Session> => {
       const session = createSession();
 
@@ -46,7 +46,7 @@ export const authRouter = createTRPCRouter({
       };
     }),
   login: publicProcedure
-    .input(loginValidator)
+    .input(loginSchema)
     .mutation(async ({ input }): Promise<Session> => {
       const user = await db.user.findUnique({
         where: { username: input.username },

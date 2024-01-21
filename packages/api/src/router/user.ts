@@ -1,5 +1,6 @@
 import { type Prisma, db } from "@repo/db";
 import { z } from "zod";
+import { updateUserSchema } from "../schemas/user";
 import { createTRPCRouter, protectedProcedure } from "../trpc";
 
 export type UserBasic = Prisma.UserGetPayload<{
@@ -79,23 +80,19 @@ export const userRouter = createTRPCRouter({
       });
     }),
   update: protectedProcedure
-    .input(
-      z.object({
-        username: z.string().optional(),
-        name: z.string().optional(),
-        bio: z.string().optional(),
-      }),
-    )
-    .query(async ({ ctx, input }) => {
+    .input(updateUserSchema)
+    .mutation(async ({ ctx, input }) => {
       return await db.user.update({
         where: {
           id: ctx.session.user.id,
         },
         data: {
           username: input.username,
+          usernameLower: input.username?.toLowerCase(),
           name: input.name,
           bio: input.bio,
         },
+        select: { id: true }, // Need to select something...
       });
     }),
 });
