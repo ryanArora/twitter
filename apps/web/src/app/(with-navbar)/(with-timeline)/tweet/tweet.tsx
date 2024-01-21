@@ -24,17 +24,13 @@ export const Tweet: FC = () => {
         />
         <div className="flex flex-col w-full">
           <div className="ml-1">
-            <Link className="w-fit" href={`/${tweet.author.username}`}>
+            <Link href={`/${tweet.author.username}`}>
               <span className="mr-0.5 hover:underline font-semibold">
                 {tweet.author.name}
               </span>
               <span className="ml-0.5 text-sm text-primary/50">{`@${tweet.author.username}`}</span>
             </Link>
-            <div className="w-fit">
-              <p className="line-clamp-4 whitespace-pre-wrap break-all mb-2">
-                {tweet.content}
-              </p>
-            </div>
+            <p className="mb-2 line-clamp-4 break-words">{tweet.content}</p>
           </div>
           <div className="flex justify-between w-full">
             <ReplyInteraction />
