@@ -20,16 +20,16 @@ export type UserAvatarProps = {
   linkToProfile?: boolean;
 };
 
-const FOUR_MINUTES_MS = 1000 * 60 * 5;
+const FIVE_MINUTES_MS = 1000 * 60 * 5;
 
 export const UserAvatar = forwardRef<
   React.ElementRef<typeof Avatar>,
   React.ComponentPropsWithoutRef<typeof Avatar> & UserAvatarProps
 >(({ className, user, linkToProfile, ...props }, ref) => {
   const router = useRouter();
-  const { data: url } = api.asset.getAvatarUrl.useQuery(
+  const { data: avatarUrl } = api.asset.getAvatarUrl.useQuery(
     { userId: user.id },
-    { staleTime: FOUR_MINUTES_MS },
+    { staleTime: FIVE_MINUTES_MS },
   );
 
   return (
@@ -44,7 +44,11 @@ export const UserAvatar = forwardRef<
       ref={ref}
       {...props}
     >
-      <AvatarImage src={url} alt={`${user.name}'s avatar`} draggable={false} />
+      <AvatarImage
+        src={avatarUrl}
+        alt={`${user.name}'s avatar`}
+        draggable={false}
+      />
       <AvatarFallback>{getInitials(user.name)}</AvatarFallback>
     </Avatar>
   );

@@ -17,14 +17,21 @@ import { UserAvatar } from "@/app/(with-navbar)/user-avatar";
 import { useSession } from "@/context/session";
 import { api } from "@/trpc/react";
 
+const FIVE_MINUTES_MS = 1000 * 60 * 5;
+
 export const LayoutClient: FC<{ children: ReactNode }> = ({ children }) => {
   const router = useRouter();
   const session = useSession();
   const profile = useProfile();
 
-  const { data: bannerUrl } = api.asset.getBannerUrl.useQuery({
-    userId: profile.id,
-  });
+  const { data: bannerUrl } = api.asset.getBannerUrl.useQuery(
+    {
+      userId: profile.id,
+    },
+    {
+      staleTime: FIVE_MINUTES_MS,
+    },
+  );
 
   return (
     <div className="border-x border-right h-full w-full overflow-y-scroll">
@@ -52,9 +59,7 @@ export const LayoutClient: FC<{ children: ReactNode }> = ({ children }) => {
           */}
         <Avatar className="rounded-none w-full h-[200px]">
           <AvatarImage src={bannerUrl} />
-          <AvatarFallback className="rounded-none w-full h-[200px]">
-            <div className="rounded-none w-full h-[200px] bg-red-900"></div>
-          </AvatarFallback>
+          <AvatarFallback className="rounded-none w-full h-[200px]" />
         </Avatar>
         <div className="flex justify-between">
           <UserAvatar
