@@ -17,16 +17,27 @@ export const s3 = new S3({
   region: process.env.AWS_REGION,
 });
 
-const ONE_HOUR = 60 * 60;
+const ONE_HOUR_SECONDS = 60 * 60;
+const SIXTEEN_MB_BYTES = 1024 * 1024 * 16;
 
-export const getSignedUrl = async (
-  operation: "putObject" | "getObject",
-  resource: "avatars" | "banners",
-  path: string,
+export type Resource = "avatars" | "banners";
+
+export const getSignedUrl = <T>(
+  key: T extends `${Resource}/${string}` ? T : never,
 ) => {
-  return s3.getSignedUrl(operation, {
+  return s3.getSignedUrl("getObject", {
     Bucket: process.env.AWS_S3_ASSETS_BUCKET_NAME,
-    Key: `${resource}/${path}`,
-    Expires: ONE_HOUR,
+    Key: key,
+    Expires: ONE_HOUR_SECONDS,
+  });
+};
+
+export const postSignedUrl = <T>(
+  key: T extends `${Resource}/${string}` ? T : never,
+) => {
+  return s3.createPresignedPost({
+    Bucket: process.env.AWS_S3_ASSETS_BUCKET_NAME,
+    Fields: { key },
+    Conditions: [["content-length-range", 0, SIXTEEN_MB_BYTES]],
   });
 };

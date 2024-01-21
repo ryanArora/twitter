@@ -1,6 +1,5 @@
 "use client";
 
-import { type RouterInputs } from "@repo/api";
 import { Button } from "@repo/ui/components/button";
 import {
   useRef,
@@ -8,16 +7,17 @@ import {
   type ElementRef,
   type ComponentPropsWithoutRef,
 } from "react";
+import { type Resource } from "../../../../../../../packages/aws/src";
 import { api } from "@/trpc/react";
 
 export type UploadButtonProps = {
-  path: RouterInputs["asset"]["getPutUrl"]["resource"];
+  resource: Resource;
 };
 
 export const UploadButton = forwardRef<
   ElementRef<typeof Button>,
   Omit<ComponentPropsWithoutRef<typeof Button>, "type"> & UploadButtonProps
->(({ path, children, ...props }, ref) => {
+>(({ resource, children, ...props }, ref) => {
   const utils = api.useUtils();
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -44,13 +44,19 @@ export const UploadButton = forwardRef<
           const file = files.item(0);
           if (!file) return;
 
-          const urlPromise = utils.asset.getPutUrl.fetch({ resource: path });
-          const bufferPromise = file.arrayBuffer();
-          const [url, buffer] = await Promise.all([urlPromise, bufferPromise]);
+          const presignedPost = await utils.asset.getPostUrl.fetch({
+            resource,
+          });
 
-          fetch(url, {
-            method: "PUT",
-            body: buffer,
+          const form = new FormData();
+          Object.entries(presignedPost.fields).forEach(([field, value]) => {
+            form.append(field, value);
+          });
+          form.append("file", file);
+
+          fetch(presignedPost.url, {
+            method: "POST",
+            body: form,
           })
             .then(() => {
               alert("Success");
