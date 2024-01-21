@@ -1,35 +1,66 @@
 "use client";
 
-import { type FC } from "react";
+import { type RouterInputs } from "@repo/api";
+import { Button } from "@repo/ui/components/button";
+import {
+  useRef,
+  forwardRef,
+  type ElementRef,
+  type ComponentPropsWithoutRef,
+} from "react";
 import { api } from "@/trpc/react";
 
-export const UploadButton: FC = () => {
+export type UploadButtonProps = {
+  path: RouterInputs["asset"]["getUploadUrl"]["path"];
+};
+
+export const UploadButton = forwardRef<
+  ElementRef<typeof Button>,
+  Omit<ComponentPropsWithoutRef<typeof Button>, "type"> & UploadButtonProps
+>(({ path, children, ...props }, ref) => {
   const utils = api.useUtils();
+  const inputRef = useRef<HTMLInputElement>(null);
 
   return (
-    <input
-      type="file"
-      onChange={async (e) => {
-        const files = e.target.files;
-        if (!files) return;
-        const file = files.item(0);
-        if (!file) return;
+    <>
+      <Button
+        type="button"
+        onClick={(e) => {
+          e.preventDefault();
+          inputRef.current!.click();
+        }}
+        ref={ref}
+        {...props}
+      >
+        {children}
+      </Button>
+      <input
+        className="hidden"
+        type="file"
+        ref={inputRef}
+        onChange={async (e) => {
+          const files = e.target.files;
+          if (!files) return;
+          const file = files.item(0);
+          if (!file) return;
 
-        const urlPromise = utils.asset.getUploadUrl.fetch({ path: "avatars" });
-        const bufferPromise = file.arrayBuffer();
-        const [url, buffer] = await Promise.all([urlPromise, bufferPromise]);
+          const urlPromise = utils.asset.getUploadUrl.fetch({ path });
+          const bufferPromise = file.arrayBuffer();
+          const [url, buffer] = await Promise.all([urlPromise, bufferPromise]);
 
-        fetch(url, {
-          method: "PUT",
-          body: buffer,
-        })
-          .then(() => {
-            alert("Success");
+          fetch(url, {
+            method: "PUT",
+            body: buffer,
           })
-          .catch(() => {
-            alert("Error");
-          });
-      }}
-    />
+            .then(() => {
+              alert("Success");
+            })
+            .catch(() => {
+              alert("Error");
+            });
+        }}
+      />
+    </>
   );
-};
+});
+UploadButton.displayName = Button.displayName;
