@@ -1,7 +1,9 @@
+import { UploadButton } from "./upload-button";
+
 export default function ProfileSettingsPage() {
   return (
     <div>
-      <p>Profile Settings Page</p>
+      <UploadButton></UploadButton>
     </div>
   );
 }

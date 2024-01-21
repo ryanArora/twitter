@@ -1,3 +1,4 @@
+import { assetRouter } from "./router/asset";
 import { authRouter } from "./router/auth";
 import { followRouter } from "./router/follow";
 import { likeRouter } from "./router/like";
@@ -8,6 +9,7 @@ import { userRouter } from "./router/user";
 import { createTRPCRouter } from "./trpc";
 
 export const appRouter = createTRPCRouter({
+  asset: assetRouter,
   auth: authRouter,
   follow: followRouter,
   tweet: tweetRouter,
