@@ -23,17 +23,7 @@ export function useSession(): Session {
   const session = useContext(SessionContext);
 
   if (!session) {
-    window.location.replace("/");
-    return {
-      token: "",
-      expires: new Date(Date.now()),
-      user: {
-        id: "",
-        name: "Loading User",
-        username: "loading",
-        profilePictureUrl: null,
-      },
-    };
+    throw new Error("No session");
   }
 
   return session!;

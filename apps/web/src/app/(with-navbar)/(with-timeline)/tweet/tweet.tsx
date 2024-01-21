@@ -7,7 +7,7 @@ import { ReplyInteraction } from "./interaction/reply";
 import { RetweetInteraction } from "./interaction/retweet";
 import { ViewsInteraction } from "./interaction/views";
 import { useTweet } from "./tweetContext";
-import { UserAvatarWithLink } from "../../user-avatar";
+import { UserAvatar } from "../../user-avatar";
 
 export const Tweet: FC = () => {
   const tweet = useTweet();
@@ -18,9 +18,10 @@ export const Tweet: FC = () => {
       href={`/${tweet.author.username}/${tweet.id}`}
     >
       <div className="flex w-full">
-        <UserAvatarWithLink
+        <UserAvatar
           className="mx-2 h-[44px] w-[44px]"
           user={tweet.author}
+          linkToProfile={true}
         />
         <div className="flex flex-col w-full">
           <div className="ml-1">

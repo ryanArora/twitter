@@ -10,7 +10,6 @@ export const selectUserBasic = {
   id: true,
   name: true,
   username: true,
-  profilePictureUrl: true,
 } satisfies Prisma.UserSelect;
 
 export type UserProfile = Prisma.UserGetPayload<{
@@ -20,7 +19,6 @@ export type UserProfile = Prisma.UserGetPayload<{
 export const selectUserProfile = (sessionUserId: string) => {
   return {
     ...selectUserBasic,
-    bannerUrl: true,
     createdAt: true,
     bio: true,
     _count: {

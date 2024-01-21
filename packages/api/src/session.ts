@@ -1,9 +1,10 @@
 import { type User, db } from "@repo/db";
 import { type ExpandRecursively, type Expand } from "@repo/utils/types";
+import { selectUserBasic } from "./router/user";
 
 export type Session = Expand<
   { token: string; expires: Date } & ExpandRecursively<{
-    user: Pick<User, "id" | "username" | "name" | "profilePictureUrl">;
+    user: Pick<User, "id" | "username" | "name">;
   }>
 >;
 
@@ -21,12 +22,7 @@ export const getSession = async (token?: string): Promise<Session | null> => {
       token: true,
       expires: true,
       user: {
-        select: {
-          id: true,
-          username: true,
-          name: true,
-          profilePictureUrl: true,
-        },
+        select: selectUserBasic,
       },
     },
   });

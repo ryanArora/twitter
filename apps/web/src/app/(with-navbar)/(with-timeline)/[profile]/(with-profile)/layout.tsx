@@ -4,7 +4,6 @@ import { Button } from "@repo/ui/components/button";
 import { Spinner } from "@repo/ui/components/spinner";
 import { formatNumberShort } from "@repo/utils/str";
 import { ArrowLeft, CalendarRangeIcon } from "lucide-react";
-import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { type ReactNode } from "react";
@@ -73,16 +72,7 @@ export default function ProfileLayout({
               )} tweets`}</p>
             </div>
           </div>
-          {profile.bannerUrl ? (
-            <Image
-              src={profile.bannerUrl}
-              alt={profile.bannerUrl}
-              width={600}
-              height={200}
-            />
-          ) : (
-            <div className="bg-red-900 w-full h-[200px]"></div>
-          )}
+          <div className="bg-red-900 w-full h-[200px]"></div>
           <div className="flex justify-between">
             <UserAvatar
               user={profile}

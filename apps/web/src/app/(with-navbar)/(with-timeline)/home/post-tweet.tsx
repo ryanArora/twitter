@@ -14,7 +14,7 @@ import { type FC } from "react";
 import { useForm } from "react-hook-form";
 import { type z } from "zod";
 import { useTimelineSource } from "../timelineSourceContext";
-import { UserAvatarWithLink } from "@/app/(with-navbar)/user-avatar";
+import { UserAvatar } from "@/app/(with-navbar)/user-avatar";
 import { useSession } from "@/context/session";
 import { api } from "@/trpc/react";
 
@@ -89,7 +89,7 @@ export const PostTweet: FC = () => {
     <Form {...form}>
       <form className="p-2 border" onSubmit={form.handleSubmit(onSubmit)}>
         <div className="flex p-2 h-full">
-          <UserAvatarWithLink className="my-2 mr-1" user={user} />
+          <UserAvatar className="my-2 mr-1" user={user} linkToProfile={true} />
           <FormField
             control={form.control}
             name="content"
