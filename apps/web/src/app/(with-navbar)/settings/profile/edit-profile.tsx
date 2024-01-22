@@ -5,7 +5,7 @@ import {
   AvatarFallback,
   AvatarImage,
 } from "@repo/ui/components/avatar";
-import { CalendarRangeIcon } from "lucide-react";
+import { CalendarRangeIcon, Edit2Icon } from "lucide-react";
 import React, { useRef, type FC, type ElementRef } from "react";
 import { UploadButton } from "./upload-button";
 import { type Profile } from "../../(with-timeline)/[profile]/(with-profile)/profileContext";
@@ -29,38 +29,54 @@ export const EditProfile: FC<{ profile: Profile }> = ({ profile }) => {
 
   return (
     <div>
-      <Avatar
-        className="rounded-none w-full h-[200px] hover:cursor-pointer"
-        onClick={(e) => {
-          e.preventDefault();
-          bannerUploadRef.current!.click();
-        }}
-      >
-        <AvatarImage
-          src={bannerUrl}
-          alt={`${profile.username}'s banner`}
-          draggable={false}
+      <div className="relative w-full h-[200px]">
+        <Avatar className="block w-full h-full rounded-none">
+          <AvatarImage
+            src={bannerUrl}
+            alt={`${profile.username}'s banner`}
+            draggable={false}
+          />
+          <AvatarFallback className="rounded-none w-full h-full" />
+        </Avatar>
+        <div
+          className="absolute bottom-0 w-full h-full transition-opacity opacity-0 hover:cursor-pointer hover:opacity-[50%] bg-black flex justify-center items-center"
+          onClick={(e) => {
+            e.preventDefault();
+            bannerUploadRef.current!.click();
+          }}
+        >
+          <Edit2Icon fill="white" />
+        </div>
+        <UploadButton
+          className="hidden"
+          ref={bannerUploadRef}
+          resource="banners"
         />
-        <AvatarFallback className="rounded-none w-full h-[200px]" />
-      </Avatar>
-      <UploadButton
-        className="hidden"
-        ref={bannerUploadRef}
-        resource="banners"
-      />
-      <UserAvatar
-        className="w-[128px] h-[128px] mt-[-64px] ml-[10px] hover:cursor-pointer"
-        user={profile}
-        onClick={(e) => {
-          e.preventDefault();
-          avatarUploadRef.current!.click();
-        }}
-      />
-      <UploadButton
-        className="hidden"
-        ref={avatarUploadRef}
-        resource="avatars"
-      />
+      </div>
+      <div className="relative w-[128px] h-[128px] ml-[10px] mt-[-64px] rounded-full">
+        <UserAvatar
+          className="w-full h-full hover:cursor-pointer"
+          user={profile}
+          onClick={(e) => {
+            e.preventDefault();
+            avatarUploadRef.current!.click();
+          }}
+        />
+        <div
+          className="absolute bottom-0 w-full h-full rounded-full transition-opacity opacity-0 hover:cursor-pointer hover:opacity-[50%] bg-black flex justify-center items-center"
+          onClick={(e) => {
+            e.preventDefault();
+            avatarUploadRef.current!.click();
+          }}
+        >
+          <Edit2Icon fill="white" />
+        </div>
+        <UploadButton
+          className="hidden"
+          ref={avatarUploadRef}
+          resource="avatars"
+        />
+      </div>
 
       <div className="p-3">
         <div className="mb-3">
