@@ -13,9 +13,9 @@ import { useToast } from "@repo/ui/components/use-toast";
 import { type FC } from "react";
 import { useForm } from "react-hook-form";
 import { type z } from "zod";
+import { useSession } from "../../../sessionContext";
 import { useTimelineSource } from "../timelineSourceContext";
 import { UserAvatar } from "@/app/(with-navbar)/user-avatar";
-import { useSession } from "@/context/session";
 import { api } from "@/trpc/react";
 
 export const PostTweet: FC = () => {

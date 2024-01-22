@@ -2,7 +2,7 @@ import { Button } from "@repo/ui/components/button";
 import { cn } from "@repo/ui/utils";
 import React, { forwardRef, useState } from "react";
 import { useProfile } from "./profileContext";
-import { useSession } from "@/context/session";
+import { useSession } from "../../../../sessionContext";
 import { api } from "@/trpc/react";
 
 export type FollowButtonProps = Record<string, unknown>;

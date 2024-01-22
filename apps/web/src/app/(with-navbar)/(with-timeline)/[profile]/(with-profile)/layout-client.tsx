@@ -13,8 +13,8 @@ import { useRouter } from "next/navigation";
 import { type FC, type ReactNode } from "react";
 import { FollowButton } from "./follow-button";
 import { useProfile } from "./profileContext";
+import { useSession } from "../../../../sessionContext";
 import { UserAvatar } from "@/app/(with-navbar)/user-avatar";
-import { useSession } from "@/context/session";
 import { api } from "@/trpc/react";
 
 const FIVE_MINUTES_MS = 1000 * 60 * 5;

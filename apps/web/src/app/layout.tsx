@@ -5,7 +5,7 @@ import { type Metadata } from "next";
 import { Inter } from "next/font/google";
 import { headers } from "next/headers";
 import { cache } from "react";
-import { SessionProvider } from "@/context/session";
+import { SessionProvider } from "./sessionContext";
 import { TRPCReactProvider } from "@/trpc/react";
 import { api } from "@/trpc/server";
 
