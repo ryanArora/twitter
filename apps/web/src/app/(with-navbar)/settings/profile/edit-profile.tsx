@@ -59,6 +59,8 @@ export const EditProfile: FC<{ profile: Profile }> = ({ profile }) => {
       toast({ title: "Error", description: err.message });
     },
     onSuccess: (data, values) => {
+      toast({ title: "Success", description: "Updated profile successfuly." });
+
       const username = values.username ?? profile.username;
       const name = values.name ?? profile.name;
       const bio = values.bio ?? profile.bio;
@@ -150,7 +152,7 @@ export const EditProfile: FC<{ profile: Profile }> = ({ profile }) => {
 
   return (
     <>
-      <div className="p-4 border-b">
+      <div className="px-4 pt-4 border-b">
         <p className="mb-4 font-semibold">Preview</p>
         <div>
           <div className="relative w-full h-[200px]">
@@ -208,7 +210,7 @@ export const EditProfile: FC<{ profile: Profile }> = ({ profile }) => {
               <p className="text-primary/50 w-fit truncate">{`@${username}`}</p>
             </div>
             {bio && <p className="mb-3 break-words">{bio}</p>}
-            <div className="mb-3 flex items-center text-primary/50">
+            <div className="flex items-center text-primary/50">
               <CalendarRangeIcon className="p-1" />
               <span className="ml-0.5 text-sm">
                 {`Joined ${profile.createdAt.toLocaleString("default", {
@@ -267,7 +269,9 @@ export const EditProfile: FC<{ profile: Profile }> = ({ profile }) => {
                 </FormItem>
               )}
             />
-            <Button type="submit">Submit</Button>
+            <div className="flex justify-end">
+              <Button type="submit">Save</Button>
+            </div>
           </form>
         </Form>
       </div>
