@@ -50,6 +50,74 @@ export const EditProfileForm: FC<{ profile: Profile }> = ({ profile }) => {
           bio,
         };
       });
+
+      utils.auth.getSession.setData(undefined, (oldSession) => {
+        if (!oldSession) return;
+        return {
+          ...oldSession,
+          user: {
+            ...oldSession.user,
+            username,
+            name,
+          },
+        };
+      });
+
+      const timelines = [
+        {
+          path: "home",
+          payload: { profileId: "" },
+        },
+        {
+          path: "profile",
+          payload: { profileId: profile.id },
+        },
+        {
+          path: "replies",
+          payload: { profileId: profile.id },
+        },
+        {
+          path: "media",
+          payload: { profileId: profile.id },
+        },
+        {
+          path: "likes",
+          payload: { profileId: profile.id },
+        },
+      ] as const;
+
+      for (const { path, payload } of timelines) {
+        utils.timeline[path].setInfiniteData({ ...payload }, (data) => {
+          if (!data) return;
+          return {
+            ...data,
+            pages: data.pages.map((page) => ({
+              ...page,
+              tweets: page.tweets.map((tweet) => ({
+                ...tweet,
+                author:
+                  tweet.author.id === profile.id
+                    ? { ...tweet.author, username, name }
+                    : tweet.author,
+                likes: tweet.likes.map((like) => ({
+                  ...like,
+                  user:
+                    like.user.id === profile.id
+                      ? { ...like.user, username, name }
+                      : like.user,
+                })),
+                retweets: tweet.retweets.map((retweet) => ({
+                  ...retweet,
+                  user:
+                    retweet.user.id === profile.id
+                      ? { ...retweet.user, username, name }
+                      : retweet.user,
+                })),
+              })),
+            })),
+          };
+        });
+      }
     },
   });
 

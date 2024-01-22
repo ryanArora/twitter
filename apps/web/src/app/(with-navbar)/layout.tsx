@@ -1,3 +1,5 @@
+"use client";
+
 import { Button } from "@repo/ui/components/button";
 import {
   BellIcon,
@@ -13,10 +15,10 @@ import { redirect } from "next/navigation";
 import React, { type FC, type ReactNode } from "react";
 import { NavbarLink } from "./navbar-link";
 import { User } from "./user";
-import { api } from "@/trpc/server";
+import { useSession } from "../sessionContext";
 
-const NavbarLayout: FC<{ children: ReactNode }> = async ({ children }) => {
-  const session = await api.auth.getSession();
+const NavbarLayout: FC<{ children: ReactNode }> = ({ children }) => {
+  const session = useSession();
   if (!session) redirect("/");
 
   return (
