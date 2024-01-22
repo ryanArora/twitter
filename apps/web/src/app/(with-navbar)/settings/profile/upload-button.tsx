@@ -1,6 +1,7 @@
 "use client";
 
 import { Button } from "@repo/ui/components/button";
+import { useToast } from "@repo/ui/components/use-toast";
 import {
   useRef,
   forwardRef,
@@ -20,6 +21,7 @@ export const UploadButton = forwardRef<
 >(({ resource, children, ...props }, ref) => {
   const utils = api.useUtils();
   const inputRef = useRef<HTMLInputElement>(null);
+  const { toast } = useToast();
 
   return (
     <>
@@ -37,6 +39,7 @@ export const UploadButton = forwardRef<
       <input
         className="hidden"
         type="file"
+        accept="image/*"
         ref={inputRef}
         onChange={async (e) => {
           const files = e.target.files;
@@ -52,18 +55,40 @@ export const UploadButton = forwardRef<
           Object.entries(presignedPost.fields).forEach(([field, value]) => {
             form.append(field, value);
           });
+          form.append("Content-Type", file.type);
           form.append("file", file);
 
-          fetch(presignedPost.url, {
+          const response = await fetch(presignedPost.url, {
             method: "POST",
             body: form,
-          })
-            .then(() => {
-              alert("Success");
-            })
-            .catch(() => {
-              alert("Error");
+          });
+
+          if (response.status === 400) {
+            toast({
+              title: "Error",
+              description: "File too large.",
             });
+            return;
+          }
+
+          if (response.status === 403) {
+            toast({
+              title: "Error",
+              description: "Invalid file type.",
+            });
+            return;
+          }
+
+          if (resource === "avatars") {
+            utils.asset.getAvatarUrl.invalidate();
+          } else if (resource === "banners") {
+            utils.asset.getBannerUrl.invalidate();
+          }
+
+          toast({
+            title: "Success",
+            description: "File uploaded.",
+          });
         }}
       />
     </>

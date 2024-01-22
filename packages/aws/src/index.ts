@@ -38,6 +38,9 @@ export const postSignedUrl = <T>(
   return s3.createPresignedPost({
     Bucket: process.env.AWS_S3_ASSETS_BUCKET_NAME,
     Fields: { key },
-    Conditions: [["content-length-range", 0, SIXTEEN_MB_BYTES]],
+    Conditions: [
+      ["content-length-range", 0, SIXTEEN_MB_BYTES],
+      ["starts-with", "$Content-Type", "image/"],
+    ],
   });
 };
