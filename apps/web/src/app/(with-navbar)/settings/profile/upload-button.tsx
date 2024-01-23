@@ -1,5 +1,6 @@
 "use client";
 
+import { type RouterInputs } from "@repo/api";
 import { Button } from "@repo/ui/components/button";
 import { useToast } from "@repo/ui/components/use-toast";
 import {
@@ -8,11 +9,10 @@ import {
   type ElementRef,
   type ComponentPropsWithoutRef,
 } from "react";
-import { type Resource } from "../../../../../../../packages/aws/src";
 import { api } from "@/trpc/react";
 
 export type UploadButtonProps = {
-  resource: Resource;
+  resource: RouterInputs["asset"]["getPostUrl"]["resource"];
 };
 
 export const UploadButton = forwardRef<

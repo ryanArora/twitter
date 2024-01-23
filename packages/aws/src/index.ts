@@ -20,7 +20,7 @@ export const s3 = new S3({
 const ONE_HOUR_SECONDS = 60 * 60;
 const SIXTEEN_MB_BYTES = 1024 * 1024 * 16;
 
-export type Resource = "avatars" | "banners";
+export type Resource = "avatars" | "banners" | "attachments";
 
 export const getSignedUrl = <T>(
   key: T extends `${Resource}/${string}` ? T : never,

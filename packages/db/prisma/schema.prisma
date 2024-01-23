@@ -29,10 +29,9 @@ model Session {
 }
 
 model Tweet {
-  id          String   @id @default(uuid())
-  content     String
-  attachments String[]
-  createdAt   DateTime @default(now())
+  id        String   @id @default(uuid())
+  content   String
+  createdAt DateTime @default(now())
 
   author   User   @relation(fields: [authorId], references: [id], onDelete: Cascade)
   authorId String
@@ -41,9 +40,10 @@ model Tweet {
   parent   Tweet?  @relation("replies", fields: [parentId], references: [id], onDelete: Cascade)
   parentId String?
 
-  retweets Retweet[]
-  likes    Like[]
-  views    View[]
+  retweets    Retweet[]
+  likes       Like[]
+  views       View[]
+  attachments Attachment[]
 }
 
 model Retweet {
@@ -92,6 +92,14 @@ model Follow {
   followedId String
 
   @@id([followerId, followedId])
+}
+
+model Attachment {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now())
+
+  tweet   Tweet?  @relation(fields: [tweetId], references: [id])
+  tweetId String?
 }
 
 generator client {

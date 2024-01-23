@@ -8,6 +8,7 @@ import { RetweetInteraction } from "./interaction/retweet";
 import { ViewsInteraction } from "./interaction/views";
 import { useTweet } from "./tweetContext";
 import { UserAvatar } from "../../user-avatar";
+import { AttachmentsView } from "../home/attatchments-view";
 
 export const Tweet: FC = () => {
   const tweet = useTweet();
@@ -31,7 +32,14 @@ export const Tweet: FC = () => {
               </span>
               <span className="ml-0.5 text-sm text-primary/50">{`@${tweet.author.username}`}</span>
             </Link>
-            <p className="mb-2 line-clamp-4 break-words">{tweet.content}</p>
+            <div className="mb-2">
+              <p className="mb-2 line-clamp-4 break-words">{tweet.content}</p>
+              <AttachmentsView
+                attachmentIds={tweet.attachments.map(
+                  (attachment) => attachment.id,
+                )}
+              />
+            </div>
           </div>
           <div className="flex justify-between w-full">
             <ReplyInteraction />

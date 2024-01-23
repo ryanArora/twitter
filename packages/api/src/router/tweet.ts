@@ -12,7 +12,11 @@ export const selectTweetBasic = (sessionUserId: string) => {
   return {
     id: true,
     content: true,
-    attachments: true,
+    attachments: {
+      select: {
+        id: true,
+      },
+    },
     createdAt: true,
     _count: {
       select: {
@@ -72,6 +76,11 @@ export const tweetRouter = createTRPCRouter({
         data: {
           authorId: ctx.session.user.id,
           content: input.content,
+          attachments: {
+            connect: input.attachments.map((attachmentId) => ({
+              id: attachmentId,
+            })),
+          },
           views: {
             create: {
               userId: ctx.session.user.id,

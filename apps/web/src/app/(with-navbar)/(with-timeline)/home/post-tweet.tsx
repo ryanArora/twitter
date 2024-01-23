@@ -10,9 +10,11 @@ import {
 } from "@repo/ui/components/form";
 import { Textarea } from "@repo/ui/components/textarea";
 import { useToast } from "@repo/ui/components/use-toast";
-import { type FC } from "react";
+import { ImageIcon } from "lucide-react";
+import { useRef, type FC } from "react";
 import { useForm } from "react-hook-form";
 import { type z } from "zod";
+import { AttachmentsView } from "./attatchments-view";
 import { useSession } from "../../../sessionContext";
 import { useTimelineSource } from "../timelineSourceContext";
 import { UserAvatar } from "@/app/(with-navbar)/user-avatar";
@@ -30,9 +32,11 @@ export const PostTweet: FC = () => {
   });
 
   const postTweet = api.tweet.create.useMutation();
+  const createAttachment = api.asset.createAttachment.useMutation();
   const { toast } = useToast();
   const utils = api.useUtils();
   const timelineSource = useTimelineSource();
+  const attachmentInputRef = useRef<HTMLInputElement>(null);
 
   function onSubmit(values: z.infer<typeof postTweetSchema>) {
     postTweet.mutate(values, {
@@ -47,7 +51,7 @@ export const PostTweet: FC = () => {
         await utils.timeline[timelineSource.path].cancel();
 
         utils.timeline[timelineSource.path].setInfiniteData(
-          timelineSource.payload,
+          { ...timelineSource.payload },
           (data) => {
             const tweet = {
               _count: {
@@ -59,7 +63,9 @@ export const PostTweet: FC = () => {
               id,
               createdAt: new Date(Date.now()),
               content: values.content,
-              attachments: values.attachments,
+              attachments: values.attachments.map((attachmentId) => ({
+                id: attachmentId,
+              })),
               author: user,
               retweets: [],
               likes: [],
@@ -81,6 +87,58 @@ export const PostTweet: FC = () => {
             };
           },
         );
+      },
+    });
+  }
+
+  function onAttach(file: File) {
+    createAttachment.mutate(undefined, {
+      onError: () => {
+        toast({
+          title: "Error",
+          description: "Error creating attachment.",
+        });
+      },
+      onSuccess: async (attachment) => {
+        const presignedPost = attachment.presignedPost;
+
+        const data = new FormData();
+        Object.entries(presignedPost.fields).forEach(([field, value]) => {
+          data.append(field, value);
+        });
+        data.append("Content-Type", file.type);
+        data.append("file", file);
+
+        const response = await fetch(presignedPost.url, {
+          method: "POST",
+          body: data,
+        });
+
+        if (response.status === 400) {
+          toast({
+            title: "Error",
+            description: "File too large.",
+          });
+          return;
+        }
+
+        if (response.status === 403) {
+          toast({
+            title: "Error",
+            description: "Invalid file type.",
+          });
+          return;
+        }
+
+        form.setValue("attachments", [
+          ...form.getValues().attachments,
+          attachment.attachmentId,
+        ]);
+
+        toast({
+          title: "Success",
+          description: "File uploaded.",
+        });
       },
     });
   }
@@ -107,8 +165,41 @@ export const PostTweet: FC = () => {
             )}
           />
         </div>
-        <div className="flex justify-end">
-          <Button type="submit">Post</Button>
+        <div className="ml-14">
+          <AttachmentsView attachmentIds={form.watch("attachments")} />
+        </div>
+        <div className="flex justify-between ml-14 border-t p-2">
+          <div>
+            <Button
+              className="px-1.5 m-0 rounded-full text-twitter-blue hover:text-twitter-blue hover:bg-twitter-blue/10 transition-colors"
+              type="button"
+              variant="ghost"
+              resource="attachments"
+              onClick={(e) => {
+                e.preventDefault();
+                attachmentInputRef.current!.click();
+              }}
+            >
+              <ImageIcon className="p-0.5" />
+            </Button>
+            <input
+              className="hidden"
+              ref={attachmentInputRef}
+              type="file"
+              accept="image/*"
+              onChange={(e) => {
+                e.preventDefault();
+
+                const files = e.target.files;
+                if (!files) return;
+                const file = files.item(0);
+                if (!file) return;
+
+                onAttach(file);
+              }}
+            />
+          </div>
+          <Button type="submit">Tweet</Button>
         </div>
       </form>
     </Form>
