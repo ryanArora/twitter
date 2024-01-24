@@ -24,7 +24,7 @@ export const User: FC<{ user: Expand<Session["user"]> }> = ({ user }) => {
       <DropdownMenuTrigger asChild>
         <div className="flex items-center justify-between p-2 m-2 hover:bg-accent hover:cursor-text rounded-3xl w-64">
           <div className="flex items-center truncate">
-            <UserAvatar user={user} />
+            <UserAvatar user={user} width={40} height={40} onClick={null} />
             <div className="mx-2 truncate">
               <p className="text-md truncate">{user.name}</p>
               <p className="text-sm text-primary/50 truncate">{`@${user.username}`}</p>

@@ -1,18 +1,28 @@
-import { cn } from "@repo/ui/utils";
+import { Image } from "@repo/ui/components/image";
 import { type FC } from "react";
 import { api } from "@/trpc/react";
 
 export const Attachment: FC<{
   className?: string;
-  attachmentId: string;
-}> = ({ className, attachmentId }) => {
-  const { data: url } = api.asset.getAttachmentUrl.useQuery({
-    attachmentId,
-  });
+  attachment: { id: string; width: number; height: number };
+}> = ({ className, attachment }) => {
+  const { data: url } = api.asset.getAttachmentUrl.useQuery(
+    {
+      attachmentId: attachment.id,
+    },
+    {
+      gcTime: 1000 * 60 * 5,
+    },
+  );
 
-  if (!url) {
-    return <div className={cn("bg-red-900", className)}></div>;
-  }
-
-  return <img className={cn("", className)} src={url} alt="attachment image" />;
+  return (
+    <Image
+      className={className}
+      src={url}
+      alt="attachment image"
+      width={attachment.width}
+      height={attachment.height}
+      onClick="focus"
+    />
+  );
 };

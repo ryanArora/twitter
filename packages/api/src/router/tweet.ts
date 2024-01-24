@@ -15,6 +15,8 @@ export const selectTweetBasic = (sessionUserId: string) => {
     attachments: {
       select: {
         id: true,
+        width: true,
+        height: true,
       },
     },
     createdAt: true,

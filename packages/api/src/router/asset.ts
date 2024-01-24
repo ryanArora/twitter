@@ -19,17 +19,22 @@ export const assetRouter = createTRPCRouter({
     .query(({ input }) => {
       return getSignedUrl(`banners/${input.userId}`);
     }),
-  createAttachment: protectedProcedure.mutation(async () => {
-    const attachment = await db.attachment.create({
-      data: {},
-      select: { id: true },
-    });
+  createAttachment: protectedProcedure
+    .input(z.object({ width: z.number(), height: z.number() }))
+    .mutation(async ({ input }) => {
+      const attachment = await db.attachment.create({
+        data: {
+          width: input.width,
+          height: input.height,
+        },
+        select: { id: true },
+      });
 
-    return {
-      attachmentId: attachment.id,
-      presignedPost: postSignedUrl(`attachments/${attachment.id}`),
-    };
-  }),
+      return {
+        attachmentId: attachment.id,
+        presignedPost: postSignedUrl(`attachments/${attachment.id}`),
+      };
+    }),
   getAttachmentUrl: protectedProcedure
     .input(z.object({ attachmentId: z.string() }))
     .query(({ input }) => {

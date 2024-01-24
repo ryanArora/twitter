@@ -113,7 +113,7 @@ export const timelineRouter = createTRPCRouter({
         where: {
           authorId: input.profileId,
           attachments: {
-            isEmpty: false,
+            some: {},
           },
         },
         select: selectTweetBasic(ctx.session.user.id),

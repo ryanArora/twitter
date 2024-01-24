@@ -96,6 +96,8 @@ model Follow {
 
 model Attachment {
   id        String   @id @default(uuid())
+  width     Int
+  height    Int
   createdAt DateTime @default(now())
 
   tweet   Tweet?  @relation(fields: [tweetId], references: [id])

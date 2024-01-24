@@ -26,6 +26,7 @@ export function useSession(): Session {
   const session = useContext(SessionContext);
 
   if (!session) {
+    window.location.href = "/";
     throw new Error("No session");
   }
 

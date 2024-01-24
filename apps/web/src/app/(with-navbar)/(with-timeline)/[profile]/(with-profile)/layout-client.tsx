@@ -1,11 +1,7 @@
 "use client";
 
-import {
-  Avatar,
-  AvatarFallback,
-  AvatarImage,
-} from "@repo/ui/components/avatar";
 import { Button } from "@repo/ui/components/button";
+import { Image } from "@repo/ui/components/image";
 import { formatNumberShort } from "@repo/utils/str";
 import { ArrowLeft, CalendarRangeIcon } from "lucide-react";
 import Link from "next/link";
@@ -53,22 +49,22 @@ export const LayoutClient: FC<{ children: ReactNode }> = ({ children }) => {
             )} tweets`}</p>
           </div>
         </div>
-        {/*
-            This "Avatar" is the banner.
-            We do this to take advantage of the AvatarFallback component.
-          */}
-        <Avatar className="rounded-none w-full h-[200px]">
-          <AvatarImage
-            src={bannerUrl}
-            alt={`${profile.username}'s banner`}
-            draggable={false}
-          />
-          <AvatarFallback className="rounded-none w-full h-[200px]" />
-        </Avatar>
+        <Image
+          className="object-cover"
+          src={bannerUrl}
+          alt={`${profile.username}'s banner`}
+          width={598}
+          height={200}
+          draggable={false}
+          onClick="focus"
+        />
         <div className="flex justify-between">
           <UserAvatar
             user={profile}
-            className="w-[128px] h-[128px] mt-[-64px] ml-[10px]"
+            className="mt-[-64px] ml-[10px]"
+            width={128}
+            height={128}
+            onClick="focus"
           />
           <div className="m-4">
             {profile.id === session.user.id ? (

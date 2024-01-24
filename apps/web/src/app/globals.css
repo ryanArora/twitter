@@ -59,3 +59,7 @@
   text-decoration-skip-ink: none;
   min-width: 0;
 }
+
+*:focus {
+  outline: none;
+}

@@ -2,11 +2,6 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { updateUserSchema } from "@repo/api/schemas/user";
-import {
-  Avatar,
-  AvatarFallback,
-  AvatarImage,
-} from "@repo/ui/components/avatar";
 import { Button } from "@repo/ui/components/button";
 import {
   Form,
@@ -16,6 +11,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@repo/ui/components/form";
+import { Image } from "@repo/ui/components/image";
 import { Input } from "@repo/ui/components/input";
 import { Textarea } from "@repo/ui/components/textarea";
 import { useToast } from "@repo/ui/components/use-toast";
@@ -156,14 +152,15 @@ export const EditProfile: FC<{ profile: Profile }> = ({ profile }) => {
         <p className="mb-4 font-semibold">Preview</p>
         <div>
           <div className="relative w-full h-[200px]">
-            <Avatar className="block w-full h-full rounded-none">
-              <AvatarImage
-                src={bannerUrl}
-                alt={`${username}'s banner`}
-                draggable={false}
-              />
-              <AvatarFallback className="rounded-none w-full h-full" />
-            </Avatar>
+            <Image
+              className="object-cover"
+              src={bannerUrl}
+              alt={`${username}'s banner`}
+              draggable={false}
+              width={566}
+              height={200}
+            />
+
             <div
               className="absolute bottom-0 w-full h-full transition-opacity opacity-0 hover:cursor-pointer hover:opacity-[50%] bg-black flex justify-center items-center"
               onClick={(e) => {
@@ -183,6 +180,8 @@ export const EditProfile: FC<{ profile: Profile }> = ({ profile }) => {
             <UserAvatar
               className="w-full h-full hover:cursor-pointer"
               user={profile}
+              width={128}
+              height={128}
               onClick={(e) => {
                 e.preventDefault();
                 avatarUploadRef.current!.click();

@@ -1,6 +1,6 @@
 "use client";
 
-import { type postTweetSchema } from "@repo/api/schemas/tweet";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@repo/ui/components/button";
 import {
   FormControl,
@@ -13,18 +13,34 @@ import { useToast } from "@repo/ui/components/use-toast";
 import { ImageIcon } from "lucide-react";
 import { useRef, type FC } from "react";
 import { useForm } from "react-hook-form";
-import { type z } from "zod";
+import { z } from "zod";
 import { AttachmentsView } from "./attatchments-view";
 import { useSession } from "../../../sessionContext";
 import { useTimelineSource } from "../timelineSourceContext";
 import { UserAvatar } from "@/app/(with-navbar)/user-avatar";
 import { api } from "@/trpc/react";
 
+export const schema = z.object({
+  content: z
+    .string()
+    .min(1, "Your tweet content must not be empty")
+    .max(280, "Your tweet must be no more than 280 characters long."),
+  attachments: z
+    .array(
+      z.object({
+        id: z.string().min(1),
+        width: z.number().int(),
+        height: z.number().int(),
+      }),
+    )
+    .max(4),
+});
+
 export const PostTweet: FC = () => {
   const session = useSession();
   const user = session.user;
 
-  const form = useForm<z.infer<typeof postTweetSchema>>({
+  const form = useForm<z.infer<typeof schema>>({
     defaultValues: {
       content: "",
       attachments: [],
@@ -38,116 +54,150 @@ export const PostTweet: FC = () => {
   const timelineSource = useTimelineSource();
   const attachmentInputRef = useRef<HTMLInputElement>(null);
 
-  function onSubmit(values: z.infer<typeof postTweetSchema>) {
-    postTweet.mutate(values, {
-      onError: (err) => {
-        toast({
-          title: "Error",
-          description: err.message,
-        });
+  function onSubmit(values: z.infer<typeof schema>) {
+    postTweet.mutate(
+      {
+        ...values,
+        attachments: values.attachments.map((attachment) => attachment.id),
       },
-      onSuccess: async ({ id }) => {
-        form.reset();
-        await utils.timeline[timelineSource.path].cancel();
+      {
+        onError: (err) => {
+          toast({
+            title: "Error",
+            description: err.message,
+          });
+        },
+        onSuccess: async ({ id }) => {
+          form.reset();
+          await utils.timeline[timelineSource.path].cancel();
 
-        utils.timeline[timelineSource.path].setInfiniteData(
-          { ...timelineSource.payload },
-          (data) => {
-            const tweet = {
-              _count: {
-                likes: 0,
-                replies: 0,
-                retweets: 0,
-                views: 1,
-              },
-              id,
-              createdAt: new Date(Date.now()),
-              content: values.content,
-              attachments: values.attachments.map((attachmentId) => ({
-                id: attachmentId,
-              })),
-              author: user,
-              retweets: [],
-              likes: [],
-            };
+          utils.timeline[timelineSource.path].setInfiniteData(
+            { ...timelineSource.payload },
+            (data) => {
+              const tweet = {
+                _count: {
+                  likes: 0,
+                  replies: 0,
+                  retweets: 0,
+                  views: 1,
+                },
+                id,
+                createdAt: new Date(Date.now()),
+                content: values.content,
+                attachments: values.attachments,
+                author: user,
+                retweets: [],
+                likes: [],
+              };
 
-            if (!data) {
+              if (!data) {
+                return {
+                  pages: [{ tweets: [tweet], nextCursor: undefined }],
+                  pageParams: [],
+                };
+              }
+
               return {
-                pages: [{ tweets: [tweet], nextCursor: undefined }],
+                pages: [
+                  { tweets: [tweet], nextCursor: undefined },
+                  ...data.pages,
+                ],
                 pageParams: [],
               };
-            }
-
-            return {
-              pages: [
-                { tweets: [tweet], nextCursor: undefined },
-                ...data.pages,
-              ],
-              pageParams: [],
-            };
-          },
-        );
+            },
+          );
+        },
       },
+    );
+  }
+
+  function getImageDimensions(
+    file: File,
+  ): Promise<{ width: number; height: number }> {
+    return new Promise((resolve) => {
+      const fr = new FileReader();
+      fr.readAsDataURL(file);
+      fr.onload = () => {
+        const img = new Image();
+        img.src = fr.result!.toString();
+        img.onload = () => {
+          resolve({ width: img.width, height: img.height });
+        };
+      };
     });
   }
 
-  function onAttach(file: File) {
-    createAttachment.mutate(undefined, {
-      onError: () => {
-        toast({
-          title: "Error",
-          description: "Error creating attachment.",
-        });
-      },
-      onSuccess: async (attachment) => {
-        const presignedPost = attachment.presignedPost;
+  async function onAttach(file: File) {
+    const { width, height } = await getImageDimensions(file);
 
-        const data = new FormData();
-        Object.entries(presignedPost.fields).forEach(([field, value]) => {
-          data.append(field, value);
-        });
-        data.append("Content-Type", file.type);
-        data.append("file", file);
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
 
-        const response = await fetch(presignedPost.url, {
-          method: "POST",
-          body: data,
-        });
-
-        if (response.status === 400) {
+    createAttachment.mutate(
+      { width, height },
+      {
+        onError: () => {
           toast({
             title: "Error",
-            description: "File too large.",
+            description: "Error creating attachment.",
           });
-          return;
-        }
+        },
+        onSuccess: async (attachment) => {
+          const presignedPost = attachment.presignedPost;
 
-        if (response.status === 403) {
+          const data = new FormData();
+          Object.entries(presignedPost.fields).forEach(([field, value]) => {
+            data.append(field, value);
+          });
+          data.append("Content-Type", file.type);
+          data.append("file", file);
+
+          const response = await fetch(presignedPost.url, {
+            method: "POST",
+            body: data,
+          });
+
+          if (response.status === 400) {
+            toast({
+              title: "Error",
+              description: "File too large.",
+            });
+            return;
+          }
+
+          if (response.status === 403) {
+            toast({
+              title: "Error",
+              description: "Invalid file type.",
+            });
+            return;
+          }
+
+          form.setValue("attachments", [
+            ...form.getValues().attachments,
+            { id: attachment.attachmentId, width, height },
+          ]);
+
           toast({
-            title: "Error",
-            description: "Invalid file type.",
+            title: "Success",
+            description: "File uploaded.",
           });
-          return;
-        }
-
-        form.setValue("attachments", [
-          ...form.getValues().attachments,
-          attachment.attachmentId,
-        ]);
-
-        toast({
-          title: "Success",
-          description: "File uploaded.",
-        });
+        },
       },
-    });
+    );
   }
 
   return (
     <Form {...form}>
       <form className="p-2 border" onSubmit={form.handleSubmit(onSubmit)}>
         <div className="flex p-2 h-full">
-          <UserAvatar className="my-2 mr-1" user={user} linkToProfile={true} />
+          <UserAvatar
+            className="my-2 mr-1"
+            user={user}
+            onClick="link"
+            width={44}
+            height={44}
+          />
           <FormField
             control={form.control}
             name="content"
@@ -166,7 +216,7 @@ export const PostTweet: FC = () => {
           />
         </div>
         <div className="ml-14">
-          <AttachmentsView attachmentIds={form.watch("attachments")} />
+          <AttachmentsView attachments={form.watch("attachments")} />
         </div>
         <div className="flex justify-between ml-14 border-t p-2">
           <div>

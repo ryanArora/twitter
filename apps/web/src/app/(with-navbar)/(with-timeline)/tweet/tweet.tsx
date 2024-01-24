@@ -1,6 +1,6 @@
 "use client";
 
-import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { type FC } from "react";
 import { LikeInteraction } from "./interaction/like";
 import { ReplyInteraction } from "./interaction/reply";
@@ -12,33 +12,46 @@ import { AttachmentsView } from "../home/attatchments-view";
 
 export const Tweet: FC = () => {
   const tweet = useTweet();
+  const router = useRouter();
 
   return (
-    <Link
+    <div
       className="flex border p-2"
-      href={`/${tweet.author.username}/${tweet.id}`}
+      onClick={(e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        e.nativeEvent.stopImmediatePropagation();
+        e.nativeEvent.stopPropagation();
+        router.push(`/${tweet.author.username}/${tweet.id}`);
+      }}
     >
       <div className="flex w-full">
         <UserAvatar
-          className="mx-2 h-[44px] w-[44px]"
+          className="mx-2"
+          width={44}
+          height={44}
           user={tweet.author}
           linkToProfile={true}
         />
         <div className="flex flex-col w-full">
           <div className="ml-1">
-            <Link href={`/${tweet.author.username}`}>
+            <div
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                e.nativeEvent.stopImmediatePropagation();
+                e.nativeEvent.stopPropagation();
+                router.push(`/${tweet.author.username}`);
+              }}
+            >
               <span className="mr-0.5 hover:underline font-semibold">
                 {tweet.author.name}
               </span>
               <span className="ml-0.5 text-sm text-primary/50">{`@${tweet.author.username}`}</span>
-            </Link>
+            </div>
             <div className="mb-2">
               <p className="mb-2 line-clamp-4 break-words">{tweet.content}</p>
-              <AttachmentsView
-                attachmentIds={tweet.attachments.map(
-                  (attachment) => attachment.id,
-                )}
-              />
+              <AttachmentsView attachments={tweet.attachments} />
             </div>
           </div>
           <div className="flex justify-between w-full">
@@ -50,6 +63,6 @@ export const Tweet: FC = () => {
           </div>
         </div>
       </div>
-    </Link>
+    </div>
   );
 };
