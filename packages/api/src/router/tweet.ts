@@ -74,14 +74,22 @@ export const tweetRouter = createTRPCRouter({
   create: protectedProcedure
     .input(postTweetSchema)
     .mutation(async ({ ctx, input }) => {
+      const attachments = await db.attachment.findMany({
+        where: {
+          userId: ctx.session.user.id,
+          id: {
+            in: input.attachmentIds,
+          },
+        },
+        select: { id: true },
+      });
+
       return await db.tweet.create({
         data: {
           authorId: ctx.session.user.id,
           content: input.content,
           attachments: {
-            connect: input.attachments.map((attachmentId) => ({
-              id: attachmentId,
-            })),
+            connect: attachments,
           },
           views: {
             create: {

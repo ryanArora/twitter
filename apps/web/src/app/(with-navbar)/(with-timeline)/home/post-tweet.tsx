@@ -1,6 +1,5 @@
 "use client";
 
-import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@repo/ui/components/button";
 import {
   FormControl,
@@ -58,7 +57,7 @@ export const PostTweet: FC = () => {
     postTweet.mutate(
       {
         ...values,
-        attachments: values.attachments.map((attachment) => attachment.id),
+        attachmentIds: values.attachments.map((attachment) => attachment.id),
       },
       {
         onError: (err) => {

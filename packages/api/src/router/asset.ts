@@ -21,9 +21,11 @@ export const assetRouter = createTRPCRouter({
     }),
   createAttachment: protectedProcedure
     .input(z.object({ width: z.number(), height: z.number() }))
-    .mutation(async ({ input }) => {
+    .mutation(async ({ ctx, input }) => {
       const attachment = await db.attachment.create({
         data: {
+          userId: ctx.session.user.id,
+          tweetId: null,
           width: input.width,
           height: input.height,
         },
