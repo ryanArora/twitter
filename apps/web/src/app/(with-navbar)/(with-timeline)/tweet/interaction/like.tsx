@@ -122,10 +122,7 @@ export const LikeInteraction = forwardRef<
       type="button"
       variant="ghost"
       onClick={(e) => {
-        e.preventDefault();
         e.stopPropagation();
-        e.nativeEvent.stopImmediatePropagation();
-        e.nativeEvent.stopPropagation();
 
         if (active) {
           unlikeMutation.mutate({ tweetId: tweet.id });

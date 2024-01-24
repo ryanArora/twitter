@@ -248,7 +248,12 @@ export const PostTweet: FC = () => {
               }}
             />
           </div>
-          <Button type="submit">Tweet</Button>
+          <Button
+            className="text-white bg-twitter-blue hover:bg-twitter-blue/90 transition-colors rounded-full font-bold"
+            type="submit"
+          >
+            Tweet
+          </Button>
         </div>
       </form>
     </Form>

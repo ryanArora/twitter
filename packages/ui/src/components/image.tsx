@@ -66,10 +66,7 @@ export const Image = forwardRef<
             className,
           )}
           onClick={(e) => {
-            e.preventDefault();
             e.stopPropagation();
-            e.nativeEvent.stopImmediatePropagation();
-            e.nativeEvent.stopPropagation();
 
             if (onClick === "link") {
               window.location.href = href;
@@ -101,10 +98,7 @@ export const Image = forwardRef<
           )}
           hidden={!isLoaded}
           onClick={(e) => {
-            e.preventDefault();
             e.stopPropagation();
-            e.nativeEvent.stopImmediatePropagation();
-            e.nativeEvent.stopPropagation();
 
             if (onClick === "focus") {
               setOpen(true);
@@ -136,10 +130,7 @@ export const Image = forwardRef<
           className={cn("bg-zinc-800", className)}
           hidden={isLoaded}
           onClick={(e) => {
-            e.preventDefault();
             e.stopPropagation();
-            e.nativeEvent.stopImmediatePropagation();
-            e.nativeEvent.stopPropagation();
           }}
         ></div>
         {onClick === "focus" ? (

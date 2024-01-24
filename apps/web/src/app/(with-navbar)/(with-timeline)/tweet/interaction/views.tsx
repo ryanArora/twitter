@@ -26,10 +26,7 @@ export const ViewsInteraction = forwardRef<
       type="button"
       variant="ghost"
       onClick={(e) => {
-        e.preventDefault();
         e.stopPropagation();
-        e.nativeEvent.stopImmediatePropagation();
-        e.nativeEvent.stopPropagation();
       }}
     >
       <BarChart2Icon />

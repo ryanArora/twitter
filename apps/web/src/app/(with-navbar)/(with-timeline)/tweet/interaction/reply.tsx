@@ -26,10 +26,7 @@ export const ReplyInteraction = forwardRef<
       type="button"
       variant="ghost"
       onClick={(e) => {
-        e.preventDefault();
         e.stopPropagation();
-        e.nativeEvent.stopImmediatePropagation();
-        e.nativeEvent.stopPropagation();
       }}
     >
       <MessageCircleIcon />
