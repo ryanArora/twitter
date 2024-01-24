@@ -86,12 +86,12 @@ function map_two(one: Attachment, two: Attachment) {
     {
       id: one.id,
       width: 256,
-      height: Math.min(one.height, 256),
+      height: 256,
     },
     {
       id: two.id,
       width: 256,
-      height: Math.min(two.height, 256),
+      height: 256,
     },
   ];
 }
@@ -101,17 +101,17 @@ function map_three(one: Attachment, two: Attachment, three: Attachment) {
     {
       id: one.id,
       width: 256,
-      height: Math.min(one.height, 256),
+      height: 256,
     },
     {
       id: two.id,
       width: 256,
-      height: Math.min(two.height, 128),
+      height: 128,
     },
     {
       id: three.id,
       width: 256,
-      height: Math.min(two.height, 128),
+      height: 128,
     },
   ];
 }
@@ -126,22 +126,22 @@ function map_four(
     {
       id: one.id,
       width: 256,
-      height: Math.min(one.height, 128),
+      height: 128,
     },
     {
       id: two.id,
       width: 256,
-      height: Math.min(one.height, 128),
+      height: 128,
     },
     {
       id: three.id,
       width: 256,
-      height: Math.min(one.height, 128),
+      height: 128,
     },
     {
       id: four.id,
       width: 256,
-      height: Math.min(one.height, 128),
+      height: 128,
     },
   ];
 }
