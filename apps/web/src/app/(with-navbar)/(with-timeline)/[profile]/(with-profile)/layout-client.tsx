@@ -57,6 +57,7 @@ export const LayoutClient: FC<{ children: ReactNode }> = ({ children }) => {
           height={200}
           draggable={false}
           onClick="focus"
+          fallbackText=""
         />
         <div className="flex justify-between">
           <UserAvatar

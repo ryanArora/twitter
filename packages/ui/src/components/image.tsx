@@ -5,7 +5,6 @@ import { useRouter } from "next/navigation";
 import React, {
   type ComponentPropsWithoutRef,
   useState,
-  type ReactNode,
   forwardRef,
   type ElementRef,
 } from "react";
@@ -25,7 +24,7 @@ export type ImageProps = {
   width: number;
   height: number;
   href?: string;
-  fallbackText?: ReactNode;
+  fallbackText?: string;
   onClick?:
     | "focus"
     | "link"
@@ -74,7 +73,7 @@ export const Image = forwardRef<
             }
           }}
         >
-          {fallbackText ? (
+          {fallbackText !== undefined ? (
             <p style={{ fontSize: Math.min(width, height) / 2.5 }}>
               {fallbackText}
             </p>

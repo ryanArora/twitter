@@ -159,6 +159,7 @@ export const EditProfile: FC<{ profile: Profile }> = ({ profile }) => {
               draggable={false}
               width={566}
               height={200}
+              fallbackText=""
             />
 
             <div
