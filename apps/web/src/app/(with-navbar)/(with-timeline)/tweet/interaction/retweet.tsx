@@ -125,6 +125,9 @@ export const RetweetInteraction = forwardRef<
       variant="ghost"
       onClick={(e) => {
         e.preventDefault();
+        e.stopPropagation();
+        e.nativeEvent.stopImmediatePropagation();
+        e.nativeEvent.stopPropagation();
 
         if (active) {
           unretweetMutation.mutate({ tweetId: tweet.id });

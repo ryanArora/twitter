@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { type FC } from "react";
 import { LikeInteraction } from "./interaction/like";
@@ -16,7 +17,7 @@ export const Tweet: FC = () => {
 
   return (
     <div
-      className="flex border p-2"
+      className="flex border-t border-x p-2 hover:cursor-pointer hover:bg-secondary/10"
       onClick={(e) => {
         e.preventDefault();
         e.stopPropagation();
@@ -35,7 +36,7 @@ export const Tweet: FC = () => {
         />
         <div className="flex flex-col w-full">
           <div className="ml-1">
-            <div
+            <Link
               onClick={(e) => {
                 e.preventDefault();
                 e.stopPropagation();
@@ -43,12 +44,13 @@ export const Tweet: FC = () => {
                 e.nativeEvent.stopPropagation();
                 router.push(`/${tweet.author.username}`);
               }}
+              href={`/${tweet.author.username}`}
             >
               <span className="mr-0.5 hover:underline font-semibold">
                 {tweet.author.name}
               </span>
               <span className="ml-0.5 text-sm text-primary/50">{`@${tweet.author.username}`}</span>
-            </div>
+            </Link>
             <div className="mb-2">
               <p className="mb-2 line-clamp-4 break-words">{tweet.content}</p>
               <AttachmentsView attachments={tweet.attachments} />
