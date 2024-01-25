@@ -1,10 +1,8 @@
 /** @type {import("next").NextConfig} */
 const nextConfig = {
   images: {
+    unoptimized: true,
     remotePatterns: [
-      {
-        hostname: "pbs.twimg.com",
-      },
       {
         hostname: "s3.ca-central-1.amazonaws.com",
       },

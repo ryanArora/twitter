@@ -5,11 +5,20 @@ type Attachment = {
   height: number;
 };
 
-export function mapAttachmentDimensions(
+type AttachmentExtra = {
+  id: string;
+  url: string;
+  width: number;
+  height: number;
+  nativeWidth: number;
+  nativeHeight: number;
+};
+
+export function attachmentDimensions(
   attachments: Attachment[],
-): Attachment[] {
+): AttachmentExtra[] {
   if (attachments.length === 0) {
-    return attachments;
+    return [];
   }
 
   if (attachments.length === 1) {
@@ -36,7 +45,7 @@ export function mapAttachmentDimensions(
   throw new Error();
 }
 
-function map_one(one: Attachment): Attachment[] {
+function map_one(one: Attachment): AttachmentExtra[] {
   const width = one.width;
   const height = one.height;
 
@@ -47,6 +56,8 @@ function map_one(one: Attachment): Attachment[] {
     return [
       {
         ...one,
+        nativeWidth: one.width,
+        nativeHeight: one.height,
         width: 512,
         height: 512,
       },
@@ -78,21 +89,27 @@ function map_one(one: Attachment): Attachment[] {
   return [
     {
       ...one,
+      nativeWidth: one.width,
+      nativeHeight: one.height,
       width: newWidth,
       height: newHeight,
     },
   ];
 }
 
-function map_two(one: Attachment, two: Attachment): Attachment[] {
+function map_two(one: Attachment, two: Attachment): AttachmentExtra[] {
   return [
     {
       ...one,
+      nativeWidth: one.width,
+      nativeHeight: one.height,
       width: 256,
       height: 256,
     },
     {
       ...two,
+      nativeWidth: two.width,
+      nativeHeight: two.height,
       width: 256,
       height: 256,
     },
@@ -103,20 +120,26 @@ function map_three(
   one: Attachment,
   two: Attachment,
   three: Attachment,
-): Attachment[] {
+): AttachmentExtra[] {
   return [
     {
       ...one,
+      nativeWidth: one.width,
+      nativeHeight: one.height,
       width: 256,
       height: 256,
     },
     {
       ...two,
+      nativeWidth: two.width,
+      nativeHeight: two.height,
       width: 256,
       height: 128,
     },
     {
       ...three,
+      nativeWidth: three.width,
+      nativeHeight: three.height,
       width: 256,
       height: 128,
     },
@@ -128,25 +151,33 @@ function map_four(
   two: Attachment,
   three: Attachment,
   four: Attachment,
-): Attachment[] {
+): AttachmentExtra[] {
   return [
     {
       ...one,
+      nativeWidth: one.width,
+      nativeHeight: one.height,
       width: 256,
       height: 128,
     },
     {
       ...two,
+      nativeWidth: two.width,
+      nativeHeight: two.height,
       width: 256,
       height: 128,
     },
     {
       ...three,
+      nativeWidth: three.width,
+      nativeHeight: three.height,
       width: 256,
       height: 128,
     },
     {
       ...four,
+      nativeWidth: four.width,
+      nativeHeight: four.height,
       width: 256,
       height: 128,
     },

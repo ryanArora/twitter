@@ -19,7 +19,8 @@ export type UserAvatarProps = {
 
 export const UserAvatar = forwardRef<
   React.ElementRef<typeof Image>,
-  React.ComponentPropsWithoutRef<typeof Image> & UserAvatarProps
+  Omit<React.ComponentPropsWithoutRef<typeof Image>, "alt" | "src"> &
+    UserAvatarProps
 >(
   (
     { className, user, width = 40, height = 40, onClick = "link", ...props },
@@ -29,7 +30,7 @@ export const UserAvatar = forwardRef<
       <Image
         className={cn("rounded-full", className)}
         src={user.avatarUrl}
-        alt={`${user.name}'s avatar`}
+        alt={`@${user.username}'s avatar`}
         width={width}
         height={height}
         fallbackText={getInitials(user.name)}

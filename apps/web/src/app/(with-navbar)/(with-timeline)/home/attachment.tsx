@@ -3,7 +3,14 @@ import { type FC } from "react";
 
 export const Attachment: FC<{
   className?: string;
-  attachment: { id: string; url: string; width: number; height: number };
+  attachment: {
+    id: string;
+    url: string;
+    width: number;
+    height: number;
+    nativeWidth: number;
+    nativeHeight: number;
+  };
 }> = ({ className, attachment }) => {
   return (
     <Image
@@ -12,6 +19,8 @@ export const Attachment: FC<{
       alt="attachment image"
       width={attachment.width}
       height={attachment.height}
+      nativeWidth={attachment.nativeWidth}
+      nativeHeight={attachment.nativeHeight}
       onClick="focus"
     />
   );

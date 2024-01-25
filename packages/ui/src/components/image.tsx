@@ -1,15 +1,13 @@
 "use client";
 
 import { ImageOffIcon } from "lucide-react";
+import NextImage from "next/image";
 import { useRouter } from "next/navigation";
 import React, {
   type ComponentPropsWithoutRef,
   useState,
   forwardRef,
   type ElementRef,
-  useEffect,
-  useRef,
-  useImperativeHandle,
 } from "react";
 import {
   Dialog,
@@ -22,10 +20,10 @@ import { cn } from "../utils";
 
 export type ImageProps = {
   className?: string;
-  src?: string;
-  alt?: string;
   width: number;
   height: number;
+  nativeWidth?: number;
+  nativeHeight?: number;
   href?: string;
   fallbackText?: string;
   onClick?:
@@ -36,8 +34,8 @@ export type ImageProps = {
 };
 
 export const Image = forwardRef<
-  ElementRef<"img">,
-  Omit<ComponentPropsWithoutRef<"img">, "onClick"> & ImageProps
+  ElementRef<typeof NextImage>,
+  Omit<ComponentPropsWithoutRef<typeof NextImage>, "onClick"> & ImageProps
 >(
   (
     {
@@ -46,6 +44,8 @@ export const Image = forwardRef<
       alt,
       width,
       height,
+      nativeWidth = width,
+      nativeHeight = height,
       href = "/",
       fallbackText,
       onClick,
@@ -53,69 +53,34 @@ export const Image = forwardRef<
     },
     ref,
   ) => {
-    const [isError, setError] = useState(false);
+    type Status = "loading" | "loaded" | "error";
+    const [status, setStatus] = useState<Status>("loading");
     const [isOpen, setOpen] = useState(false);
-    const [isLoaded, setLoaded] = useState(false);
     const router = useRouter();
-
-    const imageRef = useRef<HTMLImageElement>(null);
-
-    // set imageRef to the forwarded ref
-    useImperativeHandle(
-      ref,
-      () => {
-        return imageRef.current!;
-      },
-      [],
-    );
-
-    useEffect(() => {
-      if (imageRef.current!.complete) {
-        setLoaded(true);
-      }
-    }, []);
-
-    if (isError) {
-      return (
-        <div
-          style={{ width, height, minWidth: width, minHeight: height }}
-          className={cn(
-            "bg-zinc-800 flex items-center justify-center",
-            onClick === "link" ? "hover:cursor-pointer" : null,
-            className,
-          )}
-          onClick={(e) => {
-            e.stopPropagation();
-
-            if (onClick === "link") {
-              window.location.href = href;
-              return;
-            }
-          }}
-        >
-          {fallbackText !== undefined ? (
-            <p style={{ fontSize: Math.min(width, height) / 2.5 }}>
-              {fallbackText}
-            </p>
-          ) : (
-            <ImageOffIcon />
-          )}
-          <span className="sr-only">Error loading image</span>
-        </div>
-      );
-    }
 
     return (
       <>
-        <img
-          style={{ width, height, minWidth: width, minHeight: height }}
+        <NextImage
+          hidden={status !== "loaded"}
+          style={{
+            width,
+            height,
+            minWidth: width,
+            minHeight: height,
+          }}
           className={cn(
             onClick === "focus" || onClick === "link"
               ? "hover:cursor-pointer"
               : null,
             className,
           )}
-          hidden={!isLoaded}
+          src={src}
+          alt={alt}
+          width={width}
+          height={height}
+          priority
+          ref={ref}
+          {...props}
           onClick={(e) => {
             e.stopPropagation();
 
@@ -133,25 +98,49 @@ export const Image = forwardRef<
               onClick(e);
             }
           }}
-          onLoad={() => {
-            setLoaded(true);
-          }}
           onError={() => {
-            setError(true);
+            setStatus("error");
           }}
-          src={src}
-          alt={alt}
-          ref={imageRef}
-          {...props}
+          onLoad={() => {
+            setStatus("loaded");
+          }}
         />
-        <div
-          style={{ width, height, minWidth: width, minHeight: height }}
-          className={cn("bg-zinc-800", className)}
-          hidden={isLoaded}
-          onClick={(e) => {
-            e.stopPropagation();
-          }}
-        ></div>
+        {status === "loading" ? (
+          <div
+            style={{ width, height, minWidth: width, minHeight: height }}
+            className={cn("bg-zinc-800", className)}
+            onClick={(e) => {
+              e.stopPropagation();
+            }}
+          ></div>
+        ) : null}
+        {status === "error" ? (
+          <div
+            style={{ width, height, minWidth: width, minHeight: height }}
+            className={cn(
+              "bg-zinc-800 flex items-center justify-center",
+              onClick === "link" ? "hover:cursor-pointer" : null,
+              className,
+            )}
+            onClick={(e) => {
+              e.stopPropagation();
+
+              if (onClick === "link") {
+                window.location.href = href;
+                return;
+              }
+            }}
+          >
+            {fallbackText !== undefined ? (
+              <p style={{ fontSize: Math.min(width, height) / 2.5 }}>
+                {fallbackText}
+              </p>
+            ) : (
+              <ImageOffIcon />
+            )}
+            <span className="sr-only">Error loading image</span>
+          </div>
+        ) : null}
         {onClick === "focus" ? (
           <Dialog
             open={isOpen}
@@ -163,10 +152,13 @@ export const Image = forwardRef<
             <DialogPortal>
               <DialogOverlay />
               <DialogContent>
-                <img
+                <NextImage
                   className="max-w-screen max-h-screen"
                   src={src}
+                  priority
                   alt={`focused: ${alt}`}
+                  width={nativeWidth}
+                  height={nativeHeight}
                 />
               </DialogContent>
             </DialogPortal>
