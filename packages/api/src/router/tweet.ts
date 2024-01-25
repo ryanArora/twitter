@@ -1,4 +1,6 @@
+import { deleteObjects } from "@repo/aws";
 import { db, type Prisma } from "@repo/db";
+import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 import { getTweetWithUrls } from "./asset";
 import { selectUserBasic } from "./user";
@@ -131,5 +133,27 @@ export const tweetRouter = createTRPCRouter({
       if (realUsernameLower !== fakeUsernameLower) return null;
 
       return getTweetWithUrls(tweet);
+    }),
+  delete: protectedProcedure
+    .input(z.object({ id: z.string() }))
+    .mutation(async ({ ctx, input }) => {
+      await db.$transaction(async (tx) => {
+        const tweet = await tx.tweet.findUnique({
+          where: { id: input.id, authorId: ctx.session.user.id },
+          select: { attachments: { select: { id: true } } },
+        });
+
+        if (!tweet) throw new TRPCError({ code: "UNAUTHORIZED" });
+
+        if (tweet.attachments) {
+          await deleteObjects(
+            tweet.attachments.map(
+              (attachment) => `attachments/${attachment.id}` as const,
+            ),
+          );
+        }
+
+        await db.tweet.delete({ where: { id: input.id } });
+      });
     }),
 });
