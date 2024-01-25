@@ -28,6 +28,7 @@ export const schema = z.object({
     .array(
       z.object({
         id: z.string().min(1),
+        url: z.string().min(1),
         width: z.number().int(),
         height: z.number().int(),
       }),
@@ -110,9 +111,9 @@ export const PostTweet: FC = () => {
     );
   }
 
-  function getImageDimensions(
+  function getImageData(
     file: File,
-  ): Promise<{ width: number; height: number }> {
+  ): Promise<{ url: string; width: number; height: number }> {
     return new Promise((resolve) => {
       const fr = new FileReader();
       fr.readAsDataURL(file);
@@ -120,14 +121,18 @@ export const PostTweet: FC = () => {
         const img = new Image();
         img.src = fr.result!.toString();
         img.onload = () => {
-          resolve({ width: img.width, height: img.height });
+          resolve({
+            url: fr.result!.toString(),
+            width: img.width,
+            height: img.height,
+          });
         };
       };
     });
   }
 
   async function onAttach(file: File) {
-    const { width, height } = await getImageDimensions(file);
+    const { url, width, height } = await getImageData(file);
 
     const reader = new FileReader();
     reader.readAsDataURL(file);
@@ -174,7 +179,7 @@ export const PostTweet: FC = () => {
 
           form.setValue("attachments", [
             ...form.getValues().attachments,
-            { id: attachment.attachmentId, width, height },
+            { id: attachment.attachmentId, url, width, height },
           ]);
 
           toast({

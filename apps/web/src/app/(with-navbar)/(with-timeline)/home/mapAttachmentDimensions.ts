@@ -1,10 +1,13 @@
 type Attachment = {
   id: string;
+  url: string;
   width: number;
   height: number;
 };
 
-export function mapAttachmentDimensions(attachments: Attachment[]) {
+export function mapAttachmentDimensions(
+  attachments: Attachment[],
+): Attachment[] {
   if (attachments.length === 0) {
     return attachments;
   }
@@ -33,7 +36,7 @@ export function mapAttachmentDimensions(attachments: Attachment[]) {
   throw new Error();
 }
 
-function map_one(one: Attachment) {
+function map_one(one: Attachment): Attachment[] {
   const width = one.width;
   const height = one.height;
 
@@ -43,7 +46,7 @@ function map_one(one: Attachment) {
   if (width === 0 || height === 0) {
     return [
       {
-        id: one.id,
+        ...one,
         width: 512,
         height: 512,
       },
@@ -74,42 +77,46 @@ function map_one(one: Attachment) {
 
   return [
     {
-      id: one.id,
+      ...one,
       width: newWidth,
       height: newHeight,
     },
   ];
 }
 
-function map_two(one: Attachment, two: Attachment) {
+function map_two(one: Attachment, two: Attachment): Attachment[] {
   return [
     {
-      id: one.id,
+      ...one,
       width: 256,
       height: 256,
     },
     {
-      id: two.id,
+      ...two,
       width: 256,
       height: 256,
     },
   ];
 }
 
-function map_three(one: Attachment, two: Attachment, three: Attachment) {
+function map_three(
+  one: Attachment,
+  two: Attachment,
+  three: Attachment,
+): Attachment[] {
   return [
     {
-      id: one.id,
+      ...one,
       width: 256,
       height: 256,
     },
     {
-      id: two.id,
+      ...two,
       width: 256,
       height: 128,
     },
     {
-      id: three.id,
+      ...three,
       width: 256,
       height: 128,
     },
@@ -121,25 +128,25 @@ function map_four(
   two: Attachment,
   three: Attachment,
   four: Attachment,
-) {
+): Attachment[] {
   return [
     {
-      id: one.id,
+      ...one,
       width: 256,
       height: 128,
     },
     {
-      id: two.id,
+      ...two,
       width: 256,
       height: 128,
     },
     {
-      id: three.id,
+      ...three,
       width: 256,
       height: 128,
     },
     {
-      id: four.id,
+      ...four,
       width: 256,
       height: 128,
     },

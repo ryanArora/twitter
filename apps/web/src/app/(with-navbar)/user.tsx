@@ -1,6 +1,5 @@
 "use client";
 
-import { type Session } from "@repo/api/session";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -13,6 +12,7 @@ import { LogOut, MoreVertical, Settings, User as UserIcon } from "lucide-react";
 import Link from "next/link";
 import { type FC } from "react";
 import { UserAvatar } from "./user-avatar";
+import { type Session } from "../sessionContext";
 import { api } from "@/trpc/react";
 
 export const User: FC<{ user: Expand<Session["user"]> }> = ({ user }) => {

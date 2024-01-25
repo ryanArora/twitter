@@ -1,5 +1,6 @@
 import { db } from "@repo/db";
 import { z } from "zod";
+import { getTweetsWithUrls } from "./asset";
 import { type TweetBasic, selectTweetBasic } from "./tweet";
 import { createTRPCRouter, protectedProcedure } from "../trpc";
 
@@ -49,7 +50,7 @@ export const timelineRouter = createTRPCRouter({
       }
 
       return {
-        tweets,
+        tweets: getTweetsWithUrls(tweets),
         nextCursor,
       };
     }),
@@ -76,7 +77,7 @@ export const timelineRouter = createTRPCRouter({
       }
 
       return {
-        tweets,
+        tweets: getTweetsWithUrls(tweets),
         nextCursor,
       };
     }),
@@ -102,7 +103,7 @@ export const timelineRouter = createTRPCRouter({
       }
 
       return {
-        tweets,
+        tweets: getTweetsWithUrls(tweets),
         nextCursor,
       };
     }),
@@ -131,7 +132,7 @@ export const timelineRouter = createTRPCRouter({
       }
 
       return {
-        tweets,
+        tweets: getTweetsWithUrls(tweets),
         nextCursor,
       };
     }),
@@ -160,7 +161,7 @@ export const timelineRouter = createTRPCRouter({
       }
 
       return {
-        tweets,
+        tweets: getTweetsWithUrls(tweets),
         nextCursor,
       };
     }),

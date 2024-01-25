@@ -3,7 +3,7 @@ import { Attachment } from "./attachment";
 import { mapAttachmentDimensions } from "./mapAttachmentDimensions";
 
 export const AttachmentsView: FC<{
-  attachments: { id: string; width: number; height: number }[];
+  attachments: { id: string; url: string; width: number; height: number }[];
 }> = ({ attachments }) => {
   attachments = attachments.slice(0, 4);
   attachments = mapAttachmentDimensions(attachments);

@@ -7,6 +7,9 @@ import React, {
   useState,
   forwardRef,
   type ElementRef,
+  useEffect,
+  useRef,
+  useImperativeHandle,
 } from "react";
 import {
   Dialog,
@@ -54,6 +57,23 @@ export const Image = forwardRef<
     const [isOpen, setOpen] = useState(false);
     const [isLoaded, setLoaded] = useState(false);
     const router = useRouter();
+
+    const imageRef = useRef<HTMLImageElement>(null);
+
+    // set imageRef to the forwarded ref
+    useImperativeHandle(
+      ref,
+      () => {
+        return imageRef.current!;
+      },
+      [],
+    );
+
+    useEffect(() => {
+      if (imageRef.current!.complete) {
+        setLoaded(true);
+      }
+    }, []);
 
     if (isError) {
       return (
@@ -121,7 +141,7 @@ export const Image = forwardRef<
           }}
           src={src}
           alt={alt}
-          ref={ref}
+          ref={imageRef}
           {...props}
         />
         <div

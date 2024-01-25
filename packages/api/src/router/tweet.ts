@@ -1,12 +1,23 @@
 import { db, type Prisma } from "@repo/db";
 import { z } from "zod";
+import { getTweetWithUrls } from "./asset";
 import { selectUserBasic } from "./user";
 import { postTweetSchema } from "../schemas/tweet";
 import { createTRPCRouter, protectedProcedure } from "../trpc";
 
-export type TweetBasic = Prisma.TweetGetPayload<{
+export type TweetBasicWithoutUrls = Prisma.TweetGetPayload<{
   select: ReturnType<typeof selectTweetBasic>;
 }>;
+
+export type TweetBasic = Omit<
+  TweetBasicWithoutUrls,
+  "author" | "attachments"
+> & {
+  author: TweetBasicWithoutUrls["author"] & { avatarUrl: string };
+  attachments: (TweetBasicWithoutUrls["attachments"][number] & {
+    url: string;
+  })[];
+};
 
 export const selectTweetBasic = (sessionUserId: string) => {
   return {
@@ -104,7 +115,7 @@ export const tweetRouter = createTRPCRouter({
     }),
   find: protectedProcedure
     .input(z.object({ id: z.string(), username: z.string() }))
-    .query(async ({ ctx, input }) => {
+    .query(async ({ ctx, input }): Promise<TweetBasic | null> => {
       const tweet = await db.tweet.findUnique({
         where: {
           id: input.id,
@@ -119,6 +130,6 @@ export const tweetRouter = createTRPCRouter({
 
       if (realUsernameLower !== fakeUsernameLower) return null;
 
-      return tweet;
+      return getTweetWithUrls(tweet);
     }),
 });

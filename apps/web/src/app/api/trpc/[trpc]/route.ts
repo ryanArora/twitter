@@ -1,7 +1,7 @@
 import { appRouter, createTRPCContext } from "@repo/api";
-import { getSession } from "@repo/api/session";
 import { fetchRequestHandler } from "@trpc/server/adapters/fetch";
 import { type NextRequest } from "next/server";
+import { getSession } from "../../../../../../../packages/api/src/router/auth";
 
 /**
  * This wraps the `createTRPCContext` helper and provides the required context

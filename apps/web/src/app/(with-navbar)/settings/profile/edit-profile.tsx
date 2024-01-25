@@ -24,18 +24,7 @@ import { type Profile } from "../../(with-timeline)/[profile]/(with-profile)/pro
 import { UserAvatar } from "../../user-avatar";
 import { api } from "@/trpc/react";
 
-const FIVE_MINUTES_MS = 1000 * 60 * 5;
-
 export const EditProfile: FC<{ profile: Profile }> = ({ profile }) => {
-  const { data: bannerUrl } = api.asset.getBannerUrl.useQuery(
-    {
-      userId: profile.id,
-    },
-    {
-      staleTime: FIVE_MINUTES_MS,
-    },
-  );
-
   const bannerUploadRef = useRef<ElementRef<typeof UploadButton>>(null);
   const avatarUploadRef = useRef<ElementRef<typeof UploadButton>>(null);
 
@@ -154,7 +143,7 @@ export const EditProfile: FC<{ profile: Profile }> = ({ profile }) => {
           <div className="relative w-full h-[200px]">
             <Image
               className="object-cover"
-              src={bannerUrl}
+              src={profile.bannerUrl}
               alt={`${username}'s banner`}
               draggable={false}
               width={566}

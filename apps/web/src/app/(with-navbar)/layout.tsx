@@ -4,7 +4,6 @@ import { Button } from "@repo/ui/components/button";
 import {
   Dialog,
   DialogContent,
-  DialogHeader,
   DialogOverlay,
   DialogPortal,
   DialogTrigger,

@@ -11,23 +11,11 @@ import { FollowButton } from "./follow-button";
 import { useProfile } from "./profileContext";
 import { useSession } from "../../../../sessionContext";
 import { UserAvatar } from "@/app/(with-navbar)/user-avatar";
-import { api } from "@/trpc/react";
-
-const FIVE_MINUTES_MS = 1000 * 60 * 5;
 
 export const LayoutClient: FC<{ children: ReactNode }> = ({ children }) => {
   const router = useRouter();
   const session = useSession();
   const profile = useProfile();
-
-  const { data: bannerUrl } = api.asset.getBannerUrl.useQuery(
-    {
-      userId: profile.id,
-    },
-    {
-      staleTime: FIVE_MINUTES_MS,
-    },
-  );
 
   return (
     <div className="border-x border-right h-full w-full overflow-y-scroll">
@@ -51,7 +39,7 @@ export const LayoutClient: FC<{ children: ReactNode }> = ({ children }) => {
         </div>
         <Image
           className="object-cover"
-          src={bannerUrl}
+          src={profile.bannerUrl}
           alt={`${profile.username}'s banner`}
           width={598}
           height={200}

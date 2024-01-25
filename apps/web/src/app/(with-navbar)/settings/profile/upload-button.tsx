@@ -79,12 +79,6 @@ export const UploadButton = forwardRef<
             return;
           }
 
-          if (resource === "avatars") {
-            utils.asset.getAvatarUrl.invalidate();
-          } else if (resource === "banners") {
-            utils.asset.getBannerUrl.invalidate();
-          }
-
           toast({
             title: "Success",
             description: "File uploaded.",
