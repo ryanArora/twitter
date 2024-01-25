@@ -1,15 +1,13 @@
 import { z } from "zod";
 
-export const tweetContentSchema = z
-  .string()
-  .min(1, "Your tweet content must not be empty")
-  .max(280, "Your tweet must be no more than 280 characters long.");
+export const tweetContentSchema = z.string().max(280);
+export const tweetAttachmentsSchema = z.array(z.string().min(1)).max(4);
 
-export const tweetAttachmentsSchema = z
-  .array(z.string().min(1, "Your attachment id must not be empty."))
-  .max(4, "Your tweet must have no more than 4 attachments");
-
-export const postTweetSchema = z.object({
-  content: tweetContentSchema,
-  attachmentIds: tweetAttachmentsSchema,
-});
+export const postTweetSchema = z
+  .object({
+    content: tweetContentSchema,
+    attachmentIds: tweetAttachmentsSchema,
+  })
+  .refine(
+    (tweet) => tweet.attachmentIds.length > 0 || tweet.content.length > 0,
+  );
