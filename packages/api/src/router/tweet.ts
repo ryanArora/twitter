@@ -145,7 +145,7 @@ export const tweetRouter = createTRPCRouter({
 
         if (!tweet) throw new TRPCError({ code: "UNAUTHORIZED" });
 
-        if (tweet.attachments) {
+        if (tweet.attachments.length > 0) {
           await deleteObjects(
             tweet.attachments.map(
               (attachment) => `attachments/${attachment.id}` as const,
