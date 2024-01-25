@@ -110,7 +110,7 @@ export const Tweet: FC = () => {
                   {session.user.id === tweet.author.id ? (
                     <DropdownMenuItem asChild>
                       <button
-                        className="w-full h-full text-red-500 focus:text-red-500"
+                        className="w-full h-full text-red-500 focus:text-red-500 hover:cursor-pointer"
                         type="button"
                         onClick={(e) => {
                           e.stopPropagation();
