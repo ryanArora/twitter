@@ -18,11 +18,7 @@ export const Tweet: FC = () => {
   return (
     <div
       className="flex border-t border-x p-2 hover:cursor-pointer hover:bg-secondary/10"
-      onClick={(e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        e.nativeEvent.stopImmediatePropagation();
-        e.nativeEvent.stopPropagation();
+      onClick={() => {
         router.push(`/${tweet.author.username}/${tweet.id}`);
       }}
     >
@@ -38,11 +34,7 @@ export const Tweet: FC = () => {
           <div className="ml-1">
             <Link
               onClick={(e) => {
-                e.preventDefault();
                 e.stopPropagation();
-                e.nativeEvent.stopImmediatePropagation();
-                e.nativeEvent.stopPropagation();
-                router.push(`/${tweet.author.username}`);
               }}
               href={`/${tweet.author.username}`}
             >
