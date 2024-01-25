@@ -181,11 +181,6 @@ export const PostTweet: FC = () => {
             ...form.getValues().attachments,
             { id: attachment.attachmentId, url, width, height },
           ]);
-
-          toast({
-            title: "Success",
-            description: "File uploaded.",
-          });
         },
       },
     );
