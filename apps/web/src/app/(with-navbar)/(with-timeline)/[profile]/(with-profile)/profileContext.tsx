@@ -2,6 +2,7 @@
 
 import { type RouterOutputs } from "@repo/api";
 import { type ReactNode, createContext, useContext } from "react";
+import { api } from "@/trpc/react";
 
 export type Profile = NonNullable<RouterOutputs["user"]["find"]>;
 
@@ -11,13 +12,18 @@ export function ProfileProvider({
   profile,
   children,
 }: {
-  profile: Profile | null;
+  profile: Profile;
   children: ReactNode;
 }) {
+  const { data } = api.user.get.useQuery(
+    { id: profile.id },
+    {
+      initialData: profile,
+    },
+  );
+
   return (
-    <ProfileContext.Provider value={profile}>
-      {children}
-    </ProfileContext.Provider>
+    <ProfileContext.Provider value={data}>{children}</ProfileContext.Provider>
   );
 }
 

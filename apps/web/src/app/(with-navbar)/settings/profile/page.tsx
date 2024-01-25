@@ -1,4 +1,5 @@
 import { EditProfile } from "./edit-profile";
+import { ProfileProvider } from "../../(with-timeline)/[profile]/(with-profile)/profileContext";
 import { api } from "@/trpc/server";
 
 export default async function ProfileSettingsPage() {
@@ -13,7 +14,9 @@ export default async function ProfileSettingsPage() {
       <div className="border-b">
         <p className="text-xl m-4 font-semibold">Profile</p>
       </div>
-      <EditProfile profile={profile} />
+      <ProfileProvider profile={profile}>
+        <EditProfile />
+      </ProfileProvider>
     </>
   );
 }

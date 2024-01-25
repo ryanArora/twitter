@@ -88,7 +88,19 @@ export const userRouter = createTRPCRouter({
       });
 
       if (!user) return null;
+      return getUserProfileWithUrls(user);
+    }),
+  get: protectedProcedure
+    .input(z.object({ id: z.string() }))
+    .query(async ({ ctx, input }) => {
+      const user = await db.user.findUnique({
+        where: {
+          id: input.id,
+        },
+        select: selectUserProfile(ctx.session.user.id),
+      });
 
+      if (!user) return null;
       return getUserProfileWithUrls(user);
     }),
   update: protectedProcedure

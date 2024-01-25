@@ -20,11 +20,13 @@ import React, { useRef, type FC, type ElementRef } from "react";
 import { useForm } from "react-hook-form";
 import { type z } from "zod";
 import { UploadButton } from "./upload-button";
-import { type Profile } from "../../(with-timeline)/[profile]/(with-profile)/profileContext";
+import { useProfile } from "../../(with-timeline)/[profile]/(with-profile)/profileContext";
 import { UserAvatar } from "../../user-avatar";
 import { api } from "@/trpc/react";
 
-export const EditProfile: FC<{ profile: Profile }> = ({ profile }) => {
+export const EditProfile: FC = () => {
+  const profile = useProfile();
+
   const bannerUploadRef = useRef<ElementRef<typeof UploadButton>>(null);
   const avatarUploadRef = useRef<ElementRef<typeof UploadButton>>(null);
 
@@ -50,7 +52,7 @@ export const EditProfile: FC<{ profile: Profile }> = ({ profile }) => {
       const name = values.name ?? profile.name;
       const bio = values.bio ?? profile.bio;
 
-      utils.user.find.setData({ username: profile.username }, (oldProfile) => {
+      utils.user.get.setData({ id: profile.id }, (oldProfile) => {
         if (!oldProfile) return;
         return {
           ...oldProfile,
