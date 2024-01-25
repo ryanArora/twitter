@@ -10,4 +10,5 @@ export const postTweetSchema = z
   })
   .refine(
     (tweet) => tweet.attachmentIds.length > 0 || tweet.content.length > 0,
+    "Your tweet must not be empty.",
   );
