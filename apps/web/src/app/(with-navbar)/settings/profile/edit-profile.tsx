@@ -146,7 +146,7 @@ export const EditProfile: FC = () => {
             <Image
               className="object-cover"
               src={profile.bannerUrl}
-              alt={`${username}'s banner`}
+              alt={`@${username}'s banner`}
               draggable={false}
               width={566}
               height={200}

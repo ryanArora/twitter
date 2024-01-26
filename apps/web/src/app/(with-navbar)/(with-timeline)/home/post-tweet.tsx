@@ -52,6 +52,15 @@ export const PostTweet: FC = () => {
     },
   });
 
+  function removeAttachment(id: string) {
+    form.setValue(
+      "attachments",
+      form
+        .getValues("attachments")
+        .filter((attachment) => attachment.id !== id),
+    );
+  }
+
   const postTweet = api.tweet.create.useMutation();
   const createAttachment = api.asset.createAttachment.useMutation();
   const { toast } = useToast();
@@ -222,7 +231,13 @@ export const PostTweet: FC = () => {
           />
         </div>
         <div className="ml-14">
-          <AttachmentsView attachments={form.watch("attachments")} />
+          <AttachmentsView
+            attachments={form.watch("attachments")}
+            showDeleteButtons={{
+              enabled: true,
+              removeAttachment,
+            }}
+          />
         </div>
         <div className="flex justify-between ml-14 border-t p-2">
           <div>

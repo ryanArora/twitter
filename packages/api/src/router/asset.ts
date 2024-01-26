@@ -1,5 +1,6 @@
-import { getSignedUrl, postSignedUrl } from "@repo/aws";
+import { deleteObjects, getSignedUrl, postSignedUrl } from "@repo/aws";
 import { db } from "@repo/db";
+import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 import { type TweetBasic, type TweetBasicWithoutUrls } from "./tweet";
 import {
@@ -69,5 +70,32 @@ export const assetRouter = createTRPCRouter({
         attachmentId: attachment.id,
         presignedPost: postSignedUrl(`attachments/${attachment.id}`),
       };
+    }),
+  deleteLooseAttachment: protectedProcedure
+    .input(
+      z.object({
+        id: z.string().min(1),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      const attachment = await db.attachment.findUnique({
+        where: { id: input.id },
+        select: { userId: true, tweetId: true },
+      });
+
+      if (
+        attachment === null ||
+        attachment.tweetId !== null ||
+        attachment.userId !== ctx.session.user.id
+      ) {
+        throw new TRPCError({ code: "UNAUTHORIZED" });
+      }
+
+      await deleteObjects([`attachments/${input.id}`]);
+      await db.attachment.delete({
+        where: {
+          id: input.id,
+        },
+      });
     }),
 });
