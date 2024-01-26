@@ -46,3 +46,8 @@ Folders in the tooling directory store shared config for common tooling.
 - `prettier-config`
 - `tailwind-config`
 - `tsconfig`
+
+## Infrastructure
+
+![image](https://github.com/ryanArora/twitter/assets/26044687/c80746d9-7094-4762-9d1f-97b1995d1802)
+
