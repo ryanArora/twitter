@@ -1,5 +1,7 @@
 "use client";
 
+import { zodResolver } from "@hookform/resolvers/zod";
+import { tweetContentSchema } from "@repo/api/schemas/tweet";
 import { Button } from "@repo/ui/components/button";
 import {
   FormControl,
@@ -19,28 +21,31 @@ import { useTimelineSource } from "../timelineSourceContext";
 import { UserAvatar } from "@/app/(with-navbar)/user-avatar";
 import { api } from "@/trpc/react";
 
-export const schema = z.object({
-  content: z
-    .string()
-    .min(1, "Your tweet content must not be empty")
-    .max(280, "Your tweet must be no more than 280 characters long."),
-  attachments: z
-    .array(
-      z.object({
-        id: z.string().min(1),
-        url: z.string().min(1),
-        width: z.number().int(),
-        height: z.number().int(),
-      }),
-    )
-    .max(4),
-});
+export const schema = z
+  .object({
+    content: tweetContentSchema,
+    attachments: z
+      .array(
+        z.object({
+          id: z.string().min(1),
+          url: z.string().min(1),
+          width: z.number().int(),
+          height: z.number().int(),
+        }),
+      )
+      .max(4),
+  })
+  .refine(
+    (tweet) => tweet.attachments.length > 0 || tweet.content.length > 0,
+    "Your tweet must not be empty.",
+  );
 
 export const PostTweet: FC = () => {
   const session = useSession();
   const user = session.user;
 
   const form = useForm<z.infer<typeof schema>>({
+    resolver: zodResolver(schema),
     defaultValues: {
       content: "",
       attachments: [],
@@ -181,6 +186,8 @@ export const PostTweet: FC = () => {
             ...form.getValues().attachments,
             { id: attachment.attachmentId, url, width, height },
           ]);
+
+          form.trigger();
         },
       },
     );
@@ -224,6 +231,7 @@ export const PostTweet: FC = () => {
               type="button"
               variant="ghost"
               resource="attachments"
+              disabled={form.watch("attachments").length >= 4}
               onClick={(e) => {
                 e.preventDefault();
                 attachmentInputRef.current!.click();
@@ -251,6 +259,7 @@ export const PostTweet: FC = () => {
           <Button
             className="text-white bg-twitter-blue hover:bg-twitter-blue/90 transition-colors rounded-full font-bold"
             type="submit"
+            disabled={!form.formState.isValid}
           >
             Tweet
           </Button>
