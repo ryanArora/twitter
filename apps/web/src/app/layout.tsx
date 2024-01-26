@@ -30,7 +30,7 @@ export default async function RootLayout({
       <SessionProvider session={session}>
         <html className="w-screen h-screen" lang="en">
           <body
-            className={`${inter.className} w-screen h-screen dark bg-background text-foreground`}
+            className={`${inter.className} w-screen h-screen dark bg-background text-foreground overflow-x-hidden overflow-y-auto`}
           >
             <main className="w-screen h-screen">{children}</main>
             <Toaster />

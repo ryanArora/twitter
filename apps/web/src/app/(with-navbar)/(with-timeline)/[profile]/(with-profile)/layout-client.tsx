@@ -18,7 +18,7 @@ export const LayoutClient: FC<{ children: ReactNode }> = ({ children }) => {
   const profile = useProfile();
 
   return (
-    <div className="border-x border-right h-full w-full overflow-y-scroll">
+    <div className="border-x border-right h-full w-full">
       <div className="border-b">
         <div className="flex items-center">
           <Button

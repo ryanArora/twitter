@@ -31,9 +31,9 @@ const NavbarLayout: FC<{ children: ReactNode }> = ({ children }) => {
   if (!session) redirect("/");
 
   return (
-    <div className="h-screen w-screen flex">
-      <div className="h-full w-[31.5%] flex justify-end">
-        <div className="flex flex-col justify-between h-full">
+    <>
+      <div className="w-[31.5%] flex justify-end">
+        <div className="fixed flex flex-col justify-between h-full">
           <div>
             <div className="w-fit">
               <Link href="/home">
@@ -105,8 +105,11 @@ const NavbarLayout: FC<{ children: ReactNode }> = ({ children }) => {
           <User user={session.user} />
         </div>
       </div>
-      {children}
-    </div>
+      <div className="flex">
+        <div className="w-[31.5%]"></div>
+        {children}
+      </div>
+    </>
   );
 };
 

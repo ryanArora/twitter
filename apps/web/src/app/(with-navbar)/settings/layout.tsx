@@ -27,11 +27,11 @@ const NavbarLink: FC<NavbarLinkProps> = ({ href, title }) => {
 export default function SettingsLayout({ children }: { children: ReactNode }) {
   return (
     <>
-      <div className="w-[450px] border-l">
+      <div className="w-[450px] border-l h-screen">
         <div className="border-b">
           <p className="text-xl m-4 font-semibold">Settings</p>
         </div>
-        <nav className="flex flex-col overflow-y-scroll">
+        <nav className="flex flex-col overflow-y-auto">
           <NavbarLink href="/settings/account" title="Account" />
           <NavbarLink href="/settings/profile" title="Profile" />
           <NavbarLink
@@ -41,9 +41,7 @@ export default function SettingsLayout({ children }: { children: ReactNode }) {
           <NavbarLink href="/settings/notifications" title="Notifications" />
         </nav>
       </div>
-      <div className="w-[600px] h-full border-x overflow-y-scroll">
-        {children}
-      </div>
+      <div className="w-[600px] border-x h-screen">{children}</div>
     </>
   );
 }
