@@ -115,7 +115,7 @@ export const LikeInteraction = forwardRef<
       {...props}
       ref={ref}
       className={cn(
-        `m-0 p-2 rounded-full hover:text-twitter-like hover:bg-twitter-like/10 transition-colors`,
+        `m-0 p-2 rounded-full text-primary/50 hover:text-twitter-like hover:bg-twitter-like/10 transition-colors`,
         active ? "text-twitter-like" : null,
         className,
       )}
