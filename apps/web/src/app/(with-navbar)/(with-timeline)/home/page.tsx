@@ -4,7 +4,7 @@ import { TimelineSourceProvider } from "../timelineSourceContext";
 
 export default function HomePage() {
   return (
-    <div className="w-full h-full overflow-y-scroll">
+    <div className="w-full h-full">
       <TimelineSourceProvider
         timelineSource={{ path: "home", payload: { profileId: "" } }}
       >

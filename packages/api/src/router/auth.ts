@@ -1,13 +1,50 @@
 import { randomBytes } from "node:crypto";
-import { db } from "@repo/db";
-import { type Expand } from "@repo/utils/types";
+import { db, type User } from "@repo/db";
+import { type Expand, type ExpandRecursively } from "@repo/utils/types";
 import { TRPCError } from "@trpc/server";
 import argon2 from "argon2";
 import { z } from "zod";
+import { getUserWithAvatarUrl } from "./asset";
 import { selectUserBasic } from "./user";
-import { loginValidator, signupValidator } from "../schemas/auth";
-import { type Session } from "../session";
+import { loginSchema, signupSchema } from "../schemas/auth";
 import { createTRPCRouter, protectedProcedure, publicProcedure } from "../trpc";
+
+export type SessionWithoutAvatarUrl = Expand<
+  { token: string; expires: Date } & ExpandRecursively<{
+    user: Pick<User, "id" | "username" | "name">;
+  }>
+>;
+
+export type Session = Omit<SessionWithoutAvatarUrl, "user"> & {
+  user: SessionWithoutAvatarUrl["user"] & { avatarUrl: string };
+};
+
+export const getSession = async (token?: string): Promise<Session | null> => {
+  if (!token) return null;
+
+  const session = await db.session.findUnique({
+    where: {
+      token,
+      expires: {
+        gt: new Date(Date.now()),
+      },
+    },
+    select: {
+      token: true,
+      expires: true,
+      user: {
+        select: selectUserBasic,
+      },
+    },
+  });
+
+  if (!session) return null;
+
+  return {
+    ...session,
+    user: getUserWithAvatarUrl(session.user),
+  };
+};
 
 function createSession(): Expand<Omit<Session, "user">> {
   const session = {
@@ -23,7 +60,7 @@ export const authRouter = createTRPCRouter({
     return ctx.session;
   }),
   signup: publicProcedure
-    .input(signupValidator)
+    .input(signupSchema)
     .mutation(async ({ input }): Promise<Session> => {
       const session = createSession();
 
@@ -42,11 +79,11 @@ export const authRouter = createTRPCRouter({
 
       return {
         ...session,
-        user,
+        user: getUserWithAvatarUrl(user),
       };
     }),
   login: publicProcedure
-    .input(loginValidator)
+    .input(loginSchema)
     .mutation(async ({ input }): Promise<Session> => {
       const user = await db.user.findUnique({
         where: { username: input.username },
@@ -69,10 +106,10 @@ export const authRouter = createTRPCRouter({
         });
       }
 
-      const session = createSession();
+      const sessionWithoutUser = createSession();
 
-      return await db.session.create({
-        data: { ...session, userId: user.id },
+      const session = await db.session.create({
+        data: { ...sessionWithoutUser, userId: user.id },
         select: {
           token: true,
           expires: true,
@@ -81,6 +118,11 @@ export const authRouter = createTRPCRouter({
           },
         },
       });
+
+      return {
+        ...session,
+        user: getUserWithAvatarUrl(session.user),
+      };
     }),
   logout: protectedProcedure.input(z.null()).mutation(async ({ ctx }) => {
     await db.session.delete({

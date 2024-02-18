@@ -5,7 +5,7 @@ import { type Metadata } from "next";
 import { Inter } from "next/font/google";
 import { headers } from "next/headers";
 import { cache } from "react";
-import { SessionProvider } from "@/context/session";
+import { SessionProvider } from "./sessionContext";
 import { TRPCReactProvider } from "@/trpc/react";
 import { api } from "@/trpc/server";
 
@@ -30,7 +30,7 @@ export default async function RootLayout({
       <SessionProvider session={session}>
         <html className="w-screen h-screen" lang="en">
           <body
-            className={`${inter.className} w-screen h-screen dark bg-background text-foreground`}
+            className={`${inter.className} w-screen h-screen dark bg-background text-foreground overflow-x-hidden overflow-y-auto`}
           >
             <main className="w-screen h-screen">{children}</main>
             <Toaster />

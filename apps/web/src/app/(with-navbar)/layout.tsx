@@ -1,4 +1,13 @@
+"use client";
+
 import { Button } from "@repo/ui/components/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogOverlay,
+  DialogPortal,
+  DialogTrigger,
+} from "@repo/ui/components/dialog";
 import {
   BellIcon,
   BookmarkIcon,
@@ -11,18 +20,20 @@ import Image from "next/image";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import React, { type FC, type ReactNode } from "react";
+import { PostTweet } from "./(with-timeline)/home/post-tweet";
+import { TimelineSourceProvider } from "./(with-timeline)/timelineSourceContext";
 import { NavbarLink } from "./navbar-link";
 import { User } from "./user";
-import { api } from "@/trpc/server";
+import { useSession } from "../sessionContext";
 
-const NavbarLayout: FC<{ children: ReactNode }> = async ({ children }) => {
-  const session = await api.auth.getSession();
+const NavbarLayout: FC<{ children: ReactNode }> = ({ children }) => {
+  const session = useSession();
   if (!session) redirect("/");
 
   return (
-    <div className="h-screen w-screen flex">
-      <div className="h-full w-[31.5%] flex justify-end">
-        <div className="flex flex-col justify-between h-full">
+    <>
+      <div className="w-[31.5%] flex justify-end">
+        <div className="fixed flex flex-col justify-between h-full">
           <div>
             <div className="w-fit">
               <Link href="/home">
@@ -65,14 +76,40 @@ const NavbarLayout: FC<{ children: ReactNode }> = async ({ children }) => {
               />
             </nav>
             <div className="ml-2 mr-4 mt-4">
-              <Button className="flex w-full rounded-2xl h-12">Tweet</Button>
+              <Dialog>
+                <DialogTrigger asChild>
+                  <Button
+                    className="text-white bg-twitter-blue hover:bg-twitter-blue/90 transition-colors rounded-full w-full h-12 font-bold"
+                    type="submit"
+                  >
+                    Tweet
+                  </Button>
+                </DialogTrigger>
+                <DialogPortal>
+                  <DialogOverlay>
+                    <DialogContent className="w-[600px]">
+                      <TimelineSourceProvider
+                        timelineSource={{
+                          path: "home",
+                          payload: { profileId: "" },
+                        }}
+                      >
+                        <PostTweet />
+                      </TimelineSourceProvider>
+                    </DialogContent>
+                  </DialogOverlay>
+                </DialogPortal>
+              </Dialog>
             </div>
           </div>
           <User user={session.user} />
         </div>
       </div>
-      {children}
-    </div>
+      <div className="flex">
+        <div className="w-[31.5%]"></div>
+        {children}
+      </div>
+    </>
   );
 };
 

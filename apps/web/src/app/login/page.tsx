@@ -1,7 +1,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { loginValidator } from "@repo/api/schemas/auth";
+import { loginSchema } from "@repo/api/schemas/auth";
 import { Button } from "@repo/ui/components/button";
 import { Card, CardContent, CardHeader } from "@repo/ui/components/card";
 import {
@@ -24,15 +24,15 @@ export default function LoginForm() {
 
   const { toast } = useToast();
 
-  const form = useForm<z.infer<typeof loginValidator>>({
-    resolver: zodResolver(loginValidator),
+  const form = useForm<z.infer<typeof loginSchema>>({
+    resolver: zodResolver(loginSchema),
     defaultValues: {
       username: "",
       password: "",
     },
   });
 
-  function onSubmit(values: z.infer<typeof loginValidator>) {
+  function onSubmit(values: z.infer<typeof loginSchema>) {
     login.mutate(values, {
       onError: (err) => {
         if (err.data && err.data.code === "UNAUTHORIZED") {

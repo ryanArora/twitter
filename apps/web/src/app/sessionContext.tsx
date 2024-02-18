@@ -1,7 +1,10 @@
 "use client";
 
-import { type Session } from "@repo/api/session";
+import { type RouterOutputs } from "@repo/api";
 import { type ReactNode, createContext, useContext } from "react";
+import { api } from "@/trpc/react";
+
+export type Session = NonNullable<RouterOutputs["auth"]["getSession"]>;
 
 export const SessionContext = createContext<Session | null>(null);
 
@@ -12,10 +15,12 @@ export function SessionProvider({
   session: Session | null;
   children: ReactNode;
 }) {
+  const { data } = api.auth.getSession.useQuery(undefined, {
+    initialData: session,
+  });
+
   return (
-    <SessionContext.Provider value={session}>
-      {children}
-    </SessionContext.Provider>
+    <SessionContext.Provider value={data}>{children}</SessionContext.Provider>
   );
 }
 
@@ -23,17 +28,8 @@ export function useSession(): Session {
   const session = useContext(SessionContext);
 
   if (!session) {
-    window.location.replace("/");
-    return {
-      token: "",
-      expires: new Date(Date.now()),
-      user: {
-        id: "",
-        name: "Loading User",
-        username: "loading",
-        profilePictureUrl: null,
-      },
-    };
+    window.location.href = "/";
+    throw new Error("No session");
   }
 
   return session!;

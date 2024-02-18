@@ -1,7 +1,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { signupValidator } from "@repo/api/schemas/auth";
+import { signupSchema } from "@repo/api/schemas/auth";
 import { Button } from "@repo/ui/components/button";
 import { Card, CardContent, CardHeader } from "@repo/ui/components/card";
 import {
@@ -25,15 +25,15 @@ export default function SignupForm() {
 
   const { toast } = useToast();
 
-  const form = useForm<z.infer<typeof signupValidator>>({
-    resolver: zodResolver(signupValidator),
+  const form = useForm<z.infer<typeof signupSchema>>({
+    resolver: zodResolver(signupSchema),
     defaultValues: {
       username: "",
       password: "",
     },
   });
 
-  function onSubmit(values: z.infer<typeof signupValidator>) {
+  function onSubmit(values: z.infer<typeof signupSchema>) {
     signup.mutate(values, {
       onError: (err) => {
         if (

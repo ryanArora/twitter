@@ -1,7 +1,7 @@
 import { createCaller, createTRPCContext } from "@repo/api";
-import { getSession } from "@repo/api/session";
 import { cookies, headers } from "next/headers";
 import { cache } from "react";
+import { getSession } from "../../../../packages/api/src/router/auth";
 
 /**
  * This wraps the `createTRPCContext` helper and provides the required context

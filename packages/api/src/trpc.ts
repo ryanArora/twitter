@@ -7,11 +7,10 @@
  * Tl;dr - this is where all the tRPC server stuff is created and plugged in.
  * The pieces you will need to use are documented accordingly near the end
  */
-import { Prisma } from "@repo/db";
 import { initTRPC, TRPCError } from "@trpc/server";
 import superjson from "superjson";
 import { ZodError } from "zod";
-import { type Session } from "./session";
+import { type Session } from "./router/auth";
 
 /**
  * 1. CONTEXT

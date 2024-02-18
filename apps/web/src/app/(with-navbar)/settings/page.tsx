@@ -1,3 +1,5 @@
+import { permanentRedirect } from "next/navigation";
+
 export default function SettingsPage() {
-  return <p>page</p>;
+  permanentRedirect("/settings/account");
 }

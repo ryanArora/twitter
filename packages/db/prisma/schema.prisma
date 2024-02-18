@@ -2,23 +2,22 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 model User {
-  id                String   @id @default(uuid())
-  username          String   @unique
-  usernameLower     String   @unique
-  name              String
-  passwordHash      String
-  profilePictureUrl String?
-  bannerUrl         String?
-  bio               String?
-  createdAt         DateTime @default(now())
+  id            String   @id @default(uuid())
+  username      String   @unique
+  usernameLower String   @unique
+  name          String
+  passwordHash  String
+  bio           String   @default("")
+  createdAt     DateTime @default(now())
 
-  sessions  Session[]
-  tweets    Tweet[]
-  retweets  Retweet[]
-  likes     Like[]
-  views     View[]
-  following Follow[]  @relation("following")
-  followers Follow[]  @relation("followers")
+  sessions   Session[]
+  tweets     Tweet[]
+  retweets   Retweet[]
+  likes      Like[]
+  views      View[]
+  following  Follow[]     @relation("following")
+  followers  Follow[]     @relation("followers")
+  Attachment Attachment[]
 }
 
 model Session {
@@ -31,10 +30,9 @@ model Session {
 }
 
 model Tweet {
-  id          String   @id @default(uuid())
-  content     String
-  attachments String[]
-  createdAt   DateTime @default(now())
+  id        String   @id @default(uuid())
+  content   String
+  createdAt DateTime @default(now())
 
   author   User   @relation(fields: [authorId], references: [id], onDelete: Cascade)
   authorId String
@@ -43,9 +41,10 @@ model Tweet {
   parent   Tweet?  @relation("replies", fields: [parentId], references: [id], onDelete: Cascade)
   parentId String?
 
-  retweets Retweet[]
-  likes    Like[]
-  views    View[]
+  retweets    Retweet[]
+  likes       Like[]
+  views       View[]
+  attachments Attachment[]
 }
 
 model Retweet {
@@ -94,6 +93,19 @@ model Follow {
   followedId String
 
   @@id([followerId, followedId])
+}
+
+model Attachment {
+  id        String   @id @default(uuid())
+  width     Int
+  height    Int
+  createdAt DateTime @default(now())
+
+  user   User   @relation(fields: [userId], references: [id])
+  userId String
+
+  tweet   Tweet?  @relation(fields: [tweetId], references: [id])
+  tweetId String?
 }
 
 generator client {

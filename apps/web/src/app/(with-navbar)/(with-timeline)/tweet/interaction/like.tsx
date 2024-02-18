@@ -5,9 +5,9 @@ import { cn } from "@repo/ui/utils";
 import { formatNumberShort } from "@repo/utils/str";
 import { HeartIcon } from "lucide-react";
 import React, { forwardRef } from "react";
+import { useSession } from "../../../../sessionContext";
 import { useTimelineSource } from "../../timelineSourceContext";
 import { useTweet } from "../tweetContext";
-import { useSession } from "@/context/session";
 import { api } from "@/trpc/react";
 
 export type LikeInteractionProps = Record<string, unknown>;
@@ -115,14 +115,14 @@ export const LikeInteraction = forwardRef<
       {...props}
       ref={ref}
       className={cn(
-        `m-0 p-2 rounded-full hover:text-twitter-like hover:bg-twitter-like/10 transition-colors`,
+        `m-0 p-2 rounded-full text-primary/50 hover:text-twitter-like hover:bg-twitter-like/10 transition-colors`,
         active ? "text-twitter-like" : null,
         className,
       )}
       type="button"
       variant="ghost"
       onClick={(e) => {
-        e.preventDefault();
+        e.stopPropagation();
 
         if (active) {
           unlikeMutation.mutate({ tweetId: tweet.id });
