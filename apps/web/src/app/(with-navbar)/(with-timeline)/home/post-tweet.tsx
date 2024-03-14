@@ -108,6 +108,22 @@ export const PostTweet: FC<PostTweetProps> = ({
           form.reset();
 
           for (const queryKey of timelineQueryKeys) {
+            const queryKeyType = queryKey[0] as string[];
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            const queryKeyBody = queryKey[1] as any;
+
+            const isHome = queryKeyType[1] === "home";
+            const isMyProfile =
+              queryKeyType[1].startsWith("profile") &&
+              queryKeyBody?.input?.profile_userId === session.user.id;
+            const isReply =
+              queryKeyType[1] === "tweetReplies" &&
+              queryKeyBody?.input?.tweetReplies_parentId === parentTweetId;
+
+            if (!isHome && !isMyProfile && !isReply) {
+              continue;
+            }
+
             queryClient.setQueryData(queryKey, (data: TimelineInfiniteData) => {
               const tweet = {
                 _count: {
