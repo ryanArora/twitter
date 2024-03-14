@@ -174,6 +174,9 @@ export const timelineRouter = createTRPCRouter({
           parentId: input.tweetReplies_parentId,
         },
         select: selectTweetBasic(ctx.session.user.id),
+        orderBy: {
+          createdAt: "desc",
+        },
       });
 
       let nextCursor: typeof input.cursor = undefined;
