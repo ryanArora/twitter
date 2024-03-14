@@ -34,17 +34,17 @@ export const PageClient: FC<PageClientProps> = ({ tweet: initialTweet }) => {
       <TweetProvider tweet={tweet}>
         <Tweet />
       </TweetProvider>
-      <div className="border-t">
+      <div className="border-b">
         <PostTweet
           inputPlaceholder="Post your reply"
           submitButtonText="Reply"
           parentTweetId={tweet.id}
         />
-        <Timeline
-          path="tweetReplies"
-          payload={{ tweetReplies_parentId: tweet.id, profile_userId: "" }}
-        />
       </div>
+      <Timeline
+        path="tweetReplies"
+        payload={{ tweetReplies_parentId: tweet.id, profile_userId: "" }}
+      />
     </div>
   );
 };

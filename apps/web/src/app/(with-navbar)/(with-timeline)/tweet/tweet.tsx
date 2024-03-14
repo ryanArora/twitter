@@ -73,7 +73,7 @@ export const Tweet: FC = () => {
 
   return (
     <div
-      className="flex p-2 border-t hover:cursor-pointer hover:bg-secondary/10"
+      className="flex p-2 border-b hover:cursor-pointer hover:bg-secondary/10"
       onClick={() => {
         router.push(`/${tweet.author.username}/${tweet.id}`);
       }}

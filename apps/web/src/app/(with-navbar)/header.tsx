@@ -14,7 +14,7 @@ export const Header: FC<HeaderProps> = ({ title, subtitle }) => {
   const router = useRouter();
 
   return (
-    <div className="flex items-center h-[64px] max-h-[64px] min-h-[64px] sticky top-0 bg-background">
+    <div className="flex items-center h-[64px] max-h-[64px] min-h-[64px] sticky top-0 bg-background border-b">
       <Button
         className="p-0 mx-2 rounded-full"
         type="button"

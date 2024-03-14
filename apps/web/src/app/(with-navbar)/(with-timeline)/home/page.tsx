@@ -4,11 +4,13 @@ import { Timeline } from "../timeline";
 export default function HomePage() {
   return (
     <div className="min-h-screen h-full border-x">
-      <PostTweet
-        inputPlaceholder="What is happening?!"
-        submitButtonText="Tweet"
-        parentTweetId={null}
-      />
+      <div className="border-b">
+        <PostTweet
+          inputPlaceholder="What is happening?!"
+          submitButtonText="Tweet"
+          parentTweetId={null}
+        />
+      </div>
       <Timeline
         path="home"
         payload={{
