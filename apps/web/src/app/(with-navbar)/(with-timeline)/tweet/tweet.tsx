@@ -144,6 +144,18 @@ export const Tweet: FC<TweetProps> = ({ big }) => {
           </p>
           <AttachmentsView attachments={tweet.attachments} />
         </div>
+        <div className="mb-2 mx-2">
+          <p className="text-sm text-primary/50">
+            {new Intl.DateTimeFormat(undefined, {
+              weekday: "short",
+              hour: "numeric",
+              minute: "numeric",
+              hour12: true,
+              month: "short",
+              day: "numeric",
+            }).format(tweet.createdAt)}
+          </p>
+        </div>
         <div className="flex justify-between mx-2">
           <ReplyInteraction />
           <RetweetInteraction />
