@@ -47,12 +47,14 @@ type PostTweetProps = {
   inputPlaceholder: string;
   submitButtonText: string;
   parentTweetId: string | null;
+  dontLinkToProfile?: boolean;
 };
 
 export const PostTweet: FC<PostTweetProps> = ({
   inputPlaceholder,
   submitButtonText,
   parentTweetId,
+  dontLinkToProfile,
 }) => {
   const session = useSession();
   const queryClient = useQueryClient();
@@ -228,7 +230,7 @@ export const PostTweet: FC<PostTweetProps> = ({
           <UserAvatar
             className="my-2 mr-1"
             user={session.user}
-            onClick="link"
+            onClick={dontLinkToProfile ? null : "link"}
             width={44}
             height={44}
           />

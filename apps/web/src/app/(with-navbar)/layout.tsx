@@ -91,6 +91,7 @@ const NavbarLayout: FC<{ children: ReactNode }> = ({ children }) => {
                         inputPlaceholder="What is happening?!"
                         submitButtonText="Tweet"
                         parentTweetId={null}
+                        dontLinkToProfile
                       />
                     </DialogContent>
                   </DialogOverlay>

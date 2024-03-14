@@ -7,6 +7,7 @@ import {
   DropdownMenuTrigger,
 } from "@repo/ui/components/dropdown-menu";
 import { toast } from "@repo/ui/components/use-toast";
+import { cn } from "@repo/ui/utils";
 import { useQueryClient } from "@tanstack/react-query";
 import { MoreHorizontalIcon, Trash2Icon, UserPlusIcon } from "lucide-react";
 import Link from "next/link";
@@ -27,9 +28,10 @@ type TimelineInfiniteData = { pages: { tweets: TweetBasic[] }[] };
 
 export type TweetProps = {
   big?: boolean;
+  disableInteractions?: boolean;
 };
 
-export const Tweet: FC<TweetProps> = ({ big }) => {
+export const Tweet: FC<TweetProps> = ({ big, disableInteractions }) => {
   const session = useSession();
   const tweet = useTweet();
   const router = useRouter();
@@ -78,10 +80,19 @@ export const Tweet: FC<TweetProps> = ({ big }) => {
   if (big) {
     return (
       <div
-        className="p-2 border-b hover:cursor-pointer hover:bg-secondary/10"
-        onClick={() => {
-          router.push(`/${tweet.author.username}/${tweet.id}`);
-        }}
+        className={cn(
+          "p-2 border-b",
+          disableInteractions
+            ? null
+            : "hover:cursor-pointer hover:bg-secondary/10",
+        )}
+        onClick={
+          disableInteractions
+            ? undefined
+            : () => {
+                router.push(`/${tweet.author.username}/${tweet.id}`);
+              }
+        }
       >
         <div className="flex mb-2">
           <div className="flex w-full">
@@ -90,49 +101,59 @@ export const Tweet: FC<TweetProps> = ({ big }) => {
               width={44}
               height={44}
               user={tweet.author}
-              linkToProfile={true}
+              onClick={null}
             />
             <div className="flex flex-col w-full">
               <div className="ml-1">
                 <div className="flex justify-between">
-                  <Link
-                    onClick={(e) => {
-                      e.stopPropagation();
-                    }}
-                    href={`/${tweet.author.username}`}
-                  >
-                    <p className="hover:underline font-semibold">
-                      {tweet.author.name}
-                    </p>
-                    <p className="text-sm text-primary/50">{`@${tweet.author.username}`}</p>
-                  </Link>
-                  <DropdownMenu>
-                    <DropdownMenuTrigger className="p-1 text-primary/50 hover:text-twitter-blue hover:bg-twitter-blue/10 rounded-full mt-[-4px]">
-                      <MoreHorizontalIcon className="p-1" />
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent className="bg-background">
-                      {session.user.id === tweet.author.id ? (
-                        <DropdownMenuItem asChild>
-                          <button
-                            className="w-full h-full text-red-500 focus:text-red-500 hover:cursor-pointer"
-                            type="button"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              deleteTweet.mutate({ id: tweet.id });
-                            }}
-                          >
-                            <Trash2Icon className="p-[2px] mr-0.5" />
-                            <span className="ml-0.5 font-bold">Delete</span>
-                          </button>
-                        </DropdownMenuItem>
-                      ) : (
-                        <DropdownMenuItem>
-                          <UserPlusIcon className="p-[2px] mr-0.5" />
-                          <span className="ml-0.5 font-bold">{`Follow @${tweet.author.username}`}</span>
-                        </DropdownMenuItem>
-                      )}
-                    </DropdownMenuContent>
-                  </DropdownMenu>
+                  {disableInteractions ? (
+                    <div>
+                      <p className="font-semibold">{tweet.author.name}</p>
+                      <p className="text-sm text-primary/50">{`@${tweet.author.username}`}</p>
+                    </div>
+                  ) : (
+                    <Link
+                      onClick={(e) => {
+                        e.stopPropagation();
+                      }}
+                      href={`/${tweet.author.username}`}
+                    >
+                      <p className="hover:underline font-semibold">
+                        {tweet.author.name}
+                      </p>
+                      <p className="text-sm text-primary/50">{`@${tweet.author.username}`}</p>
+                    </Link>
+                  )}
+
+                  {disableInteractions ? null : (
+                    <DropdownMenu>
+                      <DropdownMenuTrigger className="p-1 text-primary/50 hover:text-twitter-blue hover:bg-twitter-blue/10 rounded-full mt-[-4px]">
+                        <MoreHorizontalIcon className="p-1" />
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent className="bg-background">
+                        {session.user.id === tweet.author.id ? (
+                          <DropdownMenuItem asChild>
+                            <button
+                              className="w-full h-full text-red-500 focus:text-red-500 hover:cursor-pointer"
+                              type="button"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                deleteTweet.mutate({ id: tweet.id });
+                              }}
+                            >
+                              <Trash2Icon className="p-[2px] mr-0.5" />
+                              <span className="ml-0.5 font-bold">Delete</span>
+                            </button>
+                          </DropdownMenuItem>
+                        ) : (
+                          <DropdownMenuItem>
+                            <UserPlusIcon className="p-[2px] mr-0.5" />
+                            <span className="ml-0.5 font-bold">{`Follow @${tweet.author.username}`}</span>
+                          </DropdownMenuItem>
+                        )}
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                  )}
                 </div>
               </div>
             </div>
@@ -142,7 +163,10 @@ export const Tweet: FC<TweetProps> = ({ big }) => {
           <p className="mb-2 break-words whitespace-pre-wrap text-lg">
             {tweet.content}
           </p>
-          <AttachmentsView attachments={tweet.attachments} />
+          <AttachmentsView
+            attachments={tweet.attachments}
+            disablePreview={disableInteractions}
+          />
         </div>
         <div className="mb-2 mx-2">
           <p className="text-sm text-primary/50">
@@ -156,22 +180,33 @@ export const Tweet: FC<TweetProps> = ({ big }) => {
             }).format(tweet.createdAt)}
           </p>
         </div>
-        <div className="flex justify-between mx-2">
-          <ReplyInteraction />
-          <RetweetInteraction />
-          <LikeInteraction />
-          <ViewsInteraction />
-        </div>
+        {disableInteractions ? null : (
+          <div className="flex justify-between mx-2">
+            <ReplyInteraction />
+            <RetweetInteraction />
+            <LikeInteraction />
+            <ViewsInteraction />
+          </div>
+        )}
       </div>
     );
   }
 
   return (
     <div
-      className="flex p-2 border-b hover:cursor-pointer hover:bg-secondary/10"
-      onClick={() => {
-        router.push(`/${tweet.author.username}/${tweet.id}`);
-      }}
+      className={cn(
+        "flex p-2 border-b",
+        disableInteractions
+          ? null
+          : "hover:cursor-pointer hover:bg-secondary/10",
+      )}
+      onClick={
+        disableInteractions
+          ? undefined
+          : () => {
+              router.push(`/${tweet.author.username}/${tweet.id}`);
+            }
+      }
     >
       <div className="flex w-full">
         <UserAvatar
@@ -179,64 +214,83 @@ export const Tweet: FC<TweetProps> = ({ big }) => {
           width={44}
           height={44}
           user={tweet.author}
-          linkToProfile={true}
+          onClick={null}
         />
         <div className="flex flex-col w-full">
           <div className="ml-1">
             <div className="flex justify-between">
-              <Link
-                onClick={(e) => {
-                  e.stopPropagation();
-                }}
-                href={`/${tweet.author.username}`}
-              >
-                <span className="mr-0.5 hover:underline font-semibold">
-                  {tweet.author.name}
-                </span>
-                <span className="ml-0.5 text-sm text-primary/50">{`@${tweet.author.username}`}</span>
-              </Link>
-              <DropdownMenu>
-                <DropdownMenuTrigger className="p-1 text-primary/50 hover:text-twitter-blue hover:bg-twitter-blue/10 rounded-full mt-[-4px]">
-                  <MoreHorizontalIcon className="p-1" />
-                </DropdownMenuTrigger>
-                <DropdownMenuContent className="bg-background">
-                  {session.user.id === tweet.author.id ? (
-                    <DropdownMenuItem asChild>
-                      <button
-                        className="w-full h-full text-red-500 focus:text-red-500 hover:cursor-pointer"
-                        type="button"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          deleteTweet.mutate({ id: tweet.id });
-                        }}
-                      >
-                        <Trash2Icon className="p-[2px] mr-0.5" />
-                        <span className="ml-0.5 font-bold">Delete</span>
-                      </button>
-                    </DropdownMenuItem>
-                  ) : (
-                    <DropdownMenuItem>
-                      <UserPlusIcon className="p-[2px] mr-0.5" />
-                      <span className="ml-0.5 font-bold">{`Follow @${tweet.author.username}`}</span>
-                    </DropdownMenuItem>
-                  )}
-                </DropdownMenuContent>
-              </DropdownMenu>
+              {disableInteractions ? (
+                <div>
+                  <span className="mr-0.5 font-semibold">
+                    {tweet.author.name}
+                  </span>
+                  <span className="ml-0.5 text-sm text-primary/50">{`@${tweet.author.username}`}</span>
+                </div>
+              ) : (
+                <Link
+                  onClick={(e) => {
+                    e.stopPropagation();
+                  }}
+                  href={`/${tweet.author.username}`}
+                >
+                  <span className="mr-0.5 hover:underline font-semibold">
+                    {tweet.author.name}
+                  </span>
+                  <span className="ml-0.5 text-sm text-primary/50">{`@${tweet.author.username}`}</span>
+                </Link>
+              )}
+
+              {disableInteractions ? null : (
+                <DropdownMenu>
+                  <DropdownMenuTrigger className="p-1 text-primary/50 hover:text-twitter-blue hover:bg-twitter-blue/10 rounded-full mt-[-4px]">
+                    <MoreHorizontalIcon className="p-1" />
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent className="bg-background">
+                    {session.user.id === tweet.author.id ? (
+                      <DropdownMenuItem asChild>
+                        <button
+                          className="w-full h-full text-red-500 focus:text-red-500 hover:cursor-pointer"
+                          type="button"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            deleteTweet.mutate({ id: tweet.id });
+                          }}
+                        >
+                          <Trash2Icon className="p-[2px] mr-0.5" />
+                          <span className="ml-0.5 font-bold">Delete</span>
+                        </button>
+                      </DropdownMenuItem>
+                    ) : (
+                      <DropdownMenuItem>
+                        <UserPlusIcon className="p-[2px] mr-0.5" />
+                        <span className="ml-0.5 font-bold">{`Follow @${tweet.author.username}`}</span>
+                      </DropdownMenuItem>
+                    )}
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              )}
             </div>
-            <div className="mt-[-4px] mb-2">
+            <div
+              className={cn("mb-2", disableInteractions ? null : "mt-[-4px]")}
+            >
               <p className="mb-2 break-words whitespace-pre-wrap line-clamp-4">
                 {tweet.content}
               </p>
-              <AttachmentsView attachments={tweet.attachments} />
+              <AttachmentsView
+                attachments={tweet.attachments}
+                disablePreview={disableInteractions}
+              />
             </div>
           </div>
-          <div className="flex justify-between w-full">
-            <ReplyInteraction />
-            <RetweetInteraction />
-            <LikeInteraction />
-            <ViewsInteraction />
-            <div></div>
-          </div>
+          {disableInteractions ? null : (
+            <div className="flex justify-between w-full">
+              <ReplyInteraction />
+              <RetweetInteraction />
+              <LikeInteraction />
+              <ViewsInteraction />
+              <div></div>
+            </div>
+          )}
         </div>
       </div>
     </div>

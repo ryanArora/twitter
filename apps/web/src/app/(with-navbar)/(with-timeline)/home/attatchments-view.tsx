@@ -9,7 +9,8 @@ export const AttachmentsView: FC<{
     // eslint-disable-next-line no-unused-vars
     removeAttachment: (id: string) => void;
   };
-}> = ({ attachments, showDeleteButtons }) => {
+  disablePreview?: boolean;
+}> = ({ attachments, showDeleteButtons, disablePreview }) => {
   const attachmentsExtra = attachmentDimensions(attachments.slice(0, 4));
 
   if (attachments.length === 0) {
@@ -23,6 +24,7 @@ export const AttachmentsView: FC<{
           className="w-full rounded-xl"
           attachment={attachmentsExtra[0]}
           showDeleteButton={showDeleteButtons}
+          disablePreview={disablePreview}
         />
       </div>
     );
@@ -35,11 +37,13 @@ export const AttachmentsView: FC<{
           className="object-cover rounded-l-xl"
           attachment={attachmentsExtra[0]}
           showDeleteButton={showDeleteButtons}
+          disablePreview={disablePreview}
         />
         <Attachment
           className="object-cover rounded-r-xl"
           attachment={attachmentsExtra[1]}
           showDeleteButton={showDeleteButtons}
+          disablePreview={disablePreview}
         />
       </div>
     );
@@ -52,17 +56,20 @@ export const AttachmentsView: FC<{
           className="object-cover rounded-l-xl"
           attachment={attachmentsExtra[0]}
           showDeleteButton={showDeleteButtons}
+          disablePreview={disablePreview}
         />
         <div>
           <Attachment
             className="object-cover rounded-tr-xl"
             attachment={attachmentsExtra[1]}
             showDeleteButton={showDeleteButtons}
+            disablePreview={disablePreview}
           />
           <Attachment
             className="object-cover rounded-br-xl"
             attachment={attachmentsExtra[2]}
             showDeleteButton={showDeleteButtons}
+            disablePreview={disablePreview}
           />
         </div>
       </div>
@@ -76,11 +83,13 @@ export const AttachmentsView: FC<{
           className="object-cover"
           attachment={attachmentsExtra[0]}
           showDeleteButton={showDeleteButtons}
+          disablePreview={disablePreview}
         />
         <Attachment
           className="object-cover"
           attachment={attachmentsExtra[1]}
           showDeleteButton={showDeleteButtons}
+          disablePreview={disablePreview}
         />
       </div>
       <div>
@@ -88,11 +97,13 @@ export const AttachmentsView: FC<{
           className="object-cover"
           attachment={attachmentsExtra[2]}
           showDeleteButton={showDeleteButtons}
+          disablePreview={disablePreview}
         />
         <Attachment
           className="object-cover"
           attachment={attachmentsExtra[3]}
           showDeleteButton={showDeleteButtons}
+          disablePreview={disablePreview}
         />
       </div>
     </div>
