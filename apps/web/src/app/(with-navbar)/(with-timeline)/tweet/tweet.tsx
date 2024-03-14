@@ -29,6 +29,7 @@ export const Tweet: FC = () => {
   const session = useSession();
   const tweet = useTweet();
   const router = useRouter();
+  const utils = api.useUtils();
   const queryClient = useQueryClient();
 
   const queryCache = queryClient.getQueryCache();
@@ -48,6 +49,13 @@ export const Tweet: FC = () => {
       });
     },
     onSuccess: () => {
+      utils.tweet.find.setData(
+        { id: tweet.id, username: tweet.author.username },
+        () => {
+          return null;
+        },
+      );
+
       for (const queryKey of timelineQueryKeys) {
         queryClient.setQueryData(queryKey, (data: TimelineInfiniteData) => {
           if (!data) return;

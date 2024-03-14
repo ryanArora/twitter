@@ -21,6 +21,7 @@ export const RetweetInteraction = forwardRef<
 >(({ className, ...props }, ref) => {
   const session = useSession();
   const tweet = useTweet();
+  const utils = api.useUtils();
   const queryClient = useQueryClient();
 
   const queryCache = queryClient.getQueryCache();
@@ -34,11 +35,42 @@ export const RetweetInteraction = forwardRef<
 
   const retweetMutation = api.retweet.create.useMutation({
     onMutate: async () => {
+      await utils.tweet.find.cancel({
+        id: tweet.id,
+        username: tweet.author.username,
+      });
+
+      const previousTweet = utils.tweet.find.getData();
+
+      utils.tweet.find.setData(
+        {
+          id: tweet.id,
+          username: tweet.author.username,
+        },
+        (tweet) => {
+          if (!tweet) return;
+          return {
+            ...tweet,
+            _count: {
+              ...tweet._count,
+              retweets: tweet._count.retweets + 1,
+            },
+            retweets: [
+              {
+                createdAt: new Date(Date.now()),
+                user: session.user,
+              },
+              ...tweet.retweets,
+            ],
+          };
+        },
+      );
+
       for (const queryKey of timelineQueryKeys) {
         await queryClient.cancelQueries({ queryKey });
       }
 
-      const previousTweets = timelineQueryKeys.map((queryKey) =>
+      const previousTimelines = timelineQueryKeys.map((queryKey) =>
         queryClient.getQueryData(queryKey),
       ) as unknown as TimelineInfiniteData;
 
@@ -71,22 +103,54 @@ export const RetweetInteraction = forwardRef<
         });
       }
 
-      return { previousTweets };
+      return { previousTweet, previousTimelines };
     },
     onError: (err, input, ctx) => {
+      utils.tweet.find.setData(
+        { id: tweet.id, username: tweet.author.username },
+        ctx!.previousTweet,
+      );
+
       for (const queryKey of timelineQueryKeys) {
-        queryClient.setQueryData(queryKey, ctx!.previousTweets);
+        queryClient.setQueryData(queryKey, ctx!.previousTimelines);
       }
     },
   });
 
   const unretweetMutation = api.retweet.delete.useMutation({
     onMutate: async () => {
+      await utils.tweet.find.cancel({
+        id: tweet.id,
+        username: tweet.author.username,
+      });
+
+      const previousTweet = utils.tweet.find.getData();
+
+      utils.tweet.find.setData(
+        {
+          id: tweet.id,
+          username: tweet.author.username,
+        },
+        (tweet) => {
+          if (!tweet) return;
+          return {
+            ...tweet,
+            _count: {
+              ...tweet._count,
+              retweets: tweet._count.retweets - 1,
+            },
+            retweets: tweet.retweets.filter(
+              (rt) => rt.user.id !== session.user.id,
+            ),
+          };
+        },
+      );
+
       for (const queryKey of timelineQueryKeys) {
         await queryClient.cancelQueries({ queryKey });
       }
 
-      const previousTweets = timelineQueryKeys.map((queryKey) =>
+      const previousTimelines = timelineQueryKeys.map((queryKey) =>
         queryClient.getQueryData(queryKey),
       ) as unknown as TimelineInfiniteData;
 
@@ -106,7 +170,7 @@ export const RetweetInteraction = forwardRef<
                     retweets: t._count.retweets - 1,
                   },
                   retweets: t.retweets.filter(
-                    (l) => l.user.id !== session.user.id,
+                    (rt) => rt.user.id !== session.user.id,
                   ),
                 };
               }),
@@ -116,11 +180,16 @@ export const RetweetInteraction = forwardRef<
         });
       }
 
-      return { previousTweets };
+      return { previousTweet, previousTimelines };
     },
     onError: (err, input, ctx) => {
+      utils.tweet.find.setData(
+        { id: tweet.id, username: tweet.author.username },
+        ctx!.previousTweet,
+      );
+
       for (const queryKey of timelineQueryKeys) {
-        queryClient.setQueryData(queryKey, ctx!.previousTweets);
+        queryClient.setQueryData(queryKey, ctx!.previousTimelines);
       }
     },
   });

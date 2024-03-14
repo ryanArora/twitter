@@ -22,6 +22,7 @@ export const LikeInteraction = forwardRef<
   const session = useSession();
   const tweet = useTweet();
   const queryClient = useQueryClient();
+  const utils = api.useUtils();
 
   const queryCache = queryClient.getQueryCache();
   const timelineQueryKeys = queryCache
@@ -34,11 +35,42 @@ export const LikeInteraction = forwardRef<
 
   const likeMutation = api.like.create.useMutation({
     onMutate: async () => {
+      await utils.tweet.find.cancel({
+        id: tweet.id,
+        username: tweet.author.username,
+      });
+
+      const previousTweet = utils.tweet.find.getData();
+
+      utils.tweet.find.setData(
+        {
+          id: tweet.id,
+          username: tweet.author.username,
+        },
+        (tweet) => {
+          if (!tweet) return;
+          return {
+            ...tweet,
+            _count: {
+              ...tweet._count,
+              likes: tweet._count.likes + 1,
+            },
+            likes: [
+              {
+                createdAt: new Date(Date.now()),
+                user: session.user,
+              },
+              ...tweet.likes,
+            ],
+          };
+        },
+      );
+
       for (const queryKey of timelineQueryKeys) {
         await queryClient.cancelQueries({ queryKey });
       }
 
-      const previousTweets = timelineQueryKeys.map((queryKey) =>
+      const previousTimelines = timelineQueryKeys.map((queryKey) =>
         queryClient.getQueryData(queryKey),
       ) as unknown as TimelineInfiniteData;
 
@@ -71,22 +103,52 @@ export const LikeInteraction = forwardRef<
         });
       }
 
-      return { previousTweets };
+      return { previousTweet, previousTimelines };
     },
     onError: (err, input, ctx) => {
+      utils.tweet.find.setData(
+        { id: tweet.id, username: tweet.author.username },
+        ctx!.previousTweet,
+      );
+
       for (const queryKey of timelineQueryKeys) {
-        queryClient.setQueryData(queryKey, ctx!.previousTweets);
+        queryClient.setQueryData(queryKey, ctx!.previousTimelines);
       }
     },
   });
 
   const unlikeMutation = api.like.delete.useMutation({
     onMutate: async () => {
+      await utils.tweet.find.cancel({
+        id: tweet.id,
+        username: tweet.author.username,
+      });
+
+      const previousTweet = utils.tweet.find.getData();
+
+      utils.tweet.find.setData(
+        {
+          id: tweet.id,
+          username: tweet.author.username,
+        },
+        (tweet) => {
+          if (!tweet) return;
+          return {
+            ...tweet,
+            _count: {
+              ...tweet._count,
+              likes: tweet._count.likes - 1,
+            },
+            likes: tweet.likes.filter((l) => l.user.id !== session.user.id),
+          };
+        },
+      );
+
       for (const queryKey of timelineQueryKeys) {
         await queryClient.cancelQueries({ queryKey });
       }
 
-      const previousTweets = timelineQueryKeys.map((queryKey) =>
+      const previousTimelines = timelineQueryKeys.map((queryKey) =>
         queryClient.getQueryData(queryKey),
       ) as unknown as TimelineInfiniteData;
 
@@ -114,11 +176,16 @@ export const LikeInteraction = forwardRef<
         });
       }
 
-      return { previousTweets };
+      return { previousTweet, previousTimelines };
     },
     onError: (err, input, ctx) => {
+      utils.tweet.find.setData(
+        { id: tweet.id, username: tweet.author.username },
+        ctx!.previousTweet,
+      );
+
       for (const queryKey of timelineQueryKeys) {
-        queryClient.setQueryData(queryKey, ctx!.previousTweets);
+        queryClient.setQueryData(queryKey, ctx!.previousTimelines);
       }
     },
   });
