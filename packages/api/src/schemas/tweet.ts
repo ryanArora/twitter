@@ -6,6 +6,7 @@ export const tweetAttachmentsSchema = z.array(z.string().min(1)).max(4);
 export const postTweetSchema = z
   .object({
     content: tweetContentSchema,
+    parentTweetId: z.string().min(1).nullable(),
     attachmentIds: tweetAttachmentsSchema,
   })
   .refine(

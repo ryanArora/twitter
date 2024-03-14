@@ -87,7 +87,11 @@ const NavbarLayout: FC<{ children: ReactNode }> = ({ children }) => {
                 <DialogPortal>
                   <DialogOverlay>
                     <DialogContent className="w-[600px]">
-                      <PostTweet />
+                      <PostTweet
+                        inputPlaceholder="What is happening?!"
+                        submitButtonText="Tweet"
+                        parentTweetId={null}
+                      />
                     </DialogContent>
                   </DialogOverlay>
                 </DialogPortal>

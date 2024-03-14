@@ -43,7 +43,17 @@ export const schema = z
 
 type TimelineInfiniteData = { pages: { tweets: TweetBasic[] }[] };
 
-export const PostTweet: FC = () => {
+type PostTweetProps = {
+  inputPlaceholder: string;
+  submitButtonText: string;
+  parentTweetId: string | null;
+};
+
+export const PostTweet: FC<PostTweetProps> = ({
+  inputPlaceholder,
+  submitButtonText,
+  parentTweetId,
+}) => {
   const session = useSession();
   const queryClient = useQueryClient();
 
@@ -83,6 +93,7 @@ export const PostTweet: FC = () => {
       {
         ...values,
         attachmentIds: values.attachments.map((attachment) => attachment.id),
+        parentTweetId,
       },
       {
         onError: (err) => {
@@ -229,7 +240,7 @@ export const PostTweet: FC = () => {
                 <FormControl>
                   <Textarea
                     className="text-xl min-h-[50px] h-[50px] border-none"
-                    placeholder="What is happening?!"
+                    placeholder={inputPlaceholder}
                     autoComplete="off"
                     {...field}
                   />
@@ -284,7 +295,7 @@ export const PostTweet: FC = () => {
             type="submit"
             disabled={!form.formState.isValid}
           >
-            Tweet
+            {submitButtonText}
           </Button>
         </div>
       </form>
