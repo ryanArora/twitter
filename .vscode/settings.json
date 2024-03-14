@@ -1,12 +1,15 @@
 {
-  "prettier.configPath": "tooling/prettier-config/index.cjs",
-  "prettier.ignorePath": "tooling/prettier-config/.prettierignore",
+  "editor.tabSize": 2,
+  "editor.insertSpaces": true,
+  "editor.detectIndentation": false,
   "editor.formatOnSave": true,
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
   "editor.codeActionsOnSave": {
     "source.fixAll.eslint": "explicit"
   },
-  "editor.defaultFormatter": "esbenp.prettier-vscode",
-  "editor.tabSize": 2,
-  "editor.insertSpaces": true,
-  "editor.detectIndentation": false
+  "prettier.configPath": "tooling/prettier-config/index.cjs",
+  "prettier.ignorePath": "tooling/prettier-config/.prettierignore",
+  "[prisma]": {
+    "editor.defaultFormatter": "Prisma.prisma"
+  }
 }
