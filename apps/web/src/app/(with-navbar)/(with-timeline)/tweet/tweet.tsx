@@ -149,7 +149,6 @@ export const Tweet: FC<TweetProps> = ({ big }) => {
           <RetweetInteraction />
           <LikeInteraction />
           <ViewsInteraction />
-          <div></div>
         </div>
       </div>
     );
