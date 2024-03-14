@@ -3,6 +3,7 @@
 import { type RouterOutputs } from "@repo/api";
 import { type ReactNode, createContext, useContext } from "react";
 import { api } from "@/trpc/react";
+import { useRouter } from "next/navigation";
 
 export type Session = NonNullable<RouterOutputs["auth"]["getSession"]>;
 
@@ -26,10 +27,10 @@ export function SessionProvider({
 
 export function useSession(): Session {
   const session = useContext(SessionContext);
+  const router = useRouter();
 
   if (!session) {
-    window.location.href = "/";
-    throw new Error("No session");
+    router.replace("/");
   }
 
   return session!;

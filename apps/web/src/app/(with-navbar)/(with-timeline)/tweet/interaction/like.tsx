@@ -6,9 +6,12 @@ import { formatNumberShort } from "@repo/utils/str";
 import { HeartIcon } from "lucide-react";
 import React, { forwardRef } from "react";
 import { useSession } from "../../../../sessionContext";
-import { useTimelineSource } from "../../timelineSourceContext";
 import { useTweet } from "../tweetContext";
 import { api } from "@/trpc/react";
+import { useQueryClient } from "@tanstack/react-query";
+import { TweetBasic } from "../../../../../../../../packages/api/src/router/tweet";
+
+type TimelineInfiniteData = { pages: { tweets: TweetBasic[] }[] };
 
 export type LikeInteractionProps = Record<string, unknown>;
 
@@ -18,18 +21,29 @@ export const LikeInteraction = forwardRef<
 >(({ className, ...props }, ref) => {
   const session = useSession();
   const tweet = useTweet();
-  const timelineSource = useTimelineSource();
-  const utils = api.useUtils();
+  const queryClient = useQueryClient();
+
+  const queryCache = queryClient.getQueryCache();
+  const timelineQueryKeys = queryCache
+    .getAll()
+    .map((cache) => cache.queryKey)
+    .filter((queryKey) => {
+      const endpoint = queryKey[0] as string[];
+      return endpoint[0] === "timeline";
+    });
 
   const likeMutation = api.like.create.useMutation({
     onMutate: async () => {
-      await utils.timeline[timelineSource.path].cancel();
-      const previousTweets =
-        utils.timeline[timelineSource.path].getInfiniteData();
+      for (const queryKey of timelineQueryKeys) {
+        await queryClient.cancelQueries({ queryKey });
+      }
 
-      utils.timeline[timelineSource.path].setInfiniteData(
-        { ...timelineSource.payload },
-        (data) => {
+      const previousTweets = timelineQueryKeys.map((queryKey) =>
+        queryClient.getQueryData(queryKey),
+      ) as unknown as TimelineInfiniteData;
+
+      for (const queryKey of timelineQueryKeys) {
+        queryClient.setQueryData(queryKey, (data: TimelineInfiniteData) => {
           if (!data) return;
           return {
             pages: data.pages.map((page) => ({
@@ -54,28 +68,30 @@ export const LikeInteraction = forwardRef<
             })),
             pageParams: [],
           };
-        },
-      );
+        });
+      }
 
       return { previousTweets };
     },
-    onError: (err, input, context) => {
-      utils.timeline[timelineSource.path].setInfiniteData(
-        { ...timelineSource.payload },
-        context!.previousTweets,
-      );
+    onError: (err, input, ctx) => {
+      for (const queryKey of timelineQueryKeys) {
+        queryClient.setQueryData(queryKey, ctx!.previousTweets);
+      }
     },
   });
 
   const unlikeMutation = api.like.delete.useMutation({
     onMutate: async () => {
-      await utils.timeline[timelineSource.path].cancel();
-      const previousTweets =
-        utils.timeline[timelineSource.path].getInfiniteData();
+      for (const queryKey of timelineQueryKeys) {
+        await queryClient.cancelQueries({ queryKey });
+      }
 
-      utils.timeline[timelineSource.path].setInfiniteData(
-        { ...timelineSource.payload },
-        (data) => {
+      const previousTweets = timelineQueryKeys.map((queryKey) =>
+        queryClient.getQueryData(queryKey),
+      ) as unknown as TimelineInfiniteData;
+
+      for (const queryKey of timelineQueryKeys) {
+        queryClient.setQueryData(queryKey, (data: TimelineInfiniteData) => {
           if (!data) return;
 
           return {
@@ -95,16 +111,15 @@ export const LikeInteraction = forwardRef<
             })),
             pageParams: [],
           };
-        },
-      );
+        });
+      }
 
       return { previousTweets };
     },
-    onError: (err, input, context) => {
-      utils.timeline[timelineSource.path].setInfiniteData(
-        { ...timelineSource.payload },
-        context!.previousTweets,
-      );
+    onError: (err, input, ctx) => {
+      for (const queryKey of timelineQueryKeys) {
+        queryClient.setQueryData(queryKey, ctx!.previousTweets);
+      }
     },
   });
 

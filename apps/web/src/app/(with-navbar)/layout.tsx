@@ -21,7 +21,6 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import React, { type FC, type ReactNode } from "react";
 import { PostTweet } from "./(with-timeline)/home/post-tweet";
-import { TimelineSourceProvider } from "./(with-timeline)/timelineSourceContext";
 import { NavbarLink } from "./navbar-link";
 import { User } from "./user";
 import { useSession } from "../sessionContext";
@@ -88,14 +87,7 @@ const NavbarLayout: FC<{ children: ReactNode }> = ({ children }) => {
                 <DialogPortal>
                   <DialogOverlay>
                     <DialogContent className="w-[600px]">
-                      <TimelineSourceProvider
-                        timelineSource={{
-                          path: "home",
-                          payload: { profileId: "" },
-                        }}
-                      >
-                        <PostTweet />
-                      </TimelineSourceProvider>
+                      <PostTweet />
                     </DialogContent>
                   </DialogOverlay>
                 </DialogPortal>

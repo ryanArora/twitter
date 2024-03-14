@@ -3,14 +3,18 @@
 import { Spinner } from "@repo/ui/components/spinner";
 import { type FC, Fragment } from "react";
 import { useInView } from "react-intersection-observer";
-import { useTimelineSource } from "./timelineSourceContext";
 import { Tweet } from "./tweet/tweet";
 import { TweetProvider } from "./tweet/tweetContext";
 import { api } from "@/trpc/react";
+import { RouterInputs } from "@repo/api";
+import { TimelineInput } from "../../../../../../packages/api/src/router/timeline";
 
-export const Timeline: FC = () => {
-  const timelineSource = useTimelineSource();
+export type TimelineSourceProps = {
+  path: keyof RouterInputs["timeline"];
+  payload: TimelineInput;
+};
 
+export const Timeline: FC<TimelineSourceProps> = ({ path, payload }) => {
   const {
     data,
     error,
@@ -18,8 +22,8 @@ export const Timeline: FC = () => {
     hasNextPage,
     isFetchingNextPage,
     status,
-  } = api.timeline[timelineSource.path].useInfiniteQuery(
-    { ...timelineSource.payload },
+  } = api.timeline[path].useInfiniteQuery(
+    { ...payload },
     {
       getNextPageParam: (lastPage) => lastPage.nextCursor,
     },

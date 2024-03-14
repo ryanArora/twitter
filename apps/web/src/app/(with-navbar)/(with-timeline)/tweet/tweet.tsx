@@ -20,12 +20,26 @@ import { UserAvatar } from "../../user-avatar";
 import { AttachmentsView } from "../home/attatchments-view";
 import { useSession } from "@/app/sessionContext";
 import { api } from "@/trpc/react";
+import { useQueryClient } from "@tanstack/react-query";
+import { TweetBasic } from "../../../../../../../packages/api/src/router/tweet";
+
+type TimelineInfiniteData = { pages: { tweets: TweetBasic[] }[] };
 
 export const Tweet: FC = () => {
   const session = useSession();
   const tweet = useTweet();
   const router = useRouter();
   const utils = api.useUtils();
+  const queryClient = useQueryClient();
+
+  const queryCache = queryClient.getQueryCache();
+  const timelineQueryKeys = queryCache
+    .getAll()
+    .map((cache) => cache.queryKey)
+    .filter((queryKey) => {
+      const endpoint = queryKey[0] as string[];
+      return endpoint[0] === "timeline";
+    });
 
   const deleteTweet = api.tweet.delete.useMutation({
     onError: () => {
@@ -58,8 +72,8 @@ export const Tweet: FC = () => {
         },
       ] as const;
 
-      for (const { path, payload } of timelines) {
-        utils.timeline[path].setInfiniteData({ ...payload }, (data) => {
+      for (const queryKey of timelineQueryKeys) {
+        queryClient.setQueryData(queryKey, (data: TimelineInfiniteData) => {
           if (!data) return;
           return {
             ...data,

@@ -17,9 +17,10 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { AttachmentsView } from "./attatchments-view";
 import { useSession } from "../../../sessionContext";
-import { useTimelineSource } from "../timelineSourceContext";
 import { UserAvatar } from "@/app/(with-navbar)/user-avatar";
 import { api } from "@/trpc/react";
+import { useQueryClient } from "@tanstack/react-query";
+import { TweetBasic } from "../../../../../../../packages/api/src/router/tweet";
 
 export const schema = z
   .object({
@@ -40,9 +41,20 @@ export const schema = z
     "Your tweet must not be empty.",
   );
 
+type TimelineInfiniteData = { pages: { tweets: TweetBasic[] }[] };
+
 export const PostTweet: FC = () => {
   const session = useSession();
-  const user = session.user;
+  const queryClient = useQueryClient();
+
+  const queryCache = queryClient.getQueryCache();
+  const timelineQueryKeys = queryCache
+    .getAll()
+    .map((cache) => cache.queryKey)
+    .filter((queryKey) => {
+      const endpoint = queryKey[0] as string[];
+      return endpoint[0] === "timeline";
+    });
 
   const form = useForm<z.infer<typeof schema>>({
     resolver: zodResolver(schema),
@@ -65,7 +77,6 @@ export const PostTweet: FC = () => {
   const createAttachment = api.asset.createAttachment.useMutation();
   const { toast } = useToast();
   const utils = api.useUtils();
-  const timelineSource = useTimelineSource();
   const attachmentInputRef = useRef<HTMLInputElement>(null);
 
   function onSubmit(values: z.infer<typeof schema>) {
@@ -83,11 +94,9 @@ export const PostTweet: FC = () => {
         },
         onSuccess: async ({ id }) => {
           form.reset();
-          await utils.timeline[timelineSource.path].cancel();
 
-          utils.timeline[timelineSource.path].setInfiniteData(
-            { ...timelineSource.payload },
-            (data) => {
+          for (const queryKey of timelineQueryKeys) {
+            queryClient.setQueryData(queryKey, (data: TimelineInfiniteData) => {
               const tweet = {
                 _count: {
                   likes: 0,
@@ -99,7 +108,7 @@ export const PostTweet: FC = () => {
                 createdAt: new Date(Date.now()),
                 content: values.content,
                 attachments: values.attachments,
-                author: user,
+                author: session.user,
                 retweets: [],
                 likes: [],
               };
@@ -118,8 +127,8 @@ export const PostTweet: FC = () => {
                 ],
                 pageParams: [],
               };
-            },
-          );
+            });
+          }
         },
       },
     );
@@ -208,7 +217,7 @@ export const PostTweet: FC = () => {
         <div className="flex p-2 h-full">
           <UserAvatar
             className="my-2 mr-1"
-            user={user}
+            user={session.user}
             onClick="link"
             width={44}
             height={44}
