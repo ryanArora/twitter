@@ -18,11 +18,11 @@ export const LayoutClient: FC<{ children: ReactNode }> = ({ children }) => {
 
   return (
     <div className="min-h-screen h-full border-x">
+      <Header
+        title={profile.name}
+        subtitle={`${formatNumberShort(profile._count.tweets, 1)} tweets`}
+      />
       <div className="border-b">
-        <Header
-          title={profile.name}
-          subtitle={`${formatNumberShort(profile._count.tweets, 1)} tweets`}
-        />
         <Image
           className="object-cover"
           src={profile.bannerUrl}
