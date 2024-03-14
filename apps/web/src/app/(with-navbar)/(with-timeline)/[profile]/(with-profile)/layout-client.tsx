@@ -3,40 +3,26 @@
 import { Button } from "@repo/ui/components/button";
 import { Image } from "@repo/ui/components/image";
 import { formatNumberShort } from "@repo/utils/str";
-import { ArrowLeft, CalendarRangeIcon } from "lucide-react";
+import { CalendarRangeIcon } from "lucide-react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { type FC, type ReactNode } from "react";
 import { FollowButton } from "./follow-button";
 import { useProfile } from "./profileContext";
 import { useSession } from "../../../../sessionContext";
+import { Header } from "@/app/(with-navbar)/header";
 import { UserAvatar } from "@/app/(with-navbar)/user-avatar";
 
 export const LayoutClient: FC<{ children: ReactNode }> = ({ children }) => {
-  const router = useRouter();
   const session = useSession();
   const profile = useProfile();
 
   return (
-    <div className="border-x border-right h-full w-full">
+    <div className="min-h-screen h-full border-x">
       <div className="border-b">
-        <div className="flex items-center">
-          <Button
-            className="p-0 mx-2 rounded-full"
-            type="button"
-            variant="ghost"
-            onClick={() => router.back()}
-          >
-            <ArrowLeft className="mx-1.5" />
-          </Button>
-          <div className="mx-4 my-2">
-            <p className="text-xl font-bold">{profile.name}</p>
-            <p className="text-sm text-primary/50">{`${formatNumberShort(
-              profile._count.tweets,
-              1,
-            )} tweets`}</p>
-          </div>
-        </div>
+        <Header
+          title={profile.name}
+          subtitle={`${formatNumberShort(profile._count.tweets, 1)} tweets`}
+        />
         <Image
           className="object-cover"
           src={profile.bannerUrl}

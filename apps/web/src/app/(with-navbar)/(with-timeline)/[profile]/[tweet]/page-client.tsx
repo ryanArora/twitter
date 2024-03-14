@@ -6,6 +6,7 @@ import { PostTweet } from "../../home/post-tweet";
 import { Timeline } from "../../timeline";
 import { Tweet } from "../../tweet/tweet";
 import { TweetProvider } from "../../tweet/tweetContext";
+import { Header } from "@/app/(with-navbar)/header";
 import { api } from "@/trpc/react";
 
 export type PageClientProps = {
@@ -28,11 +29,12 @@ export const PageClient: FC<PageClientProps> = ({ tweet: initialTweet }) => {
   }
 
   return (
-    <div>
+    <div className="min-h-screen h-full border-x">
+      <Header title="Tweet" />
       <TweetProvider tweet={tweet}>
         <Tweet />
       </TweetProvider>
-      <div>
+      <div className="border-t">
         <PostTweet
           inputPlaceholder="Post your reply"
           submitButtonText="Reply"

@@ -223,7 +223,7 @@ export const PostTweet: FC<PostTweetProps> = ({
 
   return (
     <Form {...form}>
-      <form className="p-2 border" onSubmit={form.handleSubmit(onSubmit)}>
+      <form className="p-2" onSubmit={form.handleSubmit(onSubmit)}>
         <div className="flex p-2 h-full">
           <UserAvatar
             className="my-2 mr-1"
