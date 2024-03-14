@@ -54,7 +54,13 @@ export const Timeline: FC<TimelineSourceProps> = ({ path, payload }) => {
           ))}
         </Fragment>
       ))}
-      {hasNextPage && <Spinner ref={ref} />}
+      {hasNextPage ? (
+        <Spinner ref={ref} />
+      ) : (
+        <div className="h-screen flex flex-col justify-end items-center">
+          <p className="p-4 italic">fin.</p>
+        </div>
+      )}
     </>
   );
 };
