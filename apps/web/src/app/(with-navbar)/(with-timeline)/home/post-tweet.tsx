@@ -11,16 +11,16 @@ import {
 } from "@repo/ui/components/form";
 import { Textarea } from "@repo/ui/components/textarea";
 import { useToast } from "@repo/ui/components/use-toast";
+import { useQueryClient } from "@tanstack/react-query";
 import { ImageIcon } from "lucide-react";
 import { useRef, type FC } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { AttachmentsView } from "./attatchments-view";
+import { type TweetBasic } from "../../../../../../../packages/api/src/router/tweet";
 import { useSession } from "../../../sessionContext";
 import { UserAvatar } from "@/app/(with-navbar)/user-avatar";
 import { api } from "@/trpc/react";
-import { useQueryClient } from "@tanstack/react-query";
-import { TweetBasic } from "../../../../../../../packages/api/src/router/tweet";
 
 export const schema = z
   .object({
@@ -76,7 +76,6 @@ export const PostTweet: FC = () => {
   const postTweet = api.tweet.create.useMutation();
   const createAttachment = api.asset.createAttachment.useMutation();
   const { toast } = useToast();
-  const utils = api.useUtils();
   const attachmentInputRef = useRef<HTMLInputElement>(null);
 
   function onSubmit(values: z.infer<typeof schema>) {

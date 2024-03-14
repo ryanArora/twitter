@@ -1,13 +1,13 @@
 "use client";
 
+import { type RouterInputs } from "@repo/api";
 import { Spinner } from "@repo/ui/components/spinner";
 import { type FC, Fragment } from "react";
 import { useInView } from "react-intersection-observer";
 import { Tweet } from "./tweet/tweet";
 import { TweetProvider } from "./tweet/tweetContext";
+import { type TimelineInput } from "../../../../../../packages/api/src/router/timeline";
 import { api } from "@/trpc/react";
-import { RouterInputs } from "@repo/api";
-import { TimelineInput } from "../../../../../../packages/api/src/router/timeline";
 
 export type TimelineSourceProps = {
   path: keyof RouterInputs["timeline"];

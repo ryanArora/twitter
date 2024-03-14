@@ -1,9 +1,9 @@
 "use client";
 
 import { type RouterOutputs } from "@repo/api";
+import { useRouter } from "next/navigation";
 import { type ReactNode, createContext, useContext } from "react";
 import { api } from "@/trpc/react";
-import { useRouter } from "next/navigation";
 
 export type Session = NonNullable<RouterOutputs["auth"]["getSession"]>;
 

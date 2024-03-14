@@ -7,6 +7,7 @@ import {
   DropdownMenuTrigger,
 } from "@repo/ui/components/dropdown-menu";
 import { toast } from "@repo/ui/components/use-toast";
+import { useQueryClient } from "@tanstack/react-query";
 import { MoreHorizontalIcon, Trash2Icon, UserPlusIcon } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -16,12 +17,11 @@ import { ReplyInteraction } from "./interaction/reply";
 import { RetweetInteraction } from "./interaction/retweet";
 import { ViewsInteraction } from "./interaction/views";
 import { useTweet } from "./tweetContext";
+import { type TweetBasic } from "../../../../../../../packages/api/src/router/tweet";
 import { UserAvatar } from "../../user-avatar";
 import { AttachmentsView } from "../home/attatchments-view";
 import { useSession } from "@/app/sessionContext";
 import { api } from "@/trpc/react";
-import { useQueryClient } from "@tanstack/react-query";
-import { TweetBasic } from "../../../../../../../packages/api/src/router/tweet";
 
 type TimelineInfiniteData = { pages: { tweets: TweetBasic[] }[] };
 
@@ -29,7 +29,6 @@ export const Tweet: FC = () => {
   const session = useSession();
   const tweet = useTweet();
   const router = useRouter();
-  const utils = api.useUtils();
   const queryClient = useQueryClient();
 
   const queryCache = queryClient.getQueryCache();
@@ -49,29 +48,6 @@ export const Tweet: FC = () => {
       });
     },
     onSuccess: () => {
-      const timelines = [
-        {
-          path: "home",
-          payload: { profileId: "" },
-        },
-        {
-          path: "profile",
-          payload: { profileId: session.user.id },
-        },
-        {
-          path: "replies",
-          payload: { profileId: session.user.id },
-        },
-        {
-          path: "media",
-          payload: { profileId: session.user.id },
-        },
-        {
-          path: "likes",
-          payload: { profileId: session.user.id },
-        },
-      ] as const;
-
       for (const queryKey of timelineQueryKeys) {
         queryClient.setQueryData(queryKey, (data: TimelineInfiniteData) => {
           if (!data) return;
