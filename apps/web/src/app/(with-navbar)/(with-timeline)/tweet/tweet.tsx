@@ -25,7 +25,11 @@ import { api } from "@/trpc/react";
 
 type TimelineInfiniteData = { pages: { tweets: TweetBasic[] }[] };
 
-export const Tweet: FC = () => {
+export type TweetProps = {
+  big?: boolean;
+};
+
+export const Tweet: FC<TweetProps> = ({ big }) => {
   const session = useSession();
   const tweet = useTweet();
   const router = useRouter();
@@ -70,6 +74,86 @@ export const Tweet: FC = () => {
       }
     },
   });
+
+  if (big) {
+    return (
+      <div
+        className="p-2 border-b hover:cursor-pointer hover:bg-secondary/10"
+        onClick={() => {
+          router.push(`/${tweet.author.username}/${tweet.id}`);
+        }}
+      >
+        <div className="flex mb-2">
+          <div className="flex w-full">
+            <UserAvatar
+              className="mx-2"
+              width={44}
+              height={44}
+              user={tweet.author}
+              linkToProfile={true}
+            />
+            <div className="flex flex-col w-full">
+              <div className="ml-1">
+                <div className="flex justify-between">
+                  <Link
+                    onClick={(e) => {
+                      e.stopPropagation();
+                    }}
+                    href={`/${tweet.author.username}`}
+                  >
+                    <p className="hover:underline font-semibold">
+                      {tweet.author.name}
+                    </p>
+                    <p className="text-sm text-primary/50">{`@${tweet.author.username}`}</p>
+                  </Link>
+                  <DropdownMenu>
+                    <DropdownMenuTrigger className="p-1 text-primary/50 hover:text-twitter-blue hover:bg-twitter-blue/10 rounded-full mt-[-4px]">
+                      <MoreHorizontalIcon className="p-1" />
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent className="bg-background">
+                      {session.user.id === tweet.author.id ? (
+                        <DropdownMenuItem asChild>
+                          <button
+                            className="w-full h-full text-red-500 focus:text-red-500 hover:cursor-pointer"
+                            type="button"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              deleteTweet.mutate({ id: tweet.id });
+                            }}
+                          >
+                            <Trash2Icon className="p-[2px] mr-0.5" />
+                            <span className="ml-0.5 font-bold">Delete</span>
+                          </button>
+                        </DropdownMenuItem>
+                      ) : (
+                        <DropdownMenuItem>
+                          <UserPlusIcon className="p-[2px] mr-0.5" />
+                          <span className="ml-0.5 font-bold">{`Follow @${tweet.author.username}`}</span>
+                        </DropdownMenuItem>
+                      )}
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div className="mb-2 mx-2">
+          <p className="mb-2 break-words whitespace-pre-wrap text-lg">
+            {tweet.content}
+          </p>
+          <AttachmentsView attachments={tweet.attachments} />
+        </div>
+        <div className="flex justify-between mx-2">
+          <ReplyInteraction />
+          <RetweetInteraction />
+          <LikeInteraction />
+          <ViewsInteraction />
+          <div></div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div
@@ -129,7 +213,9 @@ export const Tweet: FC = () => {
               </DropdownMenu>
             </div>
             <div className="mt-[-4px] mb-2">
-              <p className="mb-2 line-clamp-4 break-words">{tweet.content}</p>
+              <p className="mb-2 break-words whitespace-pre-wrap line-clamp-4">
+                {tweet.content}
+              </p>
               <AttachmentsView attachments={tweet.attachments} />
             </div>
           </div>

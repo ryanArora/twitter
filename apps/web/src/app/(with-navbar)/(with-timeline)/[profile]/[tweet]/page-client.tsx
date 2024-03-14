@@ -32,7 +32,7 @@ export const PageClient: FC<PageClientProps> = ({ tweet: initialTweet }) => {
     <div className="min-h-screen h-full border-x">
       <Header title="Tweet" />
       <TweetProvider tweet={tweet}>
-        <Tweet />
+        <Tweet big={true} />
       </TweetProvider>
       <div className="border-b">
         <PostTweet
