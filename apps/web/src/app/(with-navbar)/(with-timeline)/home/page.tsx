@@ -5,7 +5,13 @@ export default function HomePage() {
   return (
     <div className="w-full h-full">
       <PostTweet />
-      <Timeline path="home" payload={{ profileId: "" }} />
+      <Timeline
+        path="home"
+        payload={{
+          profile_userId: "",
+          tweetReplies_parentId: "",
+        }}
+      />
     </div>
   );
 }

@@ -15,17 +15,31 @@ import { Image } from "@repo/ui/components/image";
 import { Input } from "@repo/ui/components/input";
 import { Textarea } from "@repo/ui/components/textarea";
 import { useToast } from "@repo/ui/components/use-toast";
+import { useQueryClient } from "@tanstack/react-query";
 import { CalendarRangeIcon, Edit2Icon } from "lucide-react";
 import React, { useRef, type FC, type ElementRef } from "react";
 import { useForm } from "react-hook-form";
 import { type z } from "zod";
 import { UploadButton } from "./upload-button";
 import { useProfile } from "../../(with-timeline)/[profile]/(with-profile)/profileContext";
+import { type TweetBasic } from "../../../../../../../packages/api/src/router/tweet";
 import { UserAvatar } from "../../user-avatar";
 import { api } from "@/trpc/react";
 
+type TimelineInfiniteData = { pages: { tweets: TweetBasic[] }[] };
+
 export const EditProfile: FC = () => {
   const profile = useProfile();
+  const queryClient = useQueryClient();
+
+  const queryCache = queryClient.getQueryCache();
+  const timelineQueryKeys = queryCache
+    .getAll()
+    .map((cache) => cache.queryKey)
+    .filter((queryKey) => {
+      const endpoint = queryKey[0] as string[];
+      return endpoint[0] === "timeline";
+    });
 
   const bannerUploadRef = useRef<ElementRef<typeof UploadButton>>(null);
   const avatarUploadRef = useRef<ElementRef<typeof UploadButton>>(null);
@@ -74,31 +88,8 @@ export const EditProfile: FC = () => {
         };
       });
 
-      const timelines = [
-        {
-          path: "home",
-          payload: { profileId: "" },
-        },
-        {
-          path: "profile",
-          payload: { profileId: profile.id },
-        },
-        {
-          path: "replies",
-          payload: { profileId: profile.id },
-        },
-        {
-          path: "media",
-          payload: { profileId: profile.id },
-        },
-        {
-          path: "likes",
-          payload: { profileId: profile.id },
-        },
-      ] as const;
-
-      for (const { path, payload } of timelines) {
-        utils.timeline[path].setInfiniteData({ ...payload }, (data) => {
+      for (const queryKey of timelineQueryKeys) {
+        queryClient.setQueryData(queryKey, (data: TimelineInfiniteData) => {
           if (!data) return;
           return {
             ...data,

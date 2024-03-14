@@ -13,7 +13,8 @@ export type TimelineReturn = {
 
 export const timelineInputSchema = z.object({
   cursor: z.string().optional(),
-  profileId: z.string(),
+  profile_userId: z.string(),
+  tweetReplies_parentId: z.string(),
 });
 
 export type TimelineInput = z.infer<typeof timelineInputSchema>;
@@ -54,13 +55,13 @@ export const timelineRouter = createTRPCRouter({
         nextCursor,
       };
     }),
-  profile: protectedProcedure
+  profileHome: protectedProcedure
     .input(timelineInputSchema)
     .query(async ({ ctx, input }): Promise<TimelineReturn> => {
       const tweets = await db.tweet.findMany({
         where: {
           parent: null,
-          authorId: input.profileId,
+          authorId: input.profile_userId,
         },
         select: selectTweetBasic(ctx.session.user.id),
         orderBy: {
@@ -81,12 +82,12 @@ export const timelineRouter = createTRPCRouter({
         nextCursor,
       };
     }),
-  replies: protectedProcedure
+  profileReplies: protectedProcedure
     .input(timelineInputSchema)
     .query(async ({ ctx, input }): Promise<TimelineReturn> => {
       const tweets = await db.tweet.findMany({
         where: {
-          authorId: input.profileId,
+          authorId: input.profile_userId,
         },
         select: selectTweetBasic(ctx.session.user.id),
         orderBy: {
@@ -107,12 +108,12 @@ export const timelineRouter = createTRPCRouter({
         nextCursor,
       };
     }),
-  media: protectedProcedure
+  profileMedia: protectedProcedure
     .input(timelineInputSchema)
     .query(async ({ ctx, input }): Promise<TimelineReturn> => {
       const tweets = await db.tweet.findMany({
         where: {
-          authorId: input.profileId,
+          authorId: input.profile_userId,
           attachments: {
             some: {},
           },
@@ -136,12 +137,12 @@ export const timelineRouter = createTRPCRouter({
         nextCursor,
       };
     }),
-  likes: protectedProcedure
+  profileLikes: protectedProcedure
     .input(timelineInputSchema)
     .query(async ({ ctx, input }): Promise<TimelineReturn> => {
       const likes = await db.like.findMany({
         where: {
-          userId: input.profileId,
+          userId: input.profile_userId,
         },
         select: {
           createdAt: true,
@@ -153,6 +154,27 @@ export const timelineRouter = createTRPCRouter({
       });
 
       const tweets = likes.map((like) => like.tweet);
+
+      let nextCursor: typeof input.cursor = undefined;
+      if (tweets.length > TWEETS_PER_REQUEST) {
+        const nextItem = tweets.pop()!;
+        nextCursor = nextItem.id;
+      }
+
+      return {
+        tweets: getTweetsWithUrls(tweets),
+        nextCursor,
+      };
+    }),
+  tweetReplies: protectedProcedure
+    .input(timelineInputSchema)
+    .query(async ({ ctx, input }): Promise<TimelineReturn> => {
+      const tweets = await db.tweet.findMany({
+        where: {
+          parentId: input.tweetReplies_parentId,
+        },
+        select: selectTweetBasic(ctx.session.user.id),
+      });
 
       let nextCursor: typeof input.cursor = undefined;
       if (tweets.length > TWEETS_PER_REQUEST) {

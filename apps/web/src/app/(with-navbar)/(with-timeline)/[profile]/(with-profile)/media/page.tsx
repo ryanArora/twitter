@@ -6,5 +6,13 @@ import { Timeline } from "@/app/(with-navbar)/(with-timeline)/timeline";
 export default function MediaPage() {
   const profile = useProfile();
 
-  return <Timeline path="media" payload={{ profileId: profile.id }} />;
+  return (
+    <Timeline
+      path="profileMedia"
+      payload={{
+        profile_userId: profile.id,
+        tweetReplies_parentId: "",
+      }}
+    />
+  );
 }

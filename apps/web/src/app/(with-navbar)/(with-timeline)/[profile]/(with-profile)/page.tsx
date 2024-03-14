@@ -6,5 +6,13 @@ import { Timeline } from "../../timeline";
 export default function ProfilePage() {
   const profile = useProfile();
 
-  return <Timeline path="profile" payload={{ profileId: profile.id }} />;
+  return (
+    <Timeline
+      path="profileHome"
+      payload={{
+        profile_userId: profile.id,
+        tweetReplies_parentId: "",
+      }}
+    />
+  );
 }

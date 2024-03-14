@@ -2,6 +2,7 @@
 
 import { type FC } from "react";
 import { type TweetBasic } from "../../../../../../../../packages/api/src/router/tweet";
+import { Timeline } from "../../timeline";
 import { Tweet } from "../../tweet/tweet";
 import { TweetProvider } from "../../tweet/tweetContext";
 import { api } from "@/trpc/react";
@@ -26,8 +27,17 @@ export const PageClient: FC<PageClientProps> = ({ tweet: initialTweet }) => {
   }
 
   return (
-    <TweetProvider tweet={tweet}>
-      <Tweet />
-    </TweetProvider>
+    <div>
+      <TweetProvider tweet={tweet}>
+        <Tweet />
+      </TweetProvider>
+      <div>
+        <h1>Replies</h1>
+        <Timeline
+          path="tweetReplies"
+          payload={{ tweetReplies_parentId: tweet.id, profile_userId: "" }}
+        />
+      </div>
+    </div>
   );
 };
