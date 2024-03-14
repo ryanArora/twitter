@@ -66,6 +66,16 @@ export const EditProfile: FC = () => {
       const name = values.name ?? profile.name;
       const bio = values.bio ?? profile.bio;
 
+      utils.user.find.setData({ username: profile.username }, (oldProfile) => {
+        if (!oldProfile) return;
+        return {
+          ...oldProfile,
+          username,
+          name,
+          bio,
+        };
+      });
+
       utils.user.get.setData({ id: profile.id }, (oldProfile) => {
         if (!oldProfile) return;
         return {
