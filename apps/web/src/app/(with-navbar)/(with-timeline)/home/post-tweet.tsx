@@ -48,6 +48,7 @@ type PostTweetProps = {
   submitButtonText: string;
   parentTweetId: string | null;
   dontLinkToProfile?: boolean;
+  onSuccess?: () => void;
 };
 
 export const PostTweet: FC<PostTweetProps> = ({
@@ -55,6 +56,7 @@ export const PostTweet: FC<PostTweetProps> = ({
   submitButtonText,
   parentTweetId,
   dontLinkToProfile,
+  onSuccess,
 }) => {
   const session = useSession();
   const queryClient = useQueryClient();
@@ -146,6 +148,10 @@ export const PostTweet: FC<PostTweetProps> = ({
                   pages: [{ tweets: [tweet], nextCursor: undefined }],
                   pageParams: [],
                 };
+              }
+
+              if (onSuccess) {
+                onSuccess();
               }
 
               return {

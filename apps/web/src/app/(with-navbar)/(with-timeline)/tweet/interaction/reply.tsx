@@ -11,7 +11,7 @@ import {
 import { cn } from "@repo/ui/utils";
 import { formatNumberShort } from "@repo/utils/str";
 import { MessageCircleIcon } from "lucide-react";
-import React, { forwardRef } from "react";
+import React, { forwardRef, useState } from "react";
 import { PostTweet } from "../../home/post-tweet";
 import { Tweet } from "../tweet";
 import { useTweet } from "../tweetContext";
@@ -23,9 +23,10 @@ export const ReplyInteraction = forwardRef<
   React.ComponentPropsWithoutRef<typeof Button> & ReplyInteractionProps
 >(({ className, ...props }, ref) => {
   const tweet = useTweet();
+  const [open, setOpen] = useState(false);
 
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button
           {...props}
@@ -53,6 +54,9 @@ export const ReplyInteraction = forwardRef<
               submitButtonText="Reply"
               parentTweetId={tweet.id}
               dontLinkToProfile
+              onSuccess={() => {
+                setOpen(false);
+              }}
             />
           </DialogContent>
         </DialogOverlay>
