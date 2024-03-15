@@ -45,17 +45,20 @@ export default function FollowersPage() {
 
   if (n == 0) {
     return (
-      <div className="flex justify-center pt-8">
-        <div className="w-[300px]">
-          <p className="mb-1 w-fit text-3xl font-bold">
-            Looking for followers?
-          </p>
-          <p className="w-fit text-sm text-primary/50">
-            When someone follows this account, they’ll show up here. Posting and
-            interacting with others helps boost followers.
-          </p>
+      <>
+        <div className="flex justify-center pt-8">
+          <div className="w-[300px]">
+            <p className="mb-1 w-fit text-3xl font-bold">
+              Looking for followers?
+            </p>
+            <p className="w-fit text-sm text-primary/50">
+              When someone follows this account, they’ll show up here. Posting
+              and interacting with others helps boost followers.
+            </p>
+          </div>
         </div>
-      </div>
+        <div className="h-screen"></div>
+      </>
     );
   }
 
@@ -68,11 +71,7 @@ export default function FollowersPage() {
           ))}
         </Fragment>
       ))}
-      {hasNextPage ? (
-        <Spinner ref={ref} />
-      ) : (
-        <div className="flex h-screen flex-col items-center justify-end"></div>
-      )}
+      {hasNextPage ? <Spinner ref={ref} /> : <div className="h-screen"></div>}
     </>
   );
 }
