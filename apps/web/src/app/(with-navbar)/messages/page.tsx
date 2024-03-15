@@ -1,9 +1,12 @@
-import { TypographyH1 } from "@repo/ui/components/typography";
+import { Header } from "../header";
 
 export default function MessagesPage() {
   return (
-    <div className="p-2">
-      <TypographyH1>Messages</TypographyH1>
+    <div className="flex">
+      <div className="h-full min-h-screen w-[388px] border-x">
+        <Header title="Messages" />
+      </div>
+      <div className="h-full min-h-screen w-[600px] border-x"></div>
     </div>
   );
 }
