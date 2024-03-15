@@ -20,15 +20,15 @@ export const s3 = new S3({
 const ONE_HOUR_SECONDS = 60 * 60;
 const SIXTEEN_MB_BYTES = 1024 * 1024 * 16;
 
-export type Resource = "avatars" | "banners" | "attachments";
+export type Resource = "attachments" | "avatars" | "banners";
 
 export const getSignedUrl = <T>(
   key: T extends `${Resource}/${string}` ? T : never,
 ) => {
   return s3.getSignedUrl("getObject", {
     Bucket: process.env.AWS_S3_ASSETS_BUCKET_NAME!,
-    Key: key,
     Expires: ONE_HOUR_SECONDS,
+    Key: key,
   });
 };
 
@@ -37,11 +37,11 @@ export const postSignedUrl = <T>(
 ) => {
   return s3.createPresignedPost({
     Bucket: process.env.AWS_S3_ASSETS_BUCKET_NAME!,
-    Fields: { key },
     Conditions: [
       ["content-length-range", 0, SIXTEEN_MB_BYTES],
       ["starts-with", "$Content-Type", "image/"],
     ],
+    Fields: { key },
   });
 };
 

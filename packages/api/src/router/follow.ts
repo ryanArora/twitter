@@ -17,8 +17,8 @@ export const followRouter = createTRPCRouter({
 
       await db.follow.create({
         data: {
-          followerId: ctx.session.user.id,
           followedId: input.profileId,
+          followerId: ctx.session.user.id,
         },
       });
     }),
@@ -32,8 +32,8 @@ export const followRouter = createTRPCRouter({
       await db.follow.delete({
         where: {
           followerId_followedId: {
-            followerId: ctx.session.user.id,
             followedId: input.profileId,
+            followerId: ctx.session.user.id,
           },
         },
       });

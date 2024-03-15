@@ -14,6 +14,7 @@
  */
 module.exports = {
   rules: {
+    "@typescript-eslint/no-unused-vars": "off",
     "constructor-super": "off", // ts(2335) & ts(2377)
     "getter-return": "off", // ts(2378)
     "no-const-assign": "off", // ts(2588)
@@ -34,8 +35,7 @@ module.exports = {
     "prefer-const": "error", // ts provides better types with const
     "prefer-rest-params": "error", // ts provides better types with rest args over arguments
     "prefer-spread": "error", // ts transpiles spread to apply, so no need for manual apply
-    "valid-typeof": "off", // ts(2367)
 
-    "@typescript-eslint/no-unused-vars": "off",
+    "valid-typeof": "off", // ts(2367)
   },
 };

@@ -4,11 +4,11 @@ import { ProfileProvider } from "./profileContext";
 import { api } from "@/trpc/server";
 
 export default async function ProfileLayout({
-  params,
   children,
+  params,
 }: {
-  params: { profile: string };
   children: ReactNode;
+  params: { profile: string };
 }) {
   const profile = await api.user.find({
     username: params.profile,

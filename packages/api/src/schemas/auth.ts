@@ -20,12 +20,12 @@ export const passwordSchema = z
   .max(1024, "Your password must be no more than 1024 characters.");
 
 export const signupSchema = z.object({
-  username: usernameSchema,
   name: nameSchema,
   password: passwordSchema,
+  username: usernameSchema,
 });
 
 export const loginSchema = z.object({
-  username: z.string(),
   password: z.string().max(1024),
+  username: z.string(),
 });

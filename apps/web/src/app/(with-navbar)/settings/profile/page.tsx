@@ -2,6 +2,7 @@ import { EditProfile } from "./edit-profile";
 import { ProfileProvider } from "../../(with-timeline)/[profile]/(with-profile)/profileContext";
 import { api } from "@/trpc/server";
 
+
 export default async function ProfileSettingsPage() {
   const session = await api.auth.getSession();
   if (!session) return null;

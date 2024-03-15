@@ -11,8 +11,8 @@ type NavbarLinkProps = {
 const NavbarLink: FC<NavbarLinkProps> = ({ href, title }) => {
   return (
     <Button
-      className="w-full justify-start rounded-none px-4 py-6"
       asChild
+      className="w-full justify-start rounded-none px-4 py-6"
       type="button"
       variant="ghost"
     >

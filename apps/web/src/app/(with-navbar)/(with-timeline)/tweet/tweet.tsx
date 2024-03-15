@@ -50,8 +50,8 @@ export const Tweet: FC<TweetProps> = ({ big, disableInteractions }) => {
   const deleteTweet = api.tweet.delete.useMutation({
     onError: () => {
       toast({
-        title: "Error",
         description: "Error deleting tweet.",
+        title: "Error",
       });
     },
     onSuccess: () => {
@@ -98,10 +98,10 @@ export const Tweet: FC<TweetProps> = ({ big, disableInteractions }) => {
           <div className="flex w-full">
             <UserAvatar
               className="mx-2"
-              width={44}
               height={44}
-              user={tweet.author}
               onClick={null}
+              user={tweet.author}
+              width={44}
             />
             <div className="flex w-full flex-col">
               <div className="ml-1">
@@ -113,10 +113,10 @@ export const Tweet: FC<TweetProps> = ({ big, disableInteractions }) => {
                     </div>
                   ) : (
                     <Link
+                      href={`/${tweet.author.username}`}
                       onClick={(e) => {
                         e.stopPropagation();
                       }}
-                      href={`/${tweet.author.username}`}
                     >
                       <p className="font-semibold hover:underline">
                         {tweet.author.name}
@@ -135,11 +135,11 @@ export const Tweet: FC<TweetProps> = ({ big, disableInteractions }) => {
                           <DropdownMenuItem asChild>
                             <button
                               className="h-full w-full text-red-500 hover:cursor-pointer focus:text-red-500"
-                              type="button"
                               onClick={(e) => {
                                 e.stopPropagation();
                                 deleteTweet.mutate({ id: tweet.id });
                               }}
+                              type="button"
                             >
                               <Trash2Icon className="mr-0.5 p-[2px]" />
                               <span className="ml-0.5 font-bold">Delete</span>
@@ -171,12 +171,12 @@ export const Tweet: FC<TweetProps> = ({ big, disableInteractions }) => {
         <div className="mx-2 mb-2">
           <p className="text-sm text-primary/50">
             {new Intl.DateTimeFormat(undefined, {
-              weekday: "short",
-              hour: "numeric",
-              minute: "numeric",
-              hour12: true,
-              month: "short",
               day: "numeric",
+              hour: "numeric",
+              hour12: true,
+              minute: "numeric",
+              month: "short",
+              weekday: "short",
             }).format(tweet.createdAt)}
           </p>
         </div>
@@ -211,10 +211,10 @@ export const Tweet: FC<TweetProps> = ({ big, disableInteractions }) => {
       <div className="flex w-full">
         <UserAvatar
           className="mx-2"
-          width={44}
           height={44}
-          user={tweet.author}
           onClick={null}
+          user={tweet.author}
+          width={44}
         />
         <div className="flex w-full flex-col">
           <div className="ml-1">
@@ -228,10 +228,10 @@ export const Tweet: FC<TweetProps> = ({ big, disableInteractions }) => {
                 </div>
               ) : (
                 <Link
+                  href={`/${tweet.author.username}`}
                   onClick={(e) => {
                     e.stopPropagation();
                   }}
-                  href={`/${tweet.author.username}`}
                 >
                   <span className="mr-0.5 font-semibold hover:underline">
                     {tweet.author.name}
@@ -250,11 +250,11 @@ export const Tweet: FC<TweetProps> = ({ big, disableInteractions }) => {
                       <DropdownMenuItem asChild>
                         <button
                           className="h-full w-full text-red-500 hover:cursor-pointer focus:text-red-500"
-                          type="button"
                           onClick={(e) => {
                             e.stopPropagation();
                             deleteTweet.mutate({ id: tweet.id });
                           }}
+                          type="button"
                         >
                           <Trash2Icon className="mr-0.5 p-[2px]" />
                           <span className="ml-0.5 font-bold">Delete</span>

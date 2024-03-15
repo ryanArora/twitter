@@ -19,31 +19,31 @@ export const LayoutClient: FC<{ children: ReactNode }> = ({ children }) => {
   return (
     <div className="h-full min-h-screen border-x">
       <Header
-        title={profile.name}
         subtitle={`${formatNumberShort(profile._count.tweets, 1)} tweets`}
+        title={profile.name}
       />
       <div className="border-b">
         <Image
-          className="object-cover"
-          src={profile.bannerUrl}
           alt={`${profile.username}'s banner`}
-          width={598}
-          height={200}
+          className="object-cover"
           draggable={false}
-          onClick="focus"
           fallbackText=""
+          height={200}
+          onClick="focus"
+          src={profile.bannerUrl}
+          width={598}
         />
         <div className="flex justify-between">
           <UserAvatar
-            user={profile}
             className="ml-[10px] mt-[-64px]"
-            width={128}
             height={128}
             onClick="focus"
+            user={profile}
+            width={128}
           />
           <div className="m-4">
             {profile.id === session.user.id ? (
-              <Button className="rounded-full font-semibold" asChild>
+              <Button asChild className="rounded-full font-semibold">
                 <Link href="/settings/profile">Edit profile</Link>
               </Button>
             ) : (

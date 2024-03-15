@@ -12,10 +12,10 @@ export const appRouter = createTRPCRouter({
   asset: assetRouter,
   auth: authRouter,
   follow: followRouter,
-  tweet: tweetRouter,
   like: likeRouter,
   retweet: retweetRouter,
   timeline: timelineRouter,
+  tweet: tweetRouter,
   user: userRouter,
 });
 

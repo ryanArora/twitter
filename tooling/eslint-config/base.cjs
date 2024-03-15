@@ -2,19 +2,15 @@
 module.exports = {
   overrides: [
     {
-      files: ["*.js", "*.cjs"],
-      plugins: ["@typescript-eslint"],
       extends: [
         "eslint:recommended",
+        "plugin:perfectionist/recommended-natural",
         "./import.cjs",
         "prettier",
         "./typescript-compat.cjs",
         "./overrides.cjs",
       ],
-      parserOptions: {
-        ecmaVersion: "latest",
-        sourceType: "script",
-      },
+      files: ["*.js", "*.cjs"],
       overrides: [
         {
           files: ["*.mjs"],
@@ -23,12 +19,16 @@ module.exports = {
           },
         },
       ],
+      parserOptions: {
+        ecmaVersion: "latest",
+        sourceType: "script",
+      },
+      plugins: ["@typescript-eslint", "perfectionist"],
     },
     {
-      files: ["*.jsx"],
-      plugins: ["@typescript-eslint", "react", "react-hooks"],
       extends: [
         "eslint:recommended",
+        "plugin:perfectionist/recommended-natural",
         "./import.cjs",
         "plugin:react/recommended",
         "plugin:react-hooks/recommended",
@@ -36,32 +36,39 @@ module.exports = {
         "./typescript-compat.cjs",
         "./overrides.cjs",
       ],
+      files: ["*.jsx"],
       parserOptions: {
-        ecmaVersion: "latest",
         ecmaFeatures: {
           jsx: true,
         },
+        ecmaVersion: "latest",
         sourceType: "module",
+      },
+      plugins: ["@typescript-eslint", "react", "react-hooks", "perfectionist"],
+      settings: {
+        react: {
+          version: "detect",
+        },
       },
     },
     {
-      files: ["*.ts"],
-      plugins: ["@typescript-eslint"],
       extends: [
         "eslint:recommended",
         "plugin:@typescript-eslint/recommended",
+        "plugin:perfectionist/recommended-natural",
         "./import.cjs",
         "prettier",
         "./typescript-compat.cjs",
         "./overrides.cjs",
       ],
+      files: ["*.ts"],
+      plugins: ["@typescript-eslint", "perfectionist"],
     },
     {
-      files: ["*.tsx"],
-      plugins: ["@typescript-eslint", "react", "react-hooks"],
       extends: [
         "eslint:recommended",
         "plugin:@typescript-eslint/recommended",
+        "plugin:perfectionist/recommended-natural",
         "./import.cjs",
         "plugin:react/recommended",
         "plugin:react-hooks/recommended",
@@ -69,6 +76,13 @@ module.exports = {
         "./typescript-compat.cjs",
         "./overrides.cjs",
       ],
+      files: ["*.tsx"],
+      plugins: ["@typescript-eslint", "react", "react-hooks", "perfectionist"],
+      settings: {
+        react: {
+          version: "detect",
+        },
+      },
     },
   ],
 };

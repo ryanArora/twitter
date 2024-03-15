@@ -6,20 +6,20 @@ import { useRouter } from "next/navigation";
 import { type FC } from "react";
 
 export type HeaderProps = {
-  title: string;
   subtitle?: string;
+  title: string;
 };
 
-export const Header: FC<HeaderProps> = ({ title, subtitle }) => {
+export const Header: FC<HeaderProps> = ({ subtitle, title }) => {
   const router = useRouter();
 
   return (
     <div className="sticky top-0 flex h-[64px] max-h-[64px] min-h-[64px] items-center bg-background">
       <Button
         className="mx-2 rounded-full p-0"
+        onClick={() => router.back()}
         type="button"
         variant="ghost"
-        onClick={() => router.back()}
       >
         <ArrowLeft className="mx-1.5" />
       </Button>

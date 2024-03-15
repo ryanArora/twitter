@@ -1,10 +1,11 @@
 import { PageClient } from "./page-client";
 import { api } from "@/trpc/server";
 
+
 export default async function TweetPage({
   params,
 }: {
-  params: { tweet: string; profile: string };
+  params: { profile: string; tweet: string };
 }) {
   const tweet = await api.tweet.find({
     id: params.tweet,

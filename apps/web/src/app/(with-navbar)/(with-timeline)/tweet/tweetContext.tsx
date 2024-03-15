@@ -6,11 +6,11 @@ import { type TweetBasic } from "../../../../../../../packages/api/src/router/tw
 export const TweetContext = createContext<TweetBasic | null>(null);
 
 export function TweetProvider({
-  tweet,
   children,
+  tweet,
 }: {
-  tweet: TweetBasic | null;
   children: ReactNode;
+  tweet: TweetBasic | null;
 }) {
   return (
     <TweetContext.Provider value={tweet}>{children}</TweetContext.Provider>

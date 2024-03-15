@@ -5,32 +5,32 @@ import NextImage from "next/image";
 import { useRouter } from "next/navigation";
 import React, {
   type ComponentPropsWithoutRef,
-  useState,
-  forwardRef,
   type ElementRef,
+  forwardRef,
+  useState,
 } from "react";
 import {
   Dialog,
-  DialogTrigger,
+  DialogContent,
   DialogOverlay,
   DialogPortal,
-  DialogContent,
+  DialogTrigger,
 } from "./dialog";
 import { cn } from "../utils";
 
 export type ImageProps = {
   className?: string;
-  width: number;
-  height: number;
-  nativeWidth?: number;
-  nativeHeight?: number;
-  href?: string;
   fallbackText?: string;
+  height: number;
+  href?: string;
+  nativeHeight?: number;
+  nativeWidth?: number;
   onClick?:
     | "focus"
     | "link"
     | NonNullable<ComponentPropsWithoutRef<"img">["onClick"]>
     | null;
+  width: number;
 };
 
 export const Image = forwardRef<
@@ -39,21 +39,21 @@ export const Image = forwardRef<
 >(
   (
     {
-      className,
-      src,
       alt,
-      width,
-      height,
-      nativeWidth = width,
-      nativeHeight = height,
-      href = "/",
+      className,
       fallbackText,
+      height,
+      href = "/",
+      nativeHeight = height,
+      src,
+      width,
+      nativeWidth = width,
       onClick,
       ...props
     },
     ref,
   ) => {
-    type Status = "loading" | "loaded" | "error";
+    type Status = "error" | "loaded" | "loading";
     const [status, setStatus] = useState<Status>("loading");
     const [isOpen, setOpen] = useState(false);
     const router = useRouter();
@@ -61,25 +61,25 @@ export const Image = forwardRef<
     return (
       <>
         <NextImage
-          hidden={status !== "loaded"}
-          style={{
-            width,
-            height,
-            minWidth: width,
-            minHeight: height,
-          }}
+          alt={alt}
           className={cn(
             onClick === "focus" || onClick === "link"
               ? "hover:cursor-pointer"
               : null,
             className,
           )}
-          src={src}
-          alt={alt}
-          width={width}
           height={height}
+          hidden={status !== "loaded"}
           priority
           ref={ref}
+          src={src}
+          style={{
+            height,
+            minHeight: height,
+            minWidth: width,
+            width,
+          }}
+          width={width}
           {...props}
           onClick={(e) => {
             e.stopPropagation();
@@ -107,16 +107,15 @@ export const Image = forwardRef<
         />
         {status === "loading" ? (
           <div
-            style={{ width, height, minWidth: width, minHeight: height }}
             className={cn("bg-zinc-800", className)}
             onClick={(e) => {
               e.stopPropagation();
             }}
+            style={{ height, minHeight: height, minWidth: width, width }}
           ></div>
         ) : null}
         {status === "error" ? (
           <div
-            style={{ width, height, minWidth: width, minHeight: height }}
             className={cn(
               "flex items-center justify-center bg-zinc-800",
               onClick === "link" ? "hover:cursor-pointer" : null,
@@ -130,6 +129,7 @@ export const Image = forwardRef<
                 return;
               }
             }}
+            style={{ height, minHeight: height, minWidth: width, width }}
           >
             {fallbackText !== undefined ? (
               <p style={{ fontSize: Math.min(width, height) / 2.5 }}>
@@ -143,22 +143,22 @@ export const Image = forwardRef<
         ) : null}
         {onClick === "focus" ? (
           <Dialog
-            open={isOpen}
             onOpenChange={(open) => {
               setOpen(open);
             }}
+            open={isOpen}
           >
             <DialogTrigger className="hidden" />
             <DialogPortal>
               <DialogOverlay />
               <DialogContent>
                 <NextImage
-                  className="max-w-screen max-h-screen"
-                  src={src}
-                  priority
                   alt={`focused: ${alt}`}
-                  width={nativeWidth}
+                  className="max-w-screen max-h-screen"
                   height={nativeHeight}
+                  priority
+                  src={src}
+                  width={nativeWidth}
                 />
               </DialogContent>
             </DialogPortal>

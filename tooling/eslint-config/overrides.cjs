@@ -2,7 +2,8 @@
 module.exports = {
   rules: {
     "no-unused-vars": "warn",
-    "react/prop-types": "off",
+    "perfectionist/sort-imports": "off",
     "react/jsx-no-undef": "off",
+    "react/prop-types": "off",
   },
 };

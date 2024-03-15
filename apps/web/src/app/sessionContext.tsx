@@ -10,11 +10,11 @@ export type Session = NonNullable<RouterOutputs["auth"]["getSession"]>;
 export const SessionContext = createContext<Session | null>(null);
 
 export function SessionProvider({
-  session,
   children,
+  session,
 }: {
-  session: Session | null;
   children: ReactNode;
+  session: Session | null;
 }) {
   const { data } = api.auth.getSession.useQuery(undefined, {
     initialData: session,

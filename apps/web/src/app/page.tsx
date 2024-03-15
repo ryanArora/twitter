@@ -13,11 +13,11 @@ export default async function Landing() {
     <div className="flex h-screen">
       <div className="flex h-screen w-[50%] items-center justify-center">
         <Image
-          className=""
           alt="twitter logo"
+          className=""
+          height={550}
           src="/twitter.svg"
           width={550}
-          height={550}
         />
       </div>
       <div className="flex h-screen w-[50%] items-center">
@@ -26,12 +26,12 @@ export default async function Landing() {
           <TypographyH2 className="mb-4">Join today.</TypographyH2>
           <div>
             <div>
-              <Button className="my-4 flex grow" asChild>
+              <Button asChild className="my-4 flex grow">
                 <Link href="/signup">Sign up</Link>
               </Button>
             </div>
             <div>
-              <Button variant="outline" className="my-4 flex grow" asChild>
+              <Button asChild className="my-4 flex grow" variant="outline">
                 <Link href="/login">Log in</Link>
               </Button>
             </div>

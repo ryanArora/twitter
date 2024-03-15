@@ -1,17 +1,17 @@
 type Attachment = {
+  height: number;
   id: string;
   url: string;
   width: number;
-  height: number;
 };
 
 type AttachmentExtra = {
+  height: number;
   id: string;
+  nativeHeight: number;
+  nativeWidth: number;
   url: string;
   width: number;
-  height: number;
-  nativeWidth: number;
-  nativeHeight: number;
 };
 
 export function attachmentDimensions(
@@ -49,17 +49,17 @@ function map_one(one: Attachment): AttachmentExtra[] {
   const width = one.width;
   const height = one.height;
 
-  let newWidth: number | null = null;
-  let newHeight: number | null = null;
+  let newWidth: null | number = null;
+  let newHeight: null | number = null;
 
   if (width === 0 || height === 0) {
     return [
       {
         ...one,
-        nativeWidth: one.width,
-        nativeHeight: one.height,
-        width: 512,
         height: 512,
+        nativeHeight: one.height,
+        nativeWidth: one.width,
+        width: 512,
       },
     ];
   }
@@ -89,10 +89,10 @@ function map_one(one: Attachment): AttachmentExtra[] {
   return [
     {
       ...one,
-      nativeWidth: one.width,
-      nativeHeight: one.height,
-      width: newWidth,
       height: newHeight,
+      nativeHeight: one.height,
+      nativeWidth: one.width,
+      width: newWidth,
     },
   ];
 }
@@ -101,17 +101,17 @@ function map_two(one: Attachment, two: Attachment): AttachmentExtra[] {
   return [
     {
       ...one,
-      nativeWidth: one.width,
-      nativeHeight: one.height,
-      width: 256,
       height: 256,
+      nativeHeight: one.height,
+      nativeWidth: one.width,
+      width: 256,
     },
     {
       ...two,
-      nativeWidth: two.width,
-      nativeHeight: two.height,
-      width: 256,
       height: 256,
+      nativeHeight: two.height,
+      nativeWidth: two.width,
+      width: 256,
     },
   ];
 }
@@ -124,24 +124,24 @@ function map_three(
   return [
     {
       ...one,
-      nativeWidth: one.width,
-      nativeHeight: one.height,
-      width: 256,
       height: 256,
+      nativeHeight: one.height,
+      nativeWidth: one.width,
+      width: 256,
     },
     {
       ...two,
-      nativeWidth: two.width,
-      nativeHeight: two.height,
-      width: 256,
       height: 128,
+      nativeHeight: two.height,
+      nativeWidth: two.width,
+      width: 256,
     },
     {
       ...three,
-      nativeWidth: three.width,
-      nativeHeight: three.height,
-      width: 256,
       height: 128,
+      nativeHeight: three.height,
+      nativeWidth: three.width,
+      width: 256,
     },
   ];
 }
@@ -155,31 +155,31 @@ function map_four(
   return [
     {
       ...one,
-      nativeWidth: one.width,
-      nativeHeight: one.height,
-      width: 256,
       height: 128,
+      nativeHeight: one.height,
+      nativeWidth: one.width,
+      width: 256,
     },
     {
       ...two,
-      nativeWidth: two.width,
-      nativeHeight: two.height,
-      width: 256,
       height: 128,
+      nativeHeight: two.height,
+      nativeWidth: two.width,
+      width: 256,
     },
     {
       ...three,
-      nativeWidth: three.width,
-      nativeHeight: three.height,
-      width: 256,
       height: 128,
+      nativeHeight: three.height,
+      nativeWidth: three.width,
+      width: 256,
     },
     {
       ...four,
-      nativeWidth: four.width,
-      nativeHeight: four.height,
-      width: 256,
       height: 128,
+      nativeHeight: four.height,
+      nativeWidth: four.width,
+      width: 256,
     },
   ];
 }

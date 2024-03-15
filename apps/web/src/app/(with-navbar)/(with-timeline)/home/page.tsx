@@ -7,8 +7,8 @@ export default function HomePage() {
       <div className="border-b">
         <PostTweet
           inputPlaceholder="What is happening?!"
-          submitButtonText="Tweet"
           parentTweetId={null}
+          submitButtonText="Tweet"
         />
       </div>
       <Timeline

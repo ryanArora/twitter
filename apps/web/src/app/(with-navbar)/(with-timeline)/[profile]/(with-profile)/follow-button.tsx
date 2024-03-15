@@ -17,49 +17,12 @@ export const FollowButton = forwardRef<
   const utils = api.useUtils();
 
   const unfollowMutation = api.follow.delete.useMutation({
-    onMutate: async () => {
-      await utils.user.find.cancel({ username: profile.username });
-      const previousProfile = utils.user.find.getData();
-
-      utils.user.find.setData({ username: profile.username }, (data) => {
-        if (!data) return;
-        return {
-          ...data,
-          followers: data.followers.filter(
-            (follow) => follow.follower.id !== session.user.id,
-          ),
-          _count: {
-            ...data._count,
-            followers: data._count.followers - 1,
-          },
-        };
-      });
-
-      utils.user.get.setData({ id: profile.id }, (data) => {
-        if (!data) return;
-        return {
-          ...data,
-          followers: data.followers.filter(
-            (follow) => follow.follower.id !== session.user.id,
-          ),
-          _count: {
-            ...data._count,
-            followers: data._count.followers - 1,
-          },
-        };
-      });
-
-      return { previousProfile };
-    },
     onError: async (err, input, context) => {
       utils.user.find.setData(
         { username: profile.username },
         context!.previousProfile,
       );
     },
-  });
-
-  const followMutation = api.follow.create.useMutation({
     onMutate: async () => {
       await utils.user.find.cancel({ username: profile.username });
       const previousProfile = utils.user.find.getData();
@@ -68,17 +31,13 @@ export const FollowButton = forwardRef<
         if (!data) return;
         return {
           ...data,
-          followers: [
-            {
-              createdAt: new Date(Date.now()),
-              follower: session.user,
-            },
-            ...data.followers,
-          ],
           _count: {
             ...data._count,
-            followers: data._count.followers + 1,
+            followers: data._count.followers - 1,
           },
+          followers: data.followers.filter(
+            (follow) => follow.follower.id !== session.user.id,
+          ),
         };
       });
 
@@ -86,6 +45,39 @@ export const FollowButton = forwardRef<
         if (!data) return;
         return {
           ...data,
+          _count: {
+            ...data._count,
+            followers: data._count.followers - 1,
+          },
+          followers: data.followers.filter(
+            (follow) => follow.follower.id !== session.user.id,
+          ),
+        };
+      });
+
+      return { previousProfile };
+    },
+  });
+
+  const followMutation = api.follow.create.useMutation({
+    onError: (err, input, context) => {
+      utils.user.find.setData(
+        { username: profile.username },
+        context!.previousProfile,
+      );
+    },
+    onMutate: async () => {
+      await utils.user.find.cancel({ username: profile.username });
+      const previousProfile = utils.user.find.getData();
+
+      utils.user.find.setData({ username: profile.username }, (data) => {
+        if (!data) return;
+        return {
+          ...data,
+          _count: {
+            ...data._count,
+            followers: data._count.followers + 1,
+          },
           followers: [
             {
               createdAt: new Date(Date.now()),
@@ -93,22 +85,30 @@ export const FollowButton = forwardRef<
             },
             ...data.followers,
           ],
+        };
+      });
+
+      utils.user.get.setData({ id: profile.id }, (data) => {
+        if (!data) return;
+        return {
+          ...data,
           _count: {
             ...data._count,
             followers: data._count.followers + 1,
           },
+          followers: [
+            {
+              createdAt: new Date(Date.now()),
+              follower: session.user,
+            },
+            ...data.followers,
+          ],
         };
       });
 
       setShowUnfollowButton(false);
 
       return { previousProfile };
-    },
-    onError: (err, input, context) => {
-      utils.user.find.setData(
-        { username: profile.username },
-        context!.previousProfile,
-      );
     },
   });
 
@@ -123,21 +123,21 @@ export const FollowButton = forwardRef<
           "w-[100px] rounded-full font-semibold transition-colors",
           className,
         )}
-        ref={ref}
-        type="button"
-        variant={showUnfollowButton ? "destructive" : "outline"}
-        onMouseOver={() => {
-          setShowUnfollowButton(true);
-        }}
-        onMouseOut={() => {
-          setShowUnfollowButton(false);
-        }}
         onClick={(e) => {
           if (showUnfollowButton) {
             e.preventDefault();
             unfollowMutation.mutate({ profileId: profile.id });
           }
         }}
+        onMouseOut={() => {
+          setShowUnfollowButton(false);
+        }}
+        onMouseOver={() => {
+          setShowUnfollowButton(true);
+        }}
+        ref={ref}
+        type="button"
+        variant={showUnfollowButton ? "destructive" : "outline"}
         {...props}
       >
         {showUnfollowButton ? "Unfollow" : "Following"}
@@ -147,13 +147,13 @@ export const FollowButton = forwardRef<
     return (
       <Button
         className={cn("rounded-full font-semibold", className)}
-        type="button"
-        variant="default"
-        ref={ref}
         onClick={(e) => {
           e.preventDefault();
           followMutation.mutate({ profileId: profile.id });
         }}
+        ref={ref}
+        type="button"
+        variant="default"
         {...props}
       >
         Follow

@@ -27,7 +27,6 @@ export function TRPCReactProvider(props: {
 
   const [trpcClient] = useState(() =>
     api.createClient({
-      transformer: SuperJSON,
       links: [
         loggerLink({
           enabled: (op) =>
@@ -35,14 +34,15 @@ export function TRPCReactProvider(props: {
             (op.direction === "down" && op.result instanceof Error),
         }),
         unstable_httpBatchStreamLink({
-          url: getBaseUrl() + "/api/trpc",
           async headers() {
             const headers = new Headers(await props.headersPromise);
             headers.set("x-trpc-source", "nextjs-react");
             return headers;
           },
+          url: getBaseUrl() + "/api/trpc",
         }),
       ],
+      transformer: SuperJSON,
     }),
   );
 

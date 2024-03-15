@@ -1,5 +1,5 @@
 import { deleteObjects } from "@repo/aws";
-import { db, type Prisma } from "@repo/db";
+import { type Prisma, db } from "@repo/db";
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 import { getTweetWithUrls } from "./asset";
@@ -13,38 +13,42 @@ export type TweetBasicWithoutUrls = Prisma.TweetGetPayload<{
 
 export type TweetBasic = Omit<
   TweetBasicWithoutUrls,
-  "author" | "attachments"
+  "attachments" | "author"
 > & {
-  author: TweetBasicWithoutUrls["author"] & { avatarUrl: string };
   attachments: (TweetBasicWithoutUrls["attachments"][number] & {
     url: string;
   })[];
+  author: TweetBasicWithoutUrls["author"] & { avatarUrl: string };
 };
 
 export const selectTweetBasic = (sessionUserId: string) => {
   return {
-    id: true,
-    content: true,
-    attachments: {
-      select: {
-        id: true,
-        width: true,
-        height: true,
-      },
-    },
-    createdAt: true,
     _count: {
       select: {
+        likes: true,
         replies: true,
         retweets: true,
-        likes: true,
         views: true,
+      },
+    },
+    attachments: {
+      select: {
+        height: true,
+        id: true,
+        width: true,
       },
     },
     author: {
       select: selectUserBasic,
     },
+    content: true,
+    createdAt: true,
+    id: true,
     likes: {
+      select: {
+        createdAt: true,
+        user: { select: selectUserBasic },
+      },
       where: {
         OR: [
           { userId: sessionUserId },
@@ -56,13 +60,13 @@ export const selectTweetBasic = (sessionUserId: string) => {
             },
           },
         ],
-      },
-      select: {
-        createdAt: true,
-        user: { select: selectUserBasic },
       },
     },
     retweets: {
+      select: {
+        createdAt: true,
+        user: { select: selectUserBasic },
+      },
       where: {
         OR: [
           { userId: sessionUserId },
@@ -74,10 +78,6 @@ export const selectTweetBasic = (sessionUserId: string) => {
             },
           },
         ],
-      },
-      select: {
-        createdAt: true,
-        user: { select: selectUserBasic },
       },
     },
   } satisfies Prisma.TweetSelect;
@@ -88,23 +88,23 @@ export const tweetRouter = createTRPCRouter({
     .input(postTweetSchema)
     .mutation(async ({ ctx, input }) => {
       const attachments = await db.attachment.findMany({
+        select: { id: true },
         where: {
-          userId: ctx.session.user.id,
           id: {
             in: input.attachmentIds,
           },
+          userId: ctx.session.user.id,
         },
-        select: { id: true },
       });
 
       return await db.tweet.create({
         data: {
-          authorId: ctx.session.user.id,
-          content: input.content,
-          parentId: input.parentTweetId,
           attachments: {
             connect: attachments,
           },
+          authorId: ctx.session.user.id,
+          content: input.content,
+          parentId: input.parentTweetId,
           views: {
             create: {
               userId: ctx.session.user.id,
@@ -116,32 +116,13 @@ export const tweetRouter = createTRPCRouter({
         },
       });
     }),
-  find: protectedProcedure
-    .input(z.object({ id: z.string(), username: z.string() }))
-    .query(async ({ ctx, input }): Promise<TweetBasic | null> => {
-      const tweet = await db.tweet.findUnique({
-        where: {
-          id: input.id,
-        },
-        select: selectTweetBasic(ctx.session.user.id),
-      });
-
-      if (!tweet) return null;
-
-      const realUsernameLower = tweet.author.username.toLowerCase();
-      const fakeUsernameLower = input.username.toLowerCase();
-
-      if (realUsernameLower !== fakeUsernameLower) return null;
-
-      return getTweetWithUrls(tweet);
-    }),
   delete: protectedProcedure
     .input(z.object({ id: z.string() }))
     .mutation(async ({ ctx, input }) => {
       await db.$transaction(async (tx) => {
         const tweet = await tx.tweet.findUnique({
-          where: { id: input.id, authorId: ctx.session.user.id },
           select: { attachments: { select: { id: true } } },
+          where: { authorId: ctx.session.user.id, id: input.id },
         });
 
         if (!tweet) throw new TRPCError({ code: "UNAUTHORIZED" });
@@ -156,5 +137,24 @@ export const tweetRouter = createTRPCRouter({
 
         await db.tweet.delete({ where: { id: input.id } });
       });
+    }),
+  find: protectedProcedure
+    .input(z.object({ id: z.string(), username: z.string() }))
+    .query(async ({ ctx, input }): Promise<TweetBasic | null> => {
+      const tweet = await db.tweet.findUnique({
+        select: selectTweetBasic(ctx.session.user.id),
+        where: {
+          id: input.id,
+        },
+      });
+
+      if (!tweet) return null;
+
+      const realUsernameLower = tweet.author.username.toLowerCase();
+      const fakeUsernameLower = input.username.toLowerCase();
+
+      if (realUsernameLower !== fakeUsernameLower) return null;
+
+      return getTweetWithUrls(tweet);
     }),
 });

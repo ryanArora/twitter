@@ -10,22 +10,22 @@ import { getSession } from "../../../../../../../packages/api/src/router/auth";
  */
 const createContext = async (req: NextRequest) => {
   return createTRPCContext({
-    session: await getSession(req.cookies.get("session-token")?.value),
     headers: req.headers,
+    session: await getSession(req.cookies.get("session-token")?.value),
   });
 };
 
 const handler = (req: NextRequest) =>
   fetchRequestHandler({
-    endpoint: "/api/trpc",
-    req,
-    router: appRouter,
     createContext: () => createContext(req),
-    onError: ({ path, error }) => {
+    endpoint: "/api/trpc",
+    onError: ({ error, path }) => {
       console.error(
         `❌ tRPC failed on ${path ?? "<no-path>"}: ${error.message}`,
       );
     },
+    req,
+    router: appRouter,
   });
 
 export { handler as GET, handler as POST };

@@ -25,11 +25,11 @@ export default function LoginForm() {
   const { toast } = useToast();
 
   const form = useForm<z.infer<typeof loginSchema>>({
-    resolver: zodResolver(loginSchema),
     defaultValues: {
-      username: "",
       password: "",
+      username: "",
     },
+    resolver: zodResolver(loginSchema),
   });
 
   function onSubmit(values: z.infer<typeof loginSchema>) {
@@ -41,8 +41,8 @@ export default function LoginForm() {
         }
 
         toast({
-          title: "Error",
           description: err.message,
+          title: "Error",
         });
       },
       onSuccess: (data) => {
@@ -60,7 +60,7 @@ export default function LoginForm() {
         </CardHeader>
         <CardContent>
           <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+            <form className="space-y-8" onSubmit={form.handleSubmit(onSubmit)}>
               <FormField
                 control={form.control}
                 name="username"

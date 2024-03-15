@@ -4,8 +4,8 @@ import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 import { type TweetBasic, type TweetBasicWithoutUrls } from "./tweet";
 import {
-  type UserBasicWithoutAvatarUrl,
   type UserBasic,
+  type UserBasicWithoutAvatarUrl,
   type UserProfile,
   type UserProfileWithoutUrls,
 } from "./user";
@@ -33,11 +33,11 @@ export function getUserProfileWithUrls(
 export function getTweetWithUrls(tweet: TweetBasicWithoutUrls) {
   return {
     ...tweet,
-    author: getUserWithAvatarUrl(tweet.author),
     attachments: tweet.attachments.map((attachment) => ({
       ...attachment,
       url: getSignedUrl(`attachments/${attachment.id}`),
     })),
+    author: getUserWithAvatarUrl(tweet.author),
   };
 }
 
@@ -48,20 +48,15 @@ export function getTweetsWithUrls(
 }
 
 export const assetRouter = createTRPCRouter({
-  getPostUrl: protectedProcedure
-    .input(z.object({ resource: z.enum(["avatars", "banners"]) }))
-    .query(({ ctx, input }) => {
-      return postSignedUrl(`${input.resource}/${ctx.session.user.id}`);
-    }),
   createAttachment: protectedProcedure
-    .input(z.object({ width: z.number(), height: z.number() }))
+    .input(z.object({ height: z.number(), width: z.number() }))
     .mutation(async ({ ctx, input }) => {
       const attachment = await db.attachment.create({
         data: {
-          userId: ctx.session.user.id,
-          tweetId: null,
-          width: input.width,
           height: input.height,
+          tweetId: null,
+          userId: ctx.session.user.id,
+          width: input.width,
         },
         select: { id: true },
       });
@@ -79,8 +74,8 @@ export const assetRouter = createTRPCRouter({
     )
     .mutation(async ({ ctx, input }) => {
       const attachment = await db.attachment.findUnique({
+        select: { tweetId: true, userId: true },
         where: { id: input.id },
-        select: { userId: true, tweetId: true },
       });
 
       if (
@@ -97,5 +92,10 @@ export const assetRouter = createTRPCRouter({
           id: input.id,
         },
       });
+    }),
+  getPostUrl: protectedProcedure
+    .input(z.object({ resource: z.enum(["avatars", "banners"]) }))
+    .query(({ ctx, input }) => {
+      return postSignedUrl(`${input.resource}/${ctx.session.user.id}`);
     }),
 });

@@ -7,7 +7,7 @@
  * Tl;dr - this is where all the tRPC server stuff is created and plugged in.
  * The pieces you will need to use are documented accordingly near the end
  */
-import { initTRPC, TRPCError } from "@trpc/server";
+import { TRPCError, initTRPC } from "@trpc/server";
 import superjson from "superjson";
 import { ZodError } from "zod";
 import { type Session } from "./router/auth";
@@ -46,12 +46,10 @@ export const createTRPCContext = async (opts: {
  * transformer
  */
 const t = initTRPC.context<typeof createTRPCContext>().create({
-  transformer: superjson,
-  errorFormatter: ({ shape, error }) => ({
+  errorFormatter: ({ error, shape }) => ({
     ...shape,
     data: {
       ...shape.data,
-      zodError: error.cause instanceof ZodError ? error.cause.flatten() : null,
       prismaUniqueConstraintErrors:
         error.cause &&
         "code" in error.cause &&
@@ -66,8 +64,10 @@ const t = initTRPC.context<typeof createTRPCContext>().create({
         )
           ? (error.cause.meta?.target as string[])
           : [],
+      zodError: error.cause instanceof ZodError ? error.cause.flatten() : null,
     },
   }),
+  transformer: superjson,
 });
 
 /**

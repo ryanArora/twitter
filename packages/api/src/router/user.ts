@@ -28,16 +28,20 @@ export type UserProfile = UserProfileWithoutUrls & {
 export const selectUserProfile = (sessionUserId: string) => {
   return {
     ...selectUserBasic,
-    createdAt: true,
-    bio: true,
     _count: {
       select: {
-        tweets: true,
         followers: true,
         following: true,
+        tweets: true,
       },
     },
+    bio: true,
+    createdAt: true,
     followers: {
+      select: {
+        createdAt: true,
+        follower: { select: selectUserBasic },
+      },
       where: {
         OR: [
           { followerId: sessionUserId },
@@ -50,12 +54,12 @@ export const selectUserProfile = (sessionUserId: string) => {
           },
         ],
       },
+    },
+    following: {
       select: {
         createdAt: true,
         follower: { select: selectUserBasic },
       },
-    },
-    following: {
       where: {
         OR: [
           { followedId: sessionUserId },
@@ -68,10 +72,6 @@ export const selectUserProfile = (sessionUserId: string) => {
           },
         ],
       },
-      select: {
-        createdAt: true,
-        follower: { select: selectUserBasic },
-      },
     },
   } satisfies Prisma.UserSelect;
 };
@@ -81,10 +81,10 @@ export const userRouter = createTRPCRouter({
     .input(z.object({ username: z.string() }))
     .query(async ({ ctx, input }) => {
       const user = await db.user.findUnique({
+        select: selectUserProfile(ctx.session.user.id),
         where: {
           usernameLower: input.username.toLowerCase(),
         },
-        select: selectUserProfile(ctx.session.user.id),
       });
 
       if (!user) return null;
@@ -94,10 +94,10 @@ export const userRouter = createTRPCRouter({
     .input(z.object({ id: z.string() }))
     .query(async ({ ctx, input }) => {
       const user = await db.user.findUnique({
+        select: selectUserProfile(ctx.session.user.id),
         where: {
           id: input.id,
         },
-        select: selectUserProfile(ctx.session.user.id),
       });
 
       if (!user) return null;
@@ -107,16 +107,16 @@ export const userRouter = createTRPCRouter({
     .input(updateUserSchema)
     .mutation(async ({ ctx, input }) => {
       return await db.user.update({
+        data: {
+          bio: input.bio,
+          name: input.name,
+          username: input.username,
+          usernameLower: input.username?.toLowerCase(),
+        },
+        select: { id: true }, // Need to select something...
         where: {
           id: ctx.session.user.id,
         },
-        data: {
-          username: input.username,
-          usernameLower: input.username?.toLowerCase(),
-          name: input.name,
-          bio: input.bio,
-        },
-        select: { id: true }, // Need to select something...
       });
     }),
 });

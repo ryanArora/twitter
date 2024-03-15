@@ -17,7 +17,7 @@ import { Textarea } from "@repo/ui/components/textarea";
 import { useToast } from "@repo/ui/components/use-toast";
 import { useQueryClient } from "@tanstack/react-query";
 import { CalendarRangeIcon, Edit2Icon } from "lucide-react";
-import React, { useRef, type FC, type ElementRef } from "react";
+import React, { type ElementRef, type FC, useRef } from "react";
 import { useForm } from "react-hook-form";
 import { type z } from "zod";
 import { UploadButton } from "./upload-button";
@@ -47,20 +47,20 @@ export const EditProfile: FC = () => {
   const { toast } = useToast();
   const utils = api.useUtils();
   const form = useForm<z.infer<typeof updateUserSchema>>({
-    resolver: zodResolver(updateUserSchema),
     defaultValues: {
       bio: profile.bio ?? "",
       name: profile.name,
       username: profile.username,
     },
+    resolver: zodResolver(updateUserSchema),
   });
 
   const updateUser = api.user.update.useMutation({
     onError: (err) => {
-      toast({ title: "Error", description: err.message });
+      toast({ description: err.message, title: "Error" });
     },
     onSuccess: (data, values) => {
-      toast({ title: "Success", description: "Updated profile successfuly." });
+      toast({ description: "Updated profile successfuly.", title: "Success" });
 
       const username = values.username ?? profile.username;
       const name = values.name ?? profile.name;
@@ -70,9 +70,9 @@ export const EditProfile: FC = () => {
         if (!oldProfile) return;
         return {
           ...oldProfile,
-          username,
-          name,
           bio,
+          name,
+          username,
         };
       });
 
@@ -80,9 +80,9 @@ export const EditProfile: FC = () => {
         if (!oldProfile) return;
         return {
           ...oldProfile,
-          username,
-          name,
           bio,
+          name,
+          username,
         };
       });
 
@@ -92,8 +92,8 @@ export const EditProfile: FC = () => {
           ...oldSession,
           user: {
             ...oldSession.user,
-            username,
             name,
+            username,
           },
         };
       });
@@ -109,20 +109,20 @@ export const EditProfile: FC = () => {
                 ...tweet,
                 author:
                   tweet.author.id === profile.id
-                    ? { ...tweet.author, username, name }
+                    ? { ...tweet.author, name, username }
                     : tweet.author,
                 likes: tweet.likes.map((like) => ({
                   ...like,
                   user:
                     like.user.id === profile.id
-                      ? { ...like.user, username, name }
+                      ? { ...like.user, name, username }
                       : like.user,
                 })),
                 retweets: tweet.retweets.map((retweet) => ({
                   ...retweet,
                   user:
                     retweet.user.id === profile.id
-                      ? { ...retweet.user, username, name }
+                      ? { ...retweet.user, name, username }
                       : retweet.user,
                 })),
               })),
@@ -145,13 +145,13 @@ export const EditProfile: FC = () => {
         <div>
           <div className="relative h-[200px] w-full">
             <Image
-              className="object-cover"
-              src={profile.bannerUrl}
               alt={`@${username}'s banner`}
+              className="object-cover"
               draggable={false}
-              width={566}
-              height={200}
               fallbackText=""
+              height={200}
+              src={profile.bannerUrl}
+              width={566}
             />
 
             <div
@@ -172,13 +172,13 @@ export const EditProfile: FC = () => {
           <div className="relative ml-[10px] mt-[-64px] h-[128px] w-[128px] rounded-full">
             <UserAvatar
               className="h-full w-full hover:cursor-pointer"
-              user={profile}
-              width={128}
               height={128}
               onClick={(e) => {
                 e.preventDefault();
                 avatarUploadRef.current!.click();
               }}
+              user={profile}
+              width={128}
             />
             <div
               className="absolute bottom-0 flex h-full w-full items-center justify-center rounded-full bg-black opacity-0 transition-opacity hover:cursor-pointer hover:opacity-[50%]"

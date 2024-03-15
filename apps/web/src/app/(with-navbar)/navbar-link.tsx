@@ -3,10 +3,10 @@ import Link from "next/link";
 import { type FC, type ReactNode } from "react";
 
 export const NavbarLink: FC<{
+  href: string;
   icon: ReactNode;
   text: string;
-  href: string;
-}> = ({ icon, text, href }) => {
+}> = ({ href, icon, text }) => {
   return (
     <Link className="flex w-fit rounded-3xl p-4 hover:bg-accent" href={href}>
       <span className="mr-2">{icon}</span>

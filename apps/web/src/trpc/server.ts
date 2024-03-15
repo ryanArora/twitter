@@ -12,8 +12,8 @@ const createContext = cache(async () => {
   heads.set("x-trpc-source", "rsc");
 
   return createTRPCContext({
-    session: await getSession(cookies().get("session-token")?.value),
     headers: heads,
+    session: await getSession(cookies().get("session-token")?.value),
   });
 });
 

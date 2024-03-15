@@ -9,11 +9,11 @@ export type Profile = NonNullable<RouterOutputs["user"]["find"]>;
 export const ProfileContext = createContext<Profile | null>(null);
 
 export function ProfileProvider({
-  profile,
   children,
+  profile,
 }: {
-  profile: Profile;
   children: ReactNode;
+  profile: Profile;
 }) {
   const { data } = api.user.get.useQuery(
     { id: profile.id },

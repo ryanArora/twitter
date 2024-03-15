@@ -1,5 +1,3 @@
-import "./globals.css";
-
 import { Toaster } from "@repo/ui/components/toaster";
 import { type Metadata } from "next";
 import { Inter } from "next/font/google";
@@ -8,12 +6,13 @@ import { cache } from "react";
 import { SessionProvider } from "./sessionContext";
 import { TRPCReactProvider } from "@/trpc/react";
 import { api } from "@/trpc/server";
+import "./globals.css";
 
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Twitter",
   description: "A Twitter clone.",
+  title: "Twitter",
 };
 
 const getHeaders = cache(async () => headers());

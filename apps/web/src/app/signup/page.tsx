@@ -26,11 +26,11 @@ export default function SignupForm() {
   const { toast } = useToast();
 
   const form = useForm<z.infer<typeof signupSchema>>({
-    resolver: zodResolver(signupSchema),
     defaultValues: {
-      username: "",
       password: "",
+      username: "",
     },
+    resolver: zodResolver(signupSchema),
   });
 
   function onSubmit(values: z.infer<typeof signupSchema>) {
@@ -45,8 +45,8 @@ export default function SignupForm() {
         }
 
         toast({
-          title: "Error",
           description: err.message,
+          title: "Error",
         });
       },
       onSuccess: (data) => {
@@ -64,7 +64,7 @@ export default function SignupForm() {
         </CardHeader>
         <CardContent>
           <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+            <form className="space-y-8" onSubmit={form.handleSubmit(onSubmit)}>
               <FormField
                 control={form.control}
                 name="name"
@@ -72,7 +72,7 @@ export default function SignupForm() {
                   <FormItem>
                     <FormLabel>Name</FormLabel>
                     <FormControl>
-                      <Input type="text" autoComplete="off" {...field} />
+                      <Input autoComplete="off" type="text" {...field} />
                     </FormControl>
                     <FormDescription>This is your name.</FormDescription>
                     <FormMessage />
@@ -86,7 +86,7 @@ export default function SignupForm() {
                   <FormItem>
                     <FormLabel>Username</FormLabel>
                     <FormControl>
-                      <Input type="text" autoComplete="off" {...field} />
+                      <Input autoComplete="off" type="text" {...field} />
                     </FormControl>
                     <FormDescription>This is your username.</FormDescription>
                     <FormMessage />
@@ -100,7 +100,7 @@ export default function SignupForm() {
                   <FormItem>
                     <FormLabel>Password</FormLabel>
                     <FormControl>
-                      <Input type="password" autoComplete="off" {...field} />
+                      <Input autoComplete="off" type="password" {...field} />
                     </FormControl>
                     <FormDescription>This is your password.</FormDescription>
                     <FormMessage />

@@ -6,35 +6,35 @@ import { type FC } from "react";
 import { api } from "@/trpc/react";
 
 export type AttachmentProps = {
-  className?: string;
   attachment: {
+    height: number;
     id: string;
+    nativeHeight: number;
+    nativeWidth: number;
     url: string;
     width: number;
-    height: number;
-    nativeWidth: number;
-    nativeHeight: number;
   };
+  className?: string;
+  disablePreview?: boolean;
   showDeleteButton?: {
     enabled: true;
     // eslint-disable-next-line no-unused-vars
     removeAttachment: (id: string) => void;
   };
-  disablePreview?: boolean;
 };
 
 export const Attachment: FC<AttachmentProps> = ({
-  className,
   attachment,
-  showDeleteButton,
+  className,
   disablePreview,
+  showDeleteButton,
 }) => {
   const { toast } = useToast();
   const deleteLooseAttachment = api.asset.deleteLooseAttachment.useMutation({
     onError: () => {
       toast({
-        title: "Error",
         description: "Error deleting attachment",
+        title: "Error",
       });
     },
     onSuccess: () => {
@@ -45,14 +45,14 @@ export const Attachment: FC<AttachmentProps> = ({
   if (!showDeleteButton) {
     return (
       <Image
-        className={className}
-        src={attachment.url}
         alt="attachment image"
-        width={attachment.width}
+        className={className}
         height={attachment.height}
-        nativeWidth={attachment.nativeWidth}
         nativeHeight={attachment.nativeHeight}
+        nativeWidth={attachment.nativeWidth}
         onClick={disablePreview ? null : "focus"}
+        src={attachment.url}
+        width={attachment.width}
       />
     );
   }
@@ -60,22 +60,22 @@ export const Attachment: FC<AttachmentProps> = ({
   return (
     <div className="relative">
       <Image
-        className={className}
-        src={attachment.url}
         alt="attachment image"
-        width={attachment.width}
+        className={className}
         height={attachment.height}
-        nativeWidth={attachment.nativeWidth}
         nativeHeight={attachment.nativeHeight}
+        nativeWidth={attachment.nativeWidth}
+        src={attachment.url}
+        width={attachment.width}
       />
       <div
-        style={{
-          width: attachment.width,
-          height: attachment.height,
-          minWidth: attachment.width,
-          minHeight: attachment.height,
-        }}
         className={cn("absolute bottom-0 flex justify-end", className)}
+        style={{
+          height: attachment.height,
+          minHeight: attachment.height,
+          minWidth: attachment.width,
+          width: attachment.width,
+        }}
       >
         <div
           className="m-2 h-fit rounded-full bg-black/50 p-1 hover:cursor-pointer"

@@ -1,5 +1,5 @@
 import { randomBytes } from "node:crypto";
-import { db, type User } from "@repo/db";
+import { type User, db } from "@repo/db";
 import { type Expand, type ExpandRecursively } from "@repo/utils/types";
 import { TRPCError } from "@trpc/server";
 import argon2 from "argon2";
@@ -10,8 +10,8 @@ import { loginSchema, signupSchema } from "../schemas/auth";
 import { createTRPCRouter, protectedProcedure, publicProcedure } from "../trpc";
 
 export type SessionWithoutAvatarUrl = Expand<
-  { token: string; expires: Date } & ExpandRecursively<{
-    user: Pick<User, "id" | "username" | "name">;
+  { expires: Date; token: string } & ExpandRecursively<{
+    user: Pick<User, "id" | "name" | "username">;
   }>
 >;
 
@@ -23,18 +23,18 @@ export const getSession = async (token?: string): Promise<Session | null> => {
   if (!token) return null;
 
   const session = await db.session.findUnique({
-    where: {
-      token,
-      expires: {
-        gt: new Date(Date.now()),
-      },
-    },
     select: {
-      token: true,
       expires: true,
+      token: true,
       user: {
         select: selectUserBasic,
       },
+    },
+    where: {
+      expires: {
+        gt: new Date(Date.now()),
+      },
+      token,
     },
   });
 
@@ -59,38 +59,15 @@ export const authRouter = createTRPCRouter({
   getSession: publicProcedure.query(({ ctx }): Session | null => {
     return ctx.session;
   }),
-  signup: publicProcedure
-    .input(signupSchema)
-    .mutation(async ({ input }): Promise<Session> => {
-      const session = createSession();
-
-      const user = await db.user.create({
-        data: {
-          username: input.username,
-          usernameLower: input.username.toLowerCase(),
-          name: input.name,
-          passwordHash: await argon2.hash(input.password),
-          sessions: {
-            create: session,
-          },
-        },
-        select: selectUserBasic,
-      });
-
-      return {
-        ...session,
-        user: getUserWithAvatarUrl(user),
-      };
-    }),
   login: publicProcedure
     .input(loginSchema)
     .mutation(async ({ input }): Promise<Session> => {
       const user = await db.user.findUnique({
-        where: { username: input.username },
         select: {
           id: true,
           passwordHash: true,
         },
+        where: { username: input.username },
       });
 
       if (!user) {
@@ -111,8 +88,8 @@ export const authRouter = createTRPCRouter({
       const session = await db.session.create({
         data: { ...sessionWithoutUser, userId: user.id },
         select: {
-          token: true,
           expires: true,
+          token: true,
           user: {
             select: selectUserBasic,
           },
@@ -129,4 +106,27 @@ export const authRouter = createTRPCRouter({
       where: { token: ctx.session.token },
     });
   }),
+  signup: publicProcedure
+    .input(signupSchema)
+    .mutation(async ({ input }): Promise<Session> => {
+      const session = createSession();
+
+      const user = await db.user.create({
+        data: {
+          name: input.name,
+          passwordHash: await argon2.hash(input.password),
+          sessions: {
+            create: session,
+          },
+          username: input.username,
+          usernameLower: input.username.toLowerCase(),
+        },
+        select: selectUserBasic,
+      });
+
+      return {
+        ...session,
+        user: getUserWithAvatarUrl(user),
+      };
+    }),
 });

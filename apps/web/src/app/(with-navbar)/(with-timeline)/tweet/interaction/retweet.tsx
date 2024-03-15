@@ -34,6 +34,16 @@ export const RetweetInteraction = forwardRef<
     });
 
   const retweetMutation = api.retweet.create.useMutation({
+    onError: (err, input, ctx) => {
+      utils.tweet.find.setData(
+        { id: tweet.id, username: tweet.author.username },
+        ctx!.previousTweet,
+      );
+
+      for (const queryKey of timelineQueryKeys) {
+        queryClient.setQueryData(queryKey, ctx!.previousTimelines);
+      }
+    },
     onMutate: async () => {
       await utils.tweet.find.cancel({
         id: tweet.id,
@@ -78,6 +88,7 @@ export const RetweetInteraction = forwardRef<
         queryClient.setQueryData(queryKey, (data: TimelineInfiniteData) => {
           if (!data) return;
           return {
+            pageParams: [],
             pages: data.pages.map((page) => ({
               ...page,
               tweets: page.tweets.map((t) => {
@@ -98,13 +109,15 @@ export const RetweetInteraction = forwardRef<
                 };
               }),
             })),
-            pageParams: [],
           };
         });
       }
 
-      return { previousTweet, previousTimelines };
+      return { previousTimelines, previousTweet };
     },
+  });
+
+  const unretweetMutation = api.retweet.delete.useMutation({
     onError: (err, input, ctx) => {
       utils.tweet.find.setData(
         { id: tweet.id, username: tweet.author.username },
@@ -115,9 +128,6 @@ export const RetweetInteraction = forwardRef<
         queryClient.setQueryData(queryKey, ctx!.previousTimelines);
       }
     },
-  });
-
-  const unretweetMutation = api.retweet.delete.useMutation({
     onMutate: async () => {
       await utils.tweet.find.cancel({
         id: tweet.id,
@@ -159,6 +169,7 @@ export const RetweetInteraction = forwardRef<
           if (!data) return;
 
           return {
+            pageParams: [],
             pages: data.pages.map((page) => ({
               ...page,
               tweets: page.tweets.map((t) => {
@@ -175,22 +186,11 @@ export const RetweetInteraction = forwardRef<
                 };
               }),
             })),
-            pageParams: [],
           };
         });
       }
 
-      return { previousTweet, previousTimelines };
-    },
-    onError: (err, input, ctx) => {
-      utils.tweet.find.setData(
-        { id: tweet.id, username: tweet.author.username },
-        ctx!.previousTweet,
-      );
-
-      for (const queryKey of timelineQueryKeys) {
-        queryClient.setQueryData(queryKey, ctx!.previousTimelines);
-      }
+      return { previousTimelines, previousTweet };
     },
   });
 
@@ -199,14 +199,11 @@ export const RetweetInteraction = forwardRef<
   return (
     <Button
       {...props}
-      ref={ref}
       className={cn(
         `m-0 rounded-full p-2 text-primary/50 transition-colors hover:bg-twitter-retweet/10 hover:text-twitter-retweet`,
         active ? "text-twitter-retweet" : null,
         className,
       )}
-      type="button"
-      variant="ghost"
       onClick={(e) => {
         e.stopPropagation();
 
@@ -216,6 +213,9 @@ export const RetweetInteraction = forwardRef<
           retweetMutation.mutate({ tweetId: tweet.id });
         }
       }}
+      ref={ref}
+      type="button"
+      variant="ghost"
     >
       <Repeat2Icon />
       <p className="ml-1">{formatNumberShort(tweet._count.retweets, 1)}</p>

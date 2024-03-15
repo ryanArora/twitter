@@ -26,20 +26,20 @@ export const ReplyInteraction = forwardRef<
   const [open, setOpen] = useState(false);
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
+    <Dialog onOpenChange={setOpen} open={open}>
       <DialogTrigger asChild>
         <Button
           {...props}
-          ref={ref}
           className={cn(
             `m-0 rounded-full p-2 text-primary/50 transition-colors hover:bg-twitter-blue/10 hover:text-twitter-blue`,
             className,
           )}
-          type="button"
-          variant="ghost"
           onClick={(e) => {
             e.stopPropagation();
           }}
+          ref={ref}
+          type="button"
+          variant="ghost"
         >
           <MessageCircleIcon />
           <p className="ml-1">{formatNumberShort(tweet._count.replies, 1)}</p>
@@ -50,13 +50,13 @@ export const ReplyInteraction = forwardRef<
           <DialogContent className="w-[600px]">
             <Tweet disableInteractions={true} />
             <PostTweet
-              inputPlaceholder="Post your reply"
-              submitButtonText="Reply"
-              parentTweetId={tweet.id}
               dontLinkToProfile
+              inputPlaceholder="Post your reply"
               onSuccess={() => {
                 setOpen(false);
               }}
+              parentTweetId={tweet.id}
+              submitButtonText="Reply"
             />
           </DialogContent>
         </DialogOverlay>

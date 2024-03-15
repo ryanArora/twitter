@@ -29,7 +29,7 @@ export const Timeline: FC<TimelineSourceProps> = ({ path, payload }) => {
     },
   );
 
-  const { ref, inView } = useInView();
+  const { inView, ref } = useInView();
 
   if (inView && hasNextPage && !isFetchingNextPage) {
     fetchNextPage();
@@ -48,7 +48,7 @@ export const Timeline: FC<TimelineSourceProps> = ({ path, payload }) => {
       {data.pages.map((group, i) => (
         <Fragment key={i}>
           {group.tweets.map((tweet) => (
-            <TweetProvider tweet={tweet} key={tweet.id}>
+            <TweetProvider key={tweet.id} tweet={tweet}>
               <Tweet />
             </TweetProvider>
           ))}

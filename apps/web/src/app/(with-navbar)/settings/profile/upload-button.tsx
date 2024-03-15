@@ -5,10 +5,10 @@ import { Button } from "@repo/ui/components/button";
 import { useToast } from "@repo/ui/components/use-toast";
 import { useQueryClient } from "@tanstack/react-query";
 import {
-  useRef,
-  forwardRef,
-  type ElementRef,
   type ComponentPropsWithoutRef,
+  type ElementRef,
+  forwardRef,
+  useRef,
 } from "react";
 import { useProfile } from "../../(with-timeline)/[profile]/(with-profile)/profileContext";
 import { type TweetBasic } from "../../../../../../../packages/api/src/router/tweet";
@@ -35,7 +35,7 @@ type TimelineInfiniteData = { pages: { tweets: TweetBasic[] }[] };
 export const UploadButton = forwardRef<
   ElementRef<typeof Button>,
   Omit<ComponentPropsWithoutRef<typeof Button>, "type"> & UploadButtonProps
->(({ resource, children, ...props }, ref) => {
+>(({ children, resource, ...props }, ref) => {
   const utils = api.useUtils();
   const inputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
@@ -54,21 +54,19 @@ export const UploadButton = forwardRef<
   return (
     <>
       <Button
-        type="button"
         onClick={(e) => {
           e.preventDefault();
           inputRef.current!.click();
         }}
         ref={ref}
+        type="button"
         {...props}
       >
         {children}
       </Button>
       <input
-        className="hidden"
-        type="file"
         accept="image/*"
-        ref={inputRef}
+        className="hidden"
         onChange={async (e) => {
           const files = e.target.files;
           if (!files) return;
@@ -87,22 +85,22 @@ export const UploadButton = forwardRef<
           form.append("file", file);
 
           const response = await fetch(presignedPost.url, {
-            method: "POST",
             body: form,
+            method: "POST",
           });
 
           if (response.status === 400) {
             toast({
-              title: "Error",
               description: "File too large.",
+              title: "Error",
             });
             return;
           }
 
           if (response.status === 403) {
             toast({
-              title: "Error",
               description: "Invalid file type.",
+              title: "Error",
             });
             return;
           }
@@ -166,10 +164,12 @@ export const UploadButton = forwardRef<
           }
 
           toast({
-            title: "Success",
             description: "File uploaded.",
+            title: "Success",
           });
         }}
+        ref={inputRef}
+        type="file"
       />
     </>
   );

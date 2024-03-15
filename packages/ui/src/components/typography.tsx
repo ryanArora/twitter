@@ -2,11 +2,11 @@ import React, { type ReactNode } from "react";
 import { cn } from "../utils";
 
 export function TypographyH1({
-  className,
   children,
+  className,
 }: {
-  className?: string;
   children: ReactNode;
+  className?: string;
 }) {
   return (
     <h1
@@ -21,11 +21,11 @@ export function TypographyH1({
 }
 
 export function TypographyH2({
-  className,
   children,
+  className,
 }: {
-  className?: string;
   children: ReactNode;
+  className?: string;
 }) {
   return (
     <h2
@@ -40,11 +40,11 @@ export function TypographyH2({
 }
 
 export function TypographyH3({
-  className,
   children,
+  className,
 }: {
-  className?: string;
   children: ReactNode;
+  className?: string;
 }) {
   return (
     <h3
@@ -59,11 +59,11 @@ export function TypographyH3({
 }
 
 export function TypographyH4({
-  className,
   children,
+  className,
 }: {
-  className?: string;
   children: ReactNode;
+  className?: string;
 }) {
   return (
     <h4
@@ -78,11 +78,11 @@ export function TypographyH4({
 }
 
 export function TypographyP({
-  className,
   children,
+  className,
 }: {
-  className?: string;
   children: ReactNode;
+  className?: string;
 }) {
   return (
     <p className={cn("leading-7 [&:not(:first-child)]:mt-6", className)}>
