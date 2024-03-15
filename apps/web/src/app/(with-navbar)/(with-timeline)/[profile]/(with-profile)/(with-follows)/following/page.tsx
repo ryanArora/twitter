@@ -38,6 +38,25 @@ export default function FollowingPage() {
     return <p>Error: {error.message}</p>;
   }
 
+  const n = data.pages.reduce(
+    (accum, curr) => accum + curr.following.length,
+    0,
+  );
+
+  if (n == 0) {
+    return (
+      <div className="flex justify-center pt-8">
+        <div className="w-[300px]">
+          <p className="mb-1 w-fit text-3xl font-bold">Be in the know</p>
+          <p className="w-fit text-sm text-primary/50">
+            Following accounts is an easy way to curate your timeline and know
+            what’s happening with the topics and people you’re interested in.
+          </p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <>
       {data.pages.map((group, i) => (

@@ -16,15 +16,15 @@ export const FollowUser: FC<FollowUserProps> = ({ user }) => {
 
   return (
     <div
-      className="pb-2 pt-2 hover:cursor-pointer hover:bg-secondary/10"
+      className="p-4 hover:cursor-pointer hover:bg-secondary/10"
       onClick={() => {
         router.push(`/${user.username}`);
       }}
     >
-      <div className="flex justify-between">
+      <div className="mb-2 flex items-center justify-between">
         <div className="flex">
           <UserAvatar
-            className="mx-2"
+            className="mr-2"
             height={44}
             onClick="link"
             user={user}
@@ -36,9 +36,9 @@ export const FollowUser: FC<FollowUserProps> = ({ user }) => {
           </div>
         </div>
 
-        <FollowButton className="m-2" user={user} />
+        <FollowButton user={user} />
       </div>
-      <p className="ml-[60px] mr-2 line-clamp-2 text-sm">{user.bio}</p>
+      <p className="ml-[52px] mr-2 line-clamp-2 text-sm">{user.bio}</p>
     </div>
   );
 };
