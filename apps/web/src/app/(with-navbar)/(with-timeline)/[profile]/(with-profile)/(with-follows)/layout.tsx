@@ -12,7 +12,7 @@ export default function FollowsLayout({ children }: { children: ReactNode }) {
   return (
     <div className="h-full min-h-screen border-x">
       <Header subtitle={`@${profile.username}`} title={profile.name} />
-      <nav className="flex justify-around">
+      <nav className="flex justify-around border-b">
         <Button
           asChild
           className="grow rounded-none py-6 text-primary/50 hover:text-primary/50"

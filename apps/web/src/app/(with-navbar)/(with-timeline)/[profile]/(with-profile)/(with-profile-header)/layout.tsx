@@ -47,7 +47,7 @@ export default function Layout({ children }: { children: ReactNode }) {
                 <Link href="/settings/profile">Edit profile</Link>
               </Button>
             ) : (
-              <FollowButton />
+              <FollowButton user={profile} />
             )}
           </div>
         </div>
