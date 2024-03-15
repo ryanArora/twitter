@@ -3,12 +3,15 @@
 import { Button } from "@repo/ui/components/button";
 import { cn } from "@repo/ui/utils";
 import { formatNumberShort } from "@repo/utils/str";
+import { useQueryClient } from "@tanstack/react-query";
 import { HeartIcon } from "lucide-react";
 import React, { forwardRef } from "react";
+import { type TweetBasic } from "../../../../../../../../packages/api/src/router/tweet";
 import { useSession } from "../../../../sessionContext";
-import { useTimelineSource } from "../../timelineSourceContext";
 import { useTweet } from "../tweetContext";
 import { api } from "@/trpc/react";
+
+type TimelineInfiniteData = { pages: { tweets: TweetBasic[] }[] };
 
 export type LikeInteractionProps = Record<string, unknown>;
 
@@ -18,18 +21,61 @@ export const LikeInteraction = forwardRef<
 >(({ className, ...props }, ref) => {
   const session = useSession();
   const tweet = useTweet();
-  const timelineSource = useTimelineSource();
+  const queryClient = useQueryClient();
   const utils = api.useUtils();
+
+  const queryCache = queryClient.getQueryCache();
+  const timelineQueryKeys = queryCache
+    .getAll()
+    .map((cache) => cache.queryKey)
+    .filter((queryKey) => {
+      const endpoint = queryKey[0] as string[];
+      return endpoint[0] === "timeline";
+    });
 
   const likeMutation = api.like.create.useMutation({
     onMutate: async () => {
-      await utils.timeline[timelineSource.path].cancel();
-      const previousTweets =
-        utils.timeline[timelineSource.path].getInfiniteData();
+      await utils.tweet.find.cancel({
+        id: tweet.id,
+        username: tweet.author.username,
+      });
 
-      utils.timeline[timelineSource.path].setInfiniteData(
-        { ...timelineSource.payload },
-        (data) => {
+      const previousTweet = utils.tweet.find.getData();
+
+      utils.tweet.find.setData(
+        {
+          id: tweet.id,
+          username: tweet.author.username,
+        },
+        (tweet) => {
+          if (!tweet) return;
+          return {
+            ...tweet,
+            _count: {
+              ...tweet._count,
+              likes: tweet._count.likes + 1,
+            },
+            likes: [
+              {
+                createdAt: new Date(Date.now()),
+                user: session.user,
+              },
+              ...tweet.likes,
+            ],
+          };
+        },
+      );
+
+      for (const queryKey of timelineQueryKeys) {
+        await queryClient.cancelQueries({ queryKey });
+      }
+
+      const previousTimelines = timelineQueryKeys.map((queryKey) =>
+        queryClient.getQueryData(queryKey),
+      ) as unknown as TimelineInfiniteData;
+
+      for (const queryKey of timelineQueryKeys) {
+        queryClient.setQueryData(queryKey, (data: TimelineInfiniteData) => {
           if (!data) return;
           return {
             pages: data.pages.map((page) => ({
@@ -54,28 +100,60 @@ export const LikeInteraction = forwardRef<
             })),
             pageParams: [],
           };
-        },
+        });
+      }
+
+      return { previousTweet, previousTimelines };
+    },
+    onError: (err, input, ctx) => {
+      utils.tweet.find.setData(
+        { id: tweet.id, username: tweet.author.username },
+        ctx!.previousTweet,
       );
 
-      return { previousTweets };
-    },
-    onError: (err, input, context) => {
-      utils.timeline[timelineSource.path].setInfiniteData(
-        { ...timelineSource.payload },
-        context!.previousTweets,
-      );
+      for (const queryKey of timelineQueryKeys) {
+        queryClient.setQueryData(queryKey, ctx!.previousTimelines);
+      }
     },
   });
 
   const unlikeMutation = api.like.delete.useMutation({
     onMutate: async () => {
-      await utils.timeline[timelineSource.path].cancel();
-      const previousTweets =
-        utils.timeline[timelineSource.path].getInfiniteData();
+      await utils.tweet.find.cancel({
+        id: tweet.id,
+        username: tweet.author.username,
+      });
 
-      utils.timeline[timelineSource.path].setInfiniteData(
-        { ...timelineSource.payload },
-        (data) => {
+      const previousTweet = utils.tweet.find.getData();
+
+      utils.tweet.find.setData(
+        {
+          id: tweet.id,
+          username: tweet.author.username,
+        },
+        (tweet) => {
+          if (!tweet) return;
+          return {
+            ...tweet,
+            _count: {
+              ...tweet._count,
+              likes: tweet._count.likes - 1,
+            },
+            likes: tweet.likes.filter((l) => l.user.id !== session.user.id),
+          };
+        },
+      );
+
+      for (const queryKey of timelineQueryKeys) {
+        await queryClient.cancelQueries({ queryKey });
+      }
+
+      const previousTimelines = timelineQueryKeys.map((queryKey) =>
+        queryClient.getQueryData(queryKey),
+      ) as unknown as TimelineInfiniteData;
+
+      for (const queryKey of timelineQueryKeys) {
+        queryClient.setQueryData(queryKey, (data: TimelineInfiniteData) => {
           if (!data) return;
 
           return {
@@ -95,16 +173,20 @@ export const LikeInteraction = forwardRef<
             })),
             pageParams: [],
           };
-        },
+        });
+      }
+
+      return { previousTweet, previousTimelines };
+    },
+    onError: (err, input, ctx) => {
+      utils.tweet.find.setData(
+        { id: tweet.id, username: tweet.author.username },
+        ctx!.previousTweet,
       );
 
-      return { previousTweets };
-    },
-    onError: (err, input, context) => {
-      utils.timeline[timelineSource.path].setInfiniteData(
-        { ...timelineSource.payload },
-        context!.previousTweets,
-      );
+      for (const queryKey of timelineQueryKeys) {
+        queryClient.setQueryData(queryKey, ctx!.previousTimelines);
+      }
     },
   });
 

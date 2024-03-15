@@ -1,16 +1,23 @@
 import { PostTweet } from "./post-tweet";
 import { Timeline } from "../timeline";
-import { TimelineSourceProvider } from "../timelineSourceContext";
 
 export default function HomePage() {
   return (
-    <div className="w-full h-full">
-      <TimelineSourceProvider
-        timelineSource={{ path: "home", payload: { profileId: "" } }}
-      >
-        <PostTweet />
-        <Timeline />
-      </TimelineSourceProvider>
+    <div className="min-h-screen h-full border-x">
+      <div className="border-b">
+        <PostTweet
+          inputPlaceholder="What is happening?!"
+          submitButtonText="Tweet"
+          parentTweetId={null}
+        />
+      </div>
+      <Timeline
+        path="home"
+        payload={{
+          profile_userId: "",
+          tweetReplies_parentId: "",
+        }}
+      />
     </div>
   );
 }

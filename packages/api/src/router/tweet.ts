@@ -101,6 +101,7 @@ export const tweetRouter = createTRPCRouter({
         data: {
           authorId: ctx.session.user.id,
           content: input.content,
+          parentId: input.parentTweetId,
           attachments: {
             connect: attachments,
           },

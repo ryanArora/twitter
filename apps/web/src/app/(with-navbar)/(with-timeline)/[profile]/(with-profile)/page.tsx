@@ -2,16 +2,17 @@
 
 import { useProfile } from "./profileContext";
 import { Timeline } from "../../timeline";
-import { TimelineSourceProvider } from "../../timelineSourceContext";
 
 export default function ProfilePage() {
   const profile = useProfile();
 
   return (
-    <TimelineSourceProvider
-      timelineSource={{ path: "profile", payload: { profileId: profile.id } }}
-    >
-      <Timeline />
-    </TimelineSourceProvider>
+    <Timeline
+      path="profileHome"
+      payload={{
+        profile_userId: profile.id,
+        tweetReplies_parentId: "",
+      }}
+    />
   );
 }

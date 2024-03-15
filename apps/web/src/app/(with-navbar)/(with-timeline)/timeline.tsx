@@ -1,16 +1,20 @@
 "use client";
 
+import { type RouterInputs } from "@repo/api";
 import { Spinner } from "@repo/ui/components/spinner";
 import { type FC, Fragment } from "react";
 import { useInView } from "react-intersection-observer";
-import { useTimelineSource } from "./timelineSourceContext";
 import { Tweet } from "./tweet/tweet";
 import { TweetProvider } from "./tweet/tweetContext";
+import { type TimelineInput } from "../../../../../../packages/api/src/router/timeline";
 import { api } from "@/trpc/react";
 
-export const Timeline: FC = () => {
-  const timelineSource = useTimelineSource();
+export type TimelineSourceProps = {
+  path: keyof RouterInputs["timeline"];
+  payload: TimelineInput;
+};
 
+export const Timeline: FC<TimelineSourceProps> = ({ path, payload }) => {
   const {
     data,
     error,
@@ -18,8 +22,8 @@ export const Timeline: FC = () => {
     hasNextPage,
     isFetchingNextPage,
     status,
-  } = api.timeline[timelineSource.path].useInfiniteQuery(
-    { ...timelineSource.payload },
+  } = api.timeline[path].useInfiniteQuery(
+    { ...payload },
     {
       getNextPageParam: (lastPage) => lastPage.nextCursor,
     },
@@ -50,7 +54,13 @@ export const Timeline: FC = () => {
           ))}
         </Fragment>
       ))}
-      {hasNextPage && <Spinner ref={ref} />}
+      {hasNextPage ? (
+        <Spinner ref={ref} />
+      ) : (
+        <div className="h-screen flex flex-col justify-end items-center">
+          <p className="p-4 italic">fin.</p>
+        </div>
+      )}
     </>
   );
 };

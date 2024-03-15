@@ -11,7 +11,6 @@ export type UserAvatarProps = {
     NonNullable<RouterOutputs["user"]["find"]>,
     "id" | "name" | "username" | "avatarUrl"
   >;
-  linkToProfile?: boolean;
   width?: number;
   height?: number;
   onClick?: React.ComponentProps<typeof Image>["onClick"];

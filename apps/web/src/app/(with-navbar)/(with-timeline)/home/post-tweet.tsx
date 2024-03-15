@@ -11,13 +11,14 @@ import {
 } from "@repo/ui/components/form";
 import { Textarea } from "@repo/ui/components/textarea";
 import { useToast } from "@repo/ui/components/use-toast";
+import { useQueryClient } from "@tanstack/react-query";
 import { ImageIcon } from "lucide-react";
 import { useRef, type FC } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { AttachmentsView } from "./attatchments-view";
+import { type TweetBasic } from "../../../../../../../packages/api/src/router/tweet";
 import { useSession } from "../../../sessionContext";
-import { useTimelineSource } from "../timelineSourceContext";
 import { UserAvatar } from "@/app/(with-navbar)/user-avatar";
 import { api } from "@/trpc/react";
 
@@ -40,9 +41,34 @@ export const schema = z
     "Your tweet must not be empty.",
   );
 
-export const PostTweet: FC = () => {
+type TimelineInfiniteData = { pages: { tweets: TweetBasic[] }[] };
+
+type PostTweetProps = {
+  inputPlaceholder: string;
+  submitButtonText: string;
+  parentTweetId: string | null;
+  dontLinkToProfile?: boolean;
+  onSuccess?: () => void;
+};
+
+export const PostTweet: FC<PostTweetProps> = ({
+  inputPlaceholder,
+  submitButtonText,
+  parentTweetId,
+  dontLinkToProfile,
+  onSuccess,
+}) => {
   const session = useSession();
-  const user = session.user;
+  const queryClient = useQueryClient();
+
+  const queryCache = queryClient.getQueryCache();
+  const timelineQueryKeys = queryCache
+    .getAll()
+    .map((cache) => cache.queryKey)
+    .filter((queryKey) => {
+      const endpoint = queryKey[0] as string[];
+      return endpoint[0] === "timeline";
+    });
 
   const form = useForm<z.infer<typeof schema>>({
     resolver: zodResolver(schema),
@@ -64,8 +90,6 @@ export const PostTweet: FC = () => {
   const postTweet = api.tweet.create.useMutation();
   const createAttachment = api.asset.createAttachment.useMutation();
   const { toast } = useToast();
-  const utils = api.useUtils();
-  const timelineSource = useTimelineSource();
   const attachmentInputRef = useRef<HTMLInputElement>(null);
 
   function onSubmit(values: z.infer<typeof schema>) {
@@ -73,6 +97,7 @@ export const PostTweet: FC = () => {
       {
         ...values,
         attachmentIds: values.attachments.map((attachment) => attachment.id),
+        parentTweetId,
       },
       {
         onError: (err) => {
@@ -83,11 +108,25 @@ export const PostTweet: FC = () => {
         },
         onSuccess: async ({ id }) => {
           form.reset();
-          await utils.timeline[timelineSource.path].cancel();
 
-          utils.timeline[timelineSource.path].setInfiniteData(
-            { ...timelineSource.payload },
-            (data) => {
+          for (const queryKey of timelineQueryKeys) {
+            const queryKeyType = queryKey[0] as string[];
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            const queryKeyBody = queryKey[1] as any;
+
+            const isHome = queryKeyType[1] === "home";
+            const isMyProfile =
+              queryKeyType[1].startsWith("profile") &&
+              queryKeyBody?.input?.profile_userId === session.user.id;
+            const isReply =
+              queryKeyType[1] === "tweetReplies" &&
+              queryKeyBody?.input?.tweetReplies_parentId === parentTweetId;
+
+            if (!isHome && !isMyProfile && !isReply) {
+              continue;
+            }
+
+            queryClient.setQueryData(queryKey, (data: TimelineInfiniteData) => {
               const tweet = {
                 _count: {
                   likes: 0,
@@ -99,7 +138,7 @@ export const PostTweet: FC = () => {
                 createdAt: new Date(Date.now()),
                 content: values.content,
                 attachments: values.attachments,
-                author: user,
+                author: session.user,
                 retweets: [],
                 likes: [],
               };
@@ -111,6 +150,10 @@ export const PostTweet: FC = () => {
                 };
               }
 
+              if (onSuccess) {
+                onSuccess();
+              }
+
               return {
                 pages: [
                   { tweets: [tweet], nextCursor: undefined },
@@ -118,8 +161,8 @@ export const PostTweet: FC = () => {
                 ],
                 pageParams: [],
               };
-            },
-          );
+            });
+          }
         },
       },
     );
@@ -204,12 +247,12 @@ export const PostTweet: FC = () => {
 
   return (
     <Form {...form}>
-      <form className="p-2 border" onSubmit={form.handleSubmit(onSubmit)}>
+      <form className="p-2" onSubmit={form.handleSubmit(onSubmit)}>
         <div className="flex p-2 h-full">
           <UserAvatar
             className="my-2 mr-1"
-            user={user}
-            onClick="link"
+            user={session.user}
+            onClick={dontLinkToProfile ? null : "link"}
             width={44}
             height={44}
           />
@@ -221,7 +264,7 @@ export const PostTweet: FC = () => {
                 <FormControl>
                   <Textarea
                     className="text-xl min-h-[50px] h-[50px] border-none"
-                    placeholder="What is happening?!"
+                    placeholder={inputPlaceholder}
                     autoComplete="off"
                     {...field}
                   />
@@ -276,7 +319,7 @@ export const PostTweet: FC = () => {
             type="submit"
             disabled={!form.formState.isValid}
           >
-            Tweet
+            {submitButtonText}
           </Button>
         </div>
       </form>

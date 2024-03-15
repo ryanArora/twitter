@@ -5,7 +5,7 @@ import { XIcon } from "lucide-react";
 import { type FC } from "react";
 import { api } from "@/trpc/react";
 
-export const Attachment: FC<{
+export type AttachmentProps = {
   className?: string;
   attachment: {
     id: string;
@@ -20,7 +20,15 @@ export const Attachment: FC<{
     // eslint-disable-next-line no-unused-vars
     removeAttachment: (id: string) => void;
   };
-}> = ({ className, attachment, showDeleteButton }) => {
+  disablePreview?: boolean;
+};
+
+export const Attachment: FC<AttachmentProps> = ({
+  className,
+  attachment,
+  showDeleteButton,
+  disablePreview,
+}) => {
   const { toast } = useToast();
   const deleteLooseAttachment = api.asset.deleteLooseAttachment.useMutation({
     onError: () => {
@@ -44,7 +52,7 @@ export const Attachment: FC<{
         height={attachment.height}
         nativeWidth={attachment.nativeWidth}
         nativeHeight={attachment.nativeHeight}
-        onClick="focus"
+        onClick={disablePreview ? null : "focus"}
       />
     );
   }

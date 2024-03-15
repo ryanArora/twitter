@@ -35,6 +35,20 @@ export const FollowButton = forwardRef<
         };
       });
 
+      utils.user.get.setData({ id: profile.id }, (data) => {
+        if (!data) return;
+        return {
+          ...data,
+          followers: data.followers.filter(
+            (follow) => follow.follower.id !== session.user.id,
+          ),
+          _count: {
+            ...data._count,
+            followers: data._count.followers - 1,
+          },
+        };
+      });
+
       return { previousProfile };
     },
     onError: async (err, input, context) => {
@@ -51,6 +65,24 @@ export const FollowButton = forwardRef<
       const previousProfile = utils.user.find.getData();
 
       utils.user.find.setData({ username: profile.username }, (data) => {
+        if (!data) return;
+        return {
+          ...data,
+          followers: [
+            {
+              createdAt: new Date(Date.now()),
+              follower: session.user,
+            },
+            ...data.followers,
+          ],
+          _count: {
+            ...data._count,
+            followers: data._count.followers + 1,
+          },
+        };
+      });
+
+      utils.user.get.setData({ id: profile.id }, (data) => {
         if (!data) return;
         return {
           ...data,

@@ -1,6 +1,7 @@
 "use client";
 
 import { type RouterOutputs } from "@repo/api";
+import { useRouter } from "next/navigation";
 import { type ReactNode, createContext, useContext } from "react";
 import { api } from "@/trpc/react";
 
@@ -26,10 +27,10 @@ export function SessionProvider({
 
 export function useSession(): Session {
   const session = useContext(SessionContext);
+  const router = useRouter();
 
   if (!session) {
-    window.location.href = "/";
-    throw new Error("No session");
+    router.replace("/");
   }
 
   return session!;

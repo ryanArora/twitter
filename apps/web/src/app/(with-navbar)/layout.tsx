@@ -19,14 +19,14 @@ import {
 import Image from "next/image";
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import React, { type FC, type ReactNode } from "react";
+import React, { useState, type FC, type ReactNode } from "react";
 import { PostTweet } from "./(with-timeline)/home/post-tweet";
-import { TimelineSourceProvider } from "./(with-timeline)/timelineSourceContext";
 import { NavbarLink } from "./navbar-link";
 import { User } from "./user";
 import { useSession } from "../sessionContext";
 
 const NavbarLayout: FC<{ children: ReactNode }> = ({ children }) => {
+  const [open, setOpen] = useState(false);
   const session = useSession();
   if (!session) redirect("/");
 
@@ -76,7 +76,7 @@ const NavbarLayout: FC<{ children: ReactNode }> = ({ children }) => {
               />
             </nav>
             <div className="ml-2 mr-4 mt-4">
-              <Dialog>
+              <Dialog open={open} onOpenChange={setOpen}>
                 <DialogTrigger asChild>
                   <Button
                     className="text-white bg-twitter-blue hover:bg-twitter-blue/90 transition-colors rounded-full w-full h-12 font-bold"
@@ -88,14 +88,15 @@ const NavbarLayout: FC<{ children: ReactNode }> = ({ children }) => {
                 <DialogPortal>
                   <DialogOverlay>
                     <DialogContent className="w-[600px]">
-                      <TimelineSourceProvider
-                        timelineSource={{
-                          path: "home",
-                          payload: { profileId: "" },
+                      <PostTweet
+                        inputPlaceholder="What is happening?!"
+                        submitButtonText="Tweet"
+                        parentTweetId={null}
+                        dontLinkToProfile
+                        onSuccess={() => {
+                          setOpen(false);
                         }}
-                      >
-                        <PostTweet />
-                      </TimelineSourceProvider>
+                      />
                     </DialogContent>
                   </DialogOverlay>
                 </DialogPortal>

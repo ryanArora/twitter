@@ -1,4 +1,4 @@
-import { TypographyP } from "@repo/ui/components/typography";
+import { PageClient } from "./page-client";
 import { api } from "@/trpc/server";
 
 export default async function TweetPage({
@@ -19,9 +19,5 @@ export default async function TweetPage({
     );
   }
 
-  return (
-    <div className="p-2 truncate">
-      <TypographyP>{`Tweet: ${tweet.content}`}</TypographyP>
-    </div>
-  );
+  return <PageClient tweet={tweet}></PageClient>;
 }
