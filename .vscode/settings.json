@@ -9,6 +9,7 @@
   },
   "prettier.configPath": "tooling/prettier-config/index.cjs",
   "prettier.ignorePath": "tooling/prettier-config/.prettierignore",
+  "typescript.tsdk": "./node_modules/typescript/lib",
   "[prisma]": {
     "editor.defaultFormatter": "Prisma.prisma"
   }
