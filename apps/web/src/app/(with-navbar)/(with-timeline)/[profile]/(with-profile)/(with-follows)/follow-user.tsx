@@ -3,6 +3,7 @@ import { type FC } from "react";
 import { FollowButton } from "../(with-profile-header)/follow-button";
 import { type UserProfile } from "../../../../../../../../../packages/api/src/router/user";
 import { UserAvatar } from "@/app/(with-navbar)/user-avatar";
+import { useSession } from "@/app/sessionContext";
 
 type FollowUserProps = {
   user: Pick<
@@ -13,6 +14,7 @@ type FollowUserProps = {
 
 export const FollowUser: FC<FollowUserProps> = ({ user }) => {
   const router = useRouter();
+  const session = useSession();
 
   return (
     <div
@@ -35,8 +37,7 @@ export const FollowUser: FC<FollowUserProps> = ({ user }) => {
             <p className="text-sm text-primary/50">{`@${user.username}`}</p>
           </div>
         </div>
-
-        <FollowButton user={user} />
+        {session.user.id != user.id ? <FollowButton user={user} /> : null}
       </div>
       <p className="ml-[52px] mr-2 line-clamp-2 text-sm">{user.bio}</p>
     </div>
