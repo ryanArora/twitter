@@ -5,14 +5,14 @@ import { Image } from "@repo/ui/components/image";
 import { formatNumberShort } from "@repo/utils/str";
 import { CalendarRangeIcon } from "lucide-react";
 import Link from "next/link";
-import { type FC, type ReactNode } from "react";
+import { type ReactNode } from "react";
 import { FollowButton } from "./follow-button";
-import { useProfile } from "./profileContext";
-import { useSession } from "../../../../sessionContext";
+import { useSession } from "../../../../../sessionContext";
+import { useProfile } from "../profileContext";
 import { Header } from "@/app/(with-navbar)/header";
 import { UserAvatar } from "@/app/(with-navbar)/user-avatar";
 
-export const LayoutClient: FC<{ children: ReactNode }> = ({ children }) => {
+export default function Layout({ children }: { children: ReactNode }) {
   const session = useSession();
   const profile = useProfile();
 
@@ -117,4 +117,4 @@ export const LayoutClient: FC<{ children: ReactNode }> = ({ children }) => {
       {children}
     </div>
   );
-};
+}

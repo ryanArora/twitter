@@ -1,5 +1,4 @@
 import { type ReactNode } from "react";
-import { LayoutClient } from "./layout-client";
 import { ProfileProvider } from "./profileContext";
 import { api } from "@/trpc/server";
 
@@ -22,9 +21,5 @@ export default async function ProfileLayout({
     );
   }
 
-  return (
-    <ProfileProvider profile={profile}>
-      <LayoutClient>{children}</LayoutClient>
-    </ProfileProvider>
-  );
+  return <ProfileProvider profile={profile}>{children}</ProfileProvider>;
 }
