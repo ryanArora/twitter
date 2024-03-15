@@ -57,7 +57,7 @@ export default function SignupForm() {
   }
 
   return (
-    <div className="flex justify-center items-center h-screen">
+    <div className="flex h-screen items-center justify-center">
       <Card className="w-[380px]">
         <CardHeader className="flex items-center">
           <TypographyH2>Sign Up</TypographyH2>
@@ -107,7 +107,7 @@ export default function SignupForm() {
                   </FormItem>
                 )}
               />
-              <div className="flex justify-center items-center">
+              <div className="flex items-center justify-center">
                 <Button type="submit">Submit</Button>
               </div>
             </form>

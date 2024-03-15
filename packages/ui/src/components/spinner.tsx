@@ -8,7 +8,7 @@ const Spinner = forwardRef<HTMLDivElement, SpinnerProps>(
   ({ className, ...props }, ref) => {
     return (
       <div
-        className={cn("flex justify-center m-2", className)}
+        className={cn("m-2 flex justify-center", className)}
         ref={ref}
         {...props}
       >

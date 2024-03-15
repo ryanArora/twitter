@@ -28,11 +28,11 @@ export default async function RootLayout({
   return (
     <TRPCReactProvider headersPromise={getHeaders()}>
       <SessionProvider session={session}>
-        <html className="w-screen h-screen" lang="en">
+        <html className="h-screen w-screen" lang="en">
           <body
-            className={`${inter.className} w-screen h-screen dark bg-background text-foreground overflow-x-hidden overflow-y-auto`}
+            className={`${inter.className} dark h-screen w-screen overflow-y-auto overflow-x-hidden bg-background text-foreground`}
           >
-            <main className="w-screen h-screen">{children}</main>
+            <main className="h-screen w-screen">{children}</main>
             <Toaster />
           </body>
         </html>

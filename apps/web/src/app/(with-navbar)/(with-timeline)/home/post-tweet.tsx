@@ -248,7 +248,7 @@ export const PostTweet: FC<PostTweetProps> = ({
   return (
     <Form {...form}>
       <form className="p-2" onSubmit={form.handleSubmit(onSubmit)}>
-        <div className="flex p-2 h-full">
+        <div className="flex h-full p-2">
           <UserAvatar
             className="my-2 mr-1"
             user={session.user}
@@ -260,10 +260,10 @@ export const PostTweet: FC<PostTweetProps> = ({
             control={form.control}
             name="content"
             render={({ field }) => (
-              <FormItem className="w-full mt-2 ml-1">
+              <FormItem className="ml-1 mt-2 w-full">
                 <FormControl>
                   <Textarea
-                    className="text-xl min-h-[50px] h-[50px] border-none"
+                    className="h-[50px] min-h-[50px] border-none text-xl"
                     placeholder={inputPlaceholder}
                     autoComplete="off"
                     {...field}
@@ -282,10 +282,10 @@ export const PostTweet: FC<PostTweetProps> = ({
             }}
           />
         </div>
-        <div className="flex justify-between ml-14 border-t p-2">
+        <div className="ml-14 flex justify-between border-t p-2">
           <div>
             <Button
-              className="px-1.5 m-0 rounded-full text-twitter-blue hover:text-twitter-blue hover:bg-twitter-blue/10 transition-colors"
+              className="m-0 rounded-full px-1.5 text-twitter-blue transition-colors hover:bg-twitter-blue/10 hover:text-twitter-blue"
               type="button"
               variant="ghost"
               resource="attachments"
@@ -315,7 +315,7 @@ export const PostTweet: FC<PostTweetProps> = ({
             />
           </div>
           <Button
-            className="text-white bg-twitter-blue hover:bg-twitter-blue/90 transition-colors rounded-full font-bold"
+            className="rounded-full bg-twitter-blue font-bold text-white transition-colors hover:bg-twitter-blue/90"
             type="submit"
             disabled={!form.formState.isValid}
           >

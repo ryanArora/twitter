@@ -5,5 +5,5 @@ export default function WithTimelineLayout({
 }: {
   children: ReactNode;
 }) {
-  return <div className="h-full w-[600px] overflow-y-none">{children}</div>;
+  return <div className="overflow-y-none h-full w-[600px]">{children}</div>;
 }

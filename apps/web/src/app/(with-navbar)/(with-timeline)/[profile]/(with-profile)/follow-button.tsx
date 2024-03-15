@@ -120,7 +120,7 @@ export const FollowButton = forwardRef<
     return (
       <Button
         className={cn(
-          "rounded-full font-semibold transition-colors w-[100px]",
+          "w-[100px] rounded-full font-semibold transition-colors",
           className,
         )}
         ref={ref}

@@ -118,7 +118,7 @@ export const Image = forwardRef<
           <div
             style={{ width, height, minWidth: width, minHeight: height }}
             className={cn(
-              "bg-zinc-800 flex items-center justify-center",
+              "flex items-center justify-center bg-zinc-800",
               onClick === "link" ? "hover:cursor-pointer" : null,
               className,
             )}

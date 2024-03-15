@@ -11,7 +11,7 @@ export default async function Landing() {
 
   return (
     <div className="flex h-screen">
-      <div className="flex items-center justify-center w-[50%] h-screen">
+      <div className="flex h-screen w-[50%] items-center justify-center">
         <Image
           className=""
           alt="twitter logo"
@@ -20,7 +20,7 @@ export default async function Landing() {
           height={550}
         />
       </div>
-      <div className="w-[50%] h-screen flex items-center">
+      <div className="flex h-screen w-[50%] items-center">
         <div className="ml-16">
           <TypographyH1 className="mb-16">Happening now</TypographyH1>
           <TypographyH2 className="mb-4">Join today.</TypographyH2>

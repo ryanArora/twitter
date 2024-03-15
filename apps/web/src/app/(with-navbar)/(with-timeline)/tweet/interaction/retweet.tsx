@@ -201,7 +201,7 @@ export const RetweetInteraction = forwardRef<
       {...props}
       ref={ref}
       className={cn(
-        `m-0 p-2 rounded-full text-primary/50 hover:text-twitter-retweet hover:bg-twitter-retweet/10 transition-colors`,
+        `m-0 rounded-full p-2 text-primary/50 transition-colors hover:bg-twitter-retweet/10 hover:text-twitter-retweet`,
         active ? "text-twitter-retweet" : null,
         className,
       )}

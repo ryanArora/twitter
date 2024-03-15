@@ -81,7 +81,7 @@ export const Tweet: FC<TweetProps> = ({ big, disableInteractions }) => {
     return (
       <div
         className={cn(
-          "p-2 border-b",
+          "border-b p-2",
           disableInteractions
             ? null
             : "hover:cursor-pointer hover:bg-secondary/10",
@@ -94,7 +94,7 @@ export const Tweet: FC<TweetProps> = ({ big, disableInteractions }) => {
               }
         }
       >
-        <div className="flex mb-2">
+        <div className="mb-2 flex">
           <div className="flex w-full">
             <UserAvatar
               className="mx-2"
@@ -103,7 +103,7 @@ export const Tweet: FC<TweetProps> = ({ big, disableInteractions }) => {
               user={tweet.author}
               onClick={null}
             />
-            <div className="flex flex-col w-full">
+            <div className="flex w-full flex-col">
               <div className="ml-1">
                 <div className="flex justify-between">
                   {disableInteractions ? (
@@ -118,7 +118,7 @@ export const Tweet: FC<TweetProps> = ({ big, disableInteractions }) => {
                       }}
                       href={`/${tweet.author.username}`}
                     >
-                      <p className="hover:underline font-semibold">
+                      <p className="font-semibold hover:underline">
                         {tweet.author.name}
                       </p>
                       <p className="text-sm text-primary/50">{`@${tweet.author.username}`}</p>
@@ -127,27 +127,27 @@ export const Tweet: FC<TweetProps> = ({ big, disableInteractions }) => {
 
                   {disableInteractions ? null : (
                     <DropdownMenu>
-                      <DropdownMenuTrigger className="p-1 text-primary/50 hover:text-twitter-blue hover:bg-twitter-blue/10 rounded-full mt-[-4px]">
+                      <DropdownMenuTrigger className="mt-[-4px] rounded-full p-1 text-primary/50 hover:bg-twitter-blue/10 hover:text-twitter-blue">
                         <MoreHorizontalIcon className="p-1" />
                       </DropdownMenuTrigger>
                       <DropdownMenuContent className="bg-background">
                         {session.user.id === tweet.author.id ? (
                           <DropdownMenuItem asChild>
                             <button
-                              className="w-full h-full text-red-500 focus:text-red-500 hover:cursor-pointer"
+                              className="h-full w-full text-red-500 hover:cursor-pointer focus:text-red-500"
                               type="button"
                               onClick={(e) => {
                                 e.stopPropagation();
                                 deleteTweet.mutate({ id: tweet.id });
                               }}
                             >
-                              <Trash2Icon className="p-[2px] mr-0.5" />
+                              <Trash2Icon className="mr-0.5 p-[2px]" />
                               <span className="ml-0.5 font-bold">Delete</span>
                             </button>
                           </DropdownMenuItem>
                         ) : (
                           <DropdownMenuItem>
-                            <UserPlusIcon className="p-[2px] mr-0.5" />
+                            <UserPlusIcon className="mr-0.5 p-[2px]" />
                             <span className="ml-0.5 font-bold">{`Follow @${tweet.author.username}`}</span>
                           </DropdownMenuItem>
                         )}
@@ -159,8 +159,8 @@ export const Tweet: FC<TweetProps> = ({ big, disableInteractions }) => {
             </div>
           </div>
         </div>
-        <div className="mb-2 mx-2">
-          <p className="mb-2 break-words whitespace-pre-wrap text-lg">
+        <div className="mx-2 mb-2">
+          <p className="mb-2 whitespace-pre-wrap break-words text-lg">
             {tweet.content}
           </p>
           <AttachmentsView
@@ -168,7 +168,7 @@ export const Tweet: FC<TweetProps> = ({ big, disableInteractions }) => {
             disablePreview={disableInteractions}
           />
         </div>
-        <div className="mb-2 mx-2">
+        <div className="mx-2 mb-2">
           <p className="text-sm text-primary/50">
             {new Intl.DateTimeFormat(undefined, {
               weekday: "short",
@@ -181,7 +181,7 @@ export const Tweet: FC<TweetProps> = ({ big, disableInteractions }) => {
           </p>
         </div>
         {disableInteractions ? null : (
-          <div className="flex justify-between mx-2">
+          <div className="mx-2 flex justify-between">
             <ReplyInteraction />
             <RetweetInteraction />
             <LikeInteraction />
@@ -195,7 +195,7 @@ export const Tweet: FC<TweetProps> = ({ big, disableInteractions }) => {
   return (
     <div
       className={cn(
-        "flex p-2 border-b",
+        "flex border-b p-2",
         disableInteractions
           ? null
           : "hover:cursor-pointer hover:bg-secondary/10",
@@ -216,7 +216,7 @@ export const Tweet: FC<TweetProps> = ({ big, disableInteractions }) => {
           user={tweet.author}
           onClick={null}
         />
-        <div className="flex flex-col w-full">
+        <div className="flex w-full flex-col">
           <div className="ml-1">
             <div className="flex justify-between">
               {disableInteractions ? (
@@ -233,7 +233,7 @@ export const Tweet: FC<TweetProps> = ({ big, disableInteractions }) => {
                   }}
                   href={`/${tweet.author.username}`}
                 >
-                  <span className="mr-0.5 hover:underline font-semibold">
+                  <span className="mr-0.5 font-semibold hover:underline">
                     {tweet.author.name}
                   </span>
                   <span className="ml-0.5 text-sm text-primary/50">{`@${tweet.author.username}`}</span>
@@ -242,27 +242,27 @@ export const Tweet: FC<TweetProps> = ({ big, disableInteractions }) => {
 
               {disableInteractions ? null : (
                 <DropdownMenu>
-                  <DropdownMenuTrigger className="p-1 text-primary/50 hover:text-twitter-blue hover:bg-twitter-blue/10 rounded-full mt-[-4px]">
+                  <DropdownMenuTrigger className="mt-[-4px] rounded-full p-1 text-primary/50 hover:bg-twitter-blue/10 hover:text-twitter-blue">
                     <MoreHorizontalIcon className="p-1" />
                   </DropdownMenuTrigger>
                   <DropdownMenuContent className="bg-background">
                     {session.user.id === tweet.author.id ? (
                       <DropdownMenuItem asChild>
                         <button
-                          className="w-full h-full text-red-500 focus:text-red-500 hover:cursor-pointer"
+                          className="h-full w-full text-red-500 hover:cursor-pointer focus:text-red-500"
                           type="button"
                           onClick={(e) => {
                             e.stopPropagation();
                             deleteTweet.mutate({ id: tweet.id });
                           }}
                         >
-                          <Trash2Icon className="p-[2px] mr-0.5" />
+                          <Trash2Icon className="mr-0.5 p-[2px]" />
                           <span className="ml-0.5 font-bold">Delete</span>
                         </button>
                       </DropdownMenuItem>
                     ) : (
                       <DropdownMenuItem>
-                        <UserPlusIcon className="p-[2px] mr-0.5" />
+                        <UserPlusIcon className="mr-0.5 p-[2px]" />
                         <span className="ml-0.5 font-bold">{`Follow @${tweet.author.username}`}</span>
                       </DropdownMenuItem>
                     )}
@@ -273,7 +273,7 @@ export const Tweet: FC<TweetProps> = ({ big, disableInteractions }) => {
             <div
               className={cn("mb-2", disableInteractions ? null : "mt-[-4px]")}
             >
-              <p className="mb-2 break-words whitespace-pre-wrap line-clamp-4">
+              <p className="mb-2 line-clamp-4 whitespace-pre-wrap break-words">
                 {tweet.content}
               </p>
               <AttachmentsView
@@ -283,7 +283,7 @@ export const Tweet: FC<TweetProps> = ({ big, disableInteractions }) => {
             </div>
           </div>
           {disableInteractions ? null : (
-            <div className="flex justify-between w-full">
+            <div className="flex w-full justify-between">
               <ReplyInteraction />
               <RetweetInteraction />
               <LikeInteraction />

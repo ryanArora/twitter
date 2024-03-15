@@ -19,7 +19,7 @@ export const AttachmentsView: FC<{
 
   if (attachments.length === 1) {
     return (
-      <div className="flex max-w-[512px] max-h-[512px] truncate">
+      <div className="flex max-h-[512px] max-w-[512px] truncate">
         <Attachment
           className="w-full rounded-xl"
           attachment={attachmentsExtra[0]}
@@ -32,15 +32,15 @@ export const AttachmentsView: FC<{
 
   if (attachments.length === 2) {
     return (
-      <div className="flex max-w-[512px] max-h-[256px] truncate">
+      <div className="flex max-h-[256px] max-w-[512px] truncate">
         <Attachment
-          className="object-cover rounded-l-xl"
+          className="rounded-l-xl object-cover"
           attachment={attachmentsExtra[0]}
           showDeleteButton={showDeleteButtons}
           disablePreview={disablePreview}
         />
         <Attachment
-          className="object-cover rounded-r-xl"
+          className="rounded-r-xl object-cover"
           attachment={attachmentsExtra[1]}
           showDeleteButton={showDeleteButtons}
           disablePreview={disablePreview}
@@ -51,22 +51,22 @@ export const AttachmentsView: FC<{
 
   if (attachments.length === 3) {
     return (
-      <div className="flex max-w-[512px] max-h-[256px] truncate">
+      <div className="flex max-h-[256px] max-w-[512px] truncate">
         <Attachment
-          className="object-cover rounded-l-xl"
+          className="rounded-l-xl object-cover"
           attachment={attachmentsExtra[0]}
           showDeleteButton={showDeleteButtons}
           disablePreview={disablePreview}
         />
         <div>
           <Attachment
-            className="object-cover rounded-tr-xl"
+            className="rounded-tr-xl object-cover"
             attachment={attachmentsExtra[1]}
             showDeleteButton={showDeleteButtons}
             disablePreview={disablePreview}
           />
           <Attachment
-            className="object-cover rounded-br-xl"
+            className="rounded-br-xl object-cover"
             attachment={attachmentsExtra[2]}
             showDeleteButton={showDeleteButtons}
             disablePreview={disablePreview}
@@ -77,7 +77,7 @@ export const AttachmentsView: FC<{
   }
 
   return (
-    <div className="flex max-w-[512px] max-h-[256px] truncate">
+    <div className="flex max-h-[256px] max-w-[512px] truncate">
       <div>
         <Attachment
           className="object-cover"

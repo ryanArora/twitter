@@ -12,7 +12,7 @@ export default async function ProfileSettingsPage() {
   return (
     <>
       <div className="border-b">
-        <p className="text-xl m-4 font-semibold">Profile</p>
+        <p className="m-4 text-xl font-semibold">Profile</p>
       </div>
       <ProfileProvider profile={profile}>
         <EditProfile />

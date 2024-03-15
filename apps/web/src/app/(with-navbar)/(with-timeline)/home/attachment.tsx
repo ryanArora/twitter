@@ -78,7 +78,7 @@ export const Attachment: FC<AttachmentProps> = ({
         className={cn("absolute bottom-0 flex justify-end", className)}
       >
         <div
-          className="hover:cursor-pointer p-1 m-2 h-fit rounded-full bg-black/50"
+          className="m-2 h-fit rounded-full bg-black/50 p-1 hover:cursor-pointer"
           onClick={(e) => {
             e.stopPropagation();
             deleteLooseAttachment.mutate({ id: attachment.id });

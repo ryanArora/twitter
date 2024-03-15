@@ -3,7 +3,7 @@ import { Timeline } from "../timeline";
 
 export default function HomePage() {
   return (
-    <div className="min-h-screen h-full border-x">
+    <div className="h-full min-h-screen border-x">
       <div className="border-b">
         <PostTweet
           inputPlaceholder="What is happening?!"

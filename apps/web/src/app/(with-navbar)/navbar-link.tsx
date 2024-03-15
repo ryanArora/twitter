@@ -8,7 +8,7 @@ export const NavbarLink: FC<{
   href: string;
 }> = ({ icon, text, href }) => {
   return (
-    <Link className="flex p-4 rounded-3xl hover:bg-accent w-fit" href={href}>
+    <Link className="flex w-fit rounded-3xl p-4 hover:bg-accent" href={href}>
       <span className="mr-2">{icon}</span>
       <TypographyH4 className="ml-2">{text}</TypographyH4>
     </Link>

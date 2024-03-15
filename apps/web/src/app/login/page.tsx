@@ -53,7 +53,7 @@ export default function LoginForm() {
   }
 
   return (
-    <div className="flex justify-center items-center h-screen">
+    <div className="flex h-screen items-center justify-center">
       <Card className="w-[380px]">
         <CardHeader className="flex items-center">
           <TypographyH2>Log In</TypographyH2>
@@ -87,7 +87,7 @@ export default function LoginForm() {
                   </FormItem>
                 )}
               />
-              <div className="flex justify-center items-center">
+              <div className="flex items-center justify-center">
                 <Button type="submit">Submit</Button>
               </div>
             </form>

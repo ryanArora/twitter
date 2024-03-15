@@ -32,12 +32,12 @@ const NavbarLayout: FC<{ children: ReactNode }> = ({ children }) => {
 
   return (
     <>
-      <div className="w-[31.5%] flex justify-end">
-        <div className="fixed flex flex-col justify-between h-full">
+      <div className="flex w-[31.5%] justify-end">
+        <div className="fixed flex h-full flex-col justify-between">
           <div>
             <div className="w-fit">
               <Link href="/home">
-                <div className="p-3 hover:bg-accent rounded-full">
+                <div className="rounded-full p-3 hover:bg-accent">
                   <Image
                     src="/twitter.svg"
                     alt="twitter logo"
@@ -79,7 +79,7 @@ const NavbarLayout: FC<{ children: ReactNode }> = ({ children }) => {
               <Dialog open={open} onOpenChange={setOpen}>
                 <DialogTrigger asChild>
                   <Button
-                    className="text-white bg-twitter-blue hover:bg-twitter-blue/90 transition-colors rounded-full w-full h-12 font-bold"
+                    className="h-12 w-full rounded-full bg-twitter-blue font-bold text-white transition-colors hover:bg-twitter-blue/90"
                     type="submit"
                   >
                     Tweet

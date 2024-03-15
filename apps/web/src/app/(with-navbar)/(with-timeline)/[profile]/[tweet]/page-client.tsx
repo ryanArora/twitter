@@ -29,7 +29,7 @@ export const PageClient: FC<PageClientProps> = ({ tweet: initialTweet }) => {
   }
 
   return (
-    <div className="min-h-screen h-full border-x">
+    <div className="h-full min-h-screen border-x">
       <Header title="Tweet" />
       <TweetProvider tweet={tweet}>
         <Tweet big={true} />

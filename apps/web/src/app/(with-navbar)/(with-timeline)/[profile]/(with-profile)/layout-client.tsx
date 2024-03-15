@@ -17,7 +17,7 @@ export const LayoutClient: FC<{ children: ReactNode }> = ({ children }) => {
   const profile = useProfile();
 
   return (
-    <div className="min-h-screen h-full border-x">
+    <div className="h-full min-h-screen border-x">
       <Header
         title={profile.name}
         subtitle={`${formatNumberShort(profile._count.tweets, 1)} tweets`}
@@ -36,7 +36,7 @@ export const LayoutClient: FC<{ children: ReactNode }> = ({ children }) => {
         <div className="flex justify-between">
           <UserAvatar
             user={profile}
-            className="mt-[-64px] ml-[10px]"
+            className="ml-[10px] mt-[-64px]"
             width={128}
             height={128}
             onClick="focus"
@@ -53,8 +53,8 @@ export const LayoutClient: FC<{ children: ReactNode }> = ({ children }) => {
         </div>
         <div className="p-3">
           <div className="mb-3">
-            <p className="text-xl font-bold w-fit truncate">{profile.name}</p>
-            <p className="text-primary/50 w-fit truncate">{`@${profile.username}`}</p>
+            <p className="w-fit truncate text-xl font-bold">{profile.name}</p>
+            <p className="w-fit truncate text-primary/50">{`@${profile.username}`}</p>
           </div>
           {profile.bio && <p className="mb-3 break-words">{profile.bio}</p>}
           <div className="mb-3 flex items-center text-primary/50">
@@ -71,43 +71,43 @@ export const LayoutClient: FC<{ children: ReactNode }> = ({ children }) => {
               className="pr-2 hover:underline"
               href={`/${profile.username}/following`}
             >
-              <span className="font-bold text-sm">
+              <span className="text-sm font-bold">
                 {profile._count.following}
               </span>
-              <span className="text-primary/50 text-sm"> Following</span>
+              <span className="text-sm text-primary/50"> Following</span>
             </Link>
             <Link
               className="pr-2 hover:underline"
               href={`/${profile.username}/followers`}
             >
-              <span className="font-bold text-sm">
+              <span className="text-sm font-bold">
                 {profile._count.followers}
               </span>
-              <span className="text-primary/50 text-sm"> Followers</span>
+              <span className="text-sm text-primary/50"> Followers</span>
             </Link>
           </nav>
         </div>
         <nav className="flex justify-evenly">
           <Link
-            className="p-4 hover:bg-secondary/90 rounded-md"
+            className="rounded-md p-4 hover:bg-secondary/90"
             href={`/${profile.username}`}
           >
             Tweets
           </Link>
           <Link
-            className="p-4 hover:bg-secondary/90 rounded-md"
+            className="rounded-md p-4 hover:bg-secondary/90"
             href={`/${profile.username}/replies`}
           >
             Replies
           </Link>
           <Link
-            className="p-4 hover:bg-secondary/90 rounded-md"
+            className="rounded-md p-4 hover:bg-secondary/90"
             href={`/${profile.username}/media`}
           >
             Media
           </Link>
           <Link
-            className="p-4 hover:bg-secondary/90 rounded-md"
+            className="rounded-md p-4 hover:bg-secondary/90"
             href={`/${profile.username}/likes`}
           >
             Likes

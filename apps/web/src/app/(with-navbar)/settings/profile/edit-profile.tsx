@@ -140,10 +140,10 @@ export const EditProfile: FC = () => {
 
   return (
     <>
-      <div className="px-4 pt-4 border-b">
+      <div className="border-b px-4 pt-4">
         <p className="mb-4 font-semibold">Preview</p>
         <div>
-          <div className="relative w-full h-[200px]">
+          <div className="relative h-[200px] w-full">
             <Image
               className="object-cover"
               src={profile.bannerUrl}
@@ -155,7 +155,7 @@ export const EditProfile: FC = () => {
             />
 
             <div
-              className="absolute bottom-0 w-full h-full transition-opacity opacity-0 hover:cursor-pointer hover:opacity-[50%] bg-black flex justify-center items-center"
+              className="absolute bottom-0 flex h-full w-full items-center justify-center bg-black opacity-0 transition-opacity hover:cursor-pointer hover:opacity-[50%]"
               onClick={(e) => {
                 e.preventDefault();
                 bannerUploadRef.current!.click();
@@ -169,9 +169,9 @@ export const EditProfile: FC = () => {
               resource="banners"
             />
           </div>
-          <div className="relative w-[128px] h-[128px] ml-[10px] mt-[-64px] rounded-full">
+          <div className="relative ml-[10px] mt-[-64px] h-[128px] w-[128px] rounded-full">
             <UserAvatar
-              className="w-full h-full hover:cursor-pointer"
+              className="h-full w-full hover:cursor-pointer"
               user={profile}
               width={128}
               height={128}
@@ -181,7 +181,7 @@ export const EditProfile: FC = () => {
               }}
             />
             <div
-              className="absolute bottom-0 w-full h-full rounded-full transition-opacity opacity-0 hover:cursor-pointer hover:opacity-[50%] bg-black flex justify-center items-center"
+              className="absolute bottom-0 flex h-full w-full items-center justify-center rounded-full bg-black opacity-0 transition-opacity hover:cursor-pointer hover:opacity-[50%]"
               onClick={(e) => {
                 e.preventDefault();
                 avatarUploadRef.current!.click();
@@ -198,8 +198,8 @@ export const EditProfile: FC = () => {
 
           <div className="p-3">
             <div className="mb-3">
-              <p className="text-xl font-bold w-fit truncate">{name}</p>
-              <p className="text-primary/50 w-fit truncate">{`@${username}`}</p>
+              <p className="w-fit truncate text-xl font-bold">{name}</p>
+              <p className="w-fit truncate text-primary/50">{`@${username}`}</p>
             </div>
             {bio && <p className="mb-3 break-words">{bio}</p>}
             <div className="flex items-center text-primary/50">

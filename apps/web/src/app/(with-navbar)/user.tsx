@@ -22,12 +22,12 @@ export const User: FC<{ user: Expand<Session["user"]> }> = ({ user }) => {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <div className="flex items-center justify-between p-2 m-2 hover:bg-accent hover:cursor-text rounded-3xl w-64">
+        <div className="m-2 flex w-64 items-center justify-between rounded-3xl p-2 hover:cursor-text hover:bg-accent">
           <div className="flex items-center truncate">
             <UserAvatar user={user} width={40} height={40} onClick={null} />
             <div className="mx-2 truncate">
               <p className="text-md truncate">{user.name}</p>
-              <p className="text-sm text-primary/50 truncate">{`@${user.username}`}</p>
+              <p className="truncate text-sm text-primary/50">{`@${user.username}`}</p>
             </div>
           </div>
           <MoreVertical />
@@ -48,7 +48,7 @@ export const User: FC<{ user: Expand<Session["user"]> }> = ({ user }) => {
         </DropdownMenuItem>
         <DropdownMenuItem asChild>
           <button
-            className="w-full h-full hover:cursor-pointer"
+            className="h-full w-full hover:cursor-pointer"
             type="button"
             onClick={(e) => {
               e.preventDefault();

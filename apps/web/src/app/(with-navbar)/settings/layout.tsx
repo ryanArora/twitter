@@ -11,14 +11,14 @@ type NavbarLinkProps = {
 const NavbarLink: FC<NavbarLinkProps> = ({ href, title }) => {
   return (
     <Button
-      className="w-full px-4 py-6 rounded-none justify-start"
+      className="w-full justify-start rounded-none px-4 py-6"
       asChild
       type="button"
       variant="ghost"
     >
       <Link className="flex justify-between" href={href}>
         <span>{title}</span>
-        <ChevronRightIcon className="text-primary/50 p-0.5" />
+        <ChevronRightIcon className="p-0.5 text-primary/50" />
       </Link>
     </Button>
   );
@@ -27,9 +27,9 @@ const NavbarLink: FC<NavbarLinkProps> = ({ href, title }) => {
 export default function SettingsLayout({ children }: { children: ReactNode }) {
   return (
     <>
-      <div className="w-[450px] border-l h-screen">
+      <div className="h-screen w-[450px] border-l">
         <div className="border-b">
-          <p className="text-xl m-4 font-semibold">Settings</p>
+          <p className="m-4 text-xl font-semibold">Settings</p>
         </div>
         <nav className="flex flex-col overflow-y-auto">
           <NavbarLink href="/settings/account" title="Account" />
@@ -41,7 +41,7 @@ export default function SettingsLayout({ children }: { children: ReactNode }) {
           <NavbarLink href="/settings/notifications" title="Notifications" />
         </nav>
       </div>
-      <div className="w-[600px] border-x h-screen">{children}</div>
+      <div className="h-screen w-[600px] border-x">{children}</div>
     </>
   );
 }
