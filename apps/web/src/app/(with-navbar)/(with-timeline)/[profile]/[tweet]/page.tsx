@@ -1,7 +1,6 @@
 import { PageClient } from "./page-client";
 import { api } from "@/trpc/server";
 
-
 export default async function TweetPage({
   params,
 }: {
