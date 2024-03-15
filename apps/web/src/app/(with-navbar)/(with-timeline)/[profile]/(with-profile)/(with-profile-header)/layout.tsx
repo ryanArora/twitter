@@ -87,27 +87,27 @@ export default function Layout({ children }: { children: ReactNode }) {
             </Link>
           </nav>
         </div>
-        <nav className="flex justify-evenly">
+        <nav className="flex justify-around">
           <Link
-            className="rounded-md p-4 hover:bg-secondary/90"
+            className="flex grow justify-center rounded-none p-4 text-primary/50 hover:bg-secondary/90"
             href={`/${profile.username}`}
           >
             Tweets
           </Link>
           <Link
-            className="rounded-md p-4 hover:bg-secondary/90"
+            className="flex grow justify-center rounded-none p-4 text-primary/50 hover:bg-secondary/90"
             href={`/${profile.username}/replies`}
           >
             Replies
           </Link>
           <Link
-            className="rounded-md p-4 hover:bg-secondary/90"
+            className="flex grow justify-center rounded-none p-4 text-primary/50 hover:bg-secondary/90"
             href={`/${profile.username}/media`}
           >
             Media
           </Link>
           <Link
-            className="rounded-md p-4 hover:bg-secondary/90"
+            className="flex grow justify-center rounded-none p-4 text-primary/50 hover:bg-secondary/90"
             href={`/${profile.username}/likes`}
           >
             Likes
