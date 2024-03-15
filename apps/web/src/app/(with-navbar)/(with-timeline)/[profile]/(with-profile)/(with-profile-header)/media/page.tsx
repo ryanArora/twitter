@@ -8,6 +8,10 @@ export default function MediaPage() {
 
   return (
     <Timeline
+      noTweetsMeta={{
+        description: "Once they do, those tweets will show up here.",
+        title: `@${profile.username} hasn’t tweeted media`,
+      }}
       path="profileMedia"
       payload={{
         profile_userId: profile.id,

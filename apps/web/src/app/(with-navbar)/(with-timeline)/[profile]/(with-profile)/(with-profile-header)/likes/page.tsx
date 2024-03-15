@@ -8,6 +8,10 @@ export default function LikesPage() {
 
   return (
     <Timeline
+      noTweetsMeta={{
+        description: "Once they do, those tweets will show up here.",
+        title: `@${profile.username} hasn’t liked tweets`,
+      }}
       path="profileLikes"
       payload={{
         profile_userId: profile.id,

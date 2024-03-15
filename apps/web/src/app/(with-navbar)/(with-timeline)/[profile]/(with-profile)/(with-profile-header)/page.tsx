@@ -8,6 +8,10 @@ export default function ProfilePage() {
 
   return (
     <Timeline
+      noTweetsMeta={{
+        description: "When they do, their tweets will show up here.",
+        title: `@${profile.username} hasn’t tweeted`,
+      }}
       path="profileHome"
       payload={{
         profile_userId: profile.id,

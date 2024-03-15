@@ -42,6 +42,10 @@ export const PageClient: FC<PageClientProps> = ({ tweet: initialTweet }) => {
         />
       </div>
       <Timeline
+        noTweetsMeta={{
+          description: "",
+          title: "",
+        }}
         path="tweetReplies"
         payload={{ profile_userId: "", tweetReplies_parentId: tweet.id }}
       />

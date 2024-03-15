@@ -10,11 +10,19 @@ import { type TimelineInput } from "../../../../../../packages/api/src/router/ti
 import { api } from "@/trpc/react";
 
 export type TimelineSourceProps = {
+  noTweetsMeta: {
+    description: string;
+    title: string;
+  };
   path: keyof RouterInputs["timeline"];
   payload: TimelineInput;
 };
 
-export const Timeline: FC<TimelineSourceProps> = ({ path, payload }) => {
+export const Timeline: FC<TimelineSourceProps> = ({
+  noTweetsMeta,
+  path,
+  payload,
+}) => {
   const {
     data,
     error,
@@ -41,6 +49,21 @@ export const Timeline: FC<TimelineSourceProps> = ({ path, payload }) => {
 
   if (status === "error") {
     return <p>Error: {error.message}</p>;
+  }
+
+  const n = data.pages.reduce((accum, curr) => accum + curr.tweets.length, 0);
+
+  if (n == 0) {
+    return (
+      <div className="flex justify-center pt-8">
+        <div className="w-[300px]">
+          <p className="mb-1 w-fit text-3xl font-bold">{noTweetsMeta.title}</p>
+          <p className="w-fit text-sm text-primary/50">
+            {noTweetsMeta.description}
+          </p>
+        </div>
+      </div>
+    );
   }
 
   return (
