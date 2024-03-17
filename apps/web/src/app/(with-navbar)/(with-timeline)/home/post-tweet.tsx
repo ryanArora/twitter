@@ -127,7 +127,7 @@ export const PostTweet: FC<PostTweetProps> = ({
             }
 
             queryClient.setQueryData(queryKey, (data: TimelineInfiniteData) => {
-              const tweet = {
+              const tweet: TweetBasic = {
                 _count: {
                   likes: 0,
                   replies: 0,
@@ -136,6 +136,7 @@ export const PostTweet: FC<PostTweetProps> = ({
                 },
                 attachments: values.attachments,
                 author: session.user,
+                bookmarks: [],
                 content: values.content,
                 createdAt: new Date(Date.now()),
                 id,

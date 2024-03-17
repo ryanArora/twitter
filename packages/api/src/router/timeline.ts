@@ -20,6 +20,45 @@ export const timelineInputSchema = z.object({
 export type TimelineInput = z.infer<typeof timelineInputSchema>;
 
 export const timelineRouter = createTRPCRouter({
+  bookmarks: protectedProcedure
+    .input(timelineInputSchema)
+    .query(async ({ ctx, input }) => {
+      const tweets = (
+        await db.bookmark.findMany({
+          cursor: input.cursor
+            ? {
+                userId_tweetId: {
+                  tweetId: input.cursor,
+                  userId: ctx.session.user.id,
+                },
+              }
+            : undefined,
+          orderBy: {
+            createdAt: "desc",
+          },
+          select: {
+            tweet: {
+              select: selectTweetBasic(ctx.session.user.id),
+            },
+          },
+          take: TWEETS_PER_REQUEST + 1,
+          where: {
+            userId: ctx.session.user.id,
+          },
+        })
+      ).map((bookmark) => bookmark.tweet);
+
+      let nextCursor: typeof input.cursor = undefined;
+      if (tweets.length > TWEETS_PER_REQUEST) {
+        const nextItem = tweets.pop()!;
+        nextCursor = nextItem.id;
+      }
+
+      return {
+        nextCursor,
+        tweets: getTweetsWithUrls(tweets),
+      };
+    }),
   home: protectedProcedure
     .input(timelineInputSchema)
     .query(async ({ ctx, input }): Promise<TimelineReturn> => {
@@ -85,20 +124,28 @@ export const timelineRouter = createTRPCRouter({
   profileLikes: protectedProcedure
     .input(timelineInputSchema)
     .query(async ({ ctx, input }): Promise<TimelineReturn> => {
-      const likes = await db.like.findMany({
-        orderBy: {
-          createdAt: "desc",
-        },
-        select: {
-          createdAt: true,
-          tweet: { select: selectTweetBasic(ctx.session.user.id) },
-        },
-        where: {
-          userId: input.profile_userId,
-        },
-      });
-
-      const tweets = likes.map((like) => like.tweet);
+      const tweets = (
+        await db.like.findMany({
+          cursor: input.cursor
+            ? {
+                userId_tweetId: {
+                  tweetId: input.cursor,
+                  userId: input.profile_userId,
+                },
+              }
+            : undefined,
+          orderBy: {
+            createdAt: "desc",
+          },
+          select: {
+            tweet: { select: selectTweetBasic(ctx.session.user.id) },
+          },
+          take: TWEETS_PER_REQUEST + 1,
+          where: {
+            userId: input.profile_userId,
+          },
+        })
+      ).map((like) => like.tweet);
 
       let nextCursor: typeof input.cursor = undefined;
       if (tweets.length > TWEETS_PER_REQUEST) {
