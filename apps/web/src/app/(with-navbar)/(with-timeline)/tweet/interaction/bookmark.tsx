@@ -231,7 +231,7 @@ export const BookmarkInteraction: FC<BookmarkInteractionProps> = ({
         e.stopPropagation();
 
         onMutate();
-        await sleep(1000);
+        await sleep(500);
 
         if (active) {
           unbookmarkMutation.mutate({ tweetId: tweet.id });

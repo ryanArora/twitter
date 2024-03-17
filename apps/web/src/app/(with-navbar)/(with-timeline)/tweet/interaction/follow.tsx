@@ -13,10 +13,10 @@ export const FollowInteraction: FC<FollowInteractionProps> = ({ onMutate }) => {
   return (
     <button
       className="flex items-center p-2 hover:cursor-pointer hover:bg-primary/10"
-      onClick={(e) => {
+      onClick={async (e) => {
         e.stopPropagation();
         onMutate();
-        sleep(1000);
+        await sleep(500);
 
         // mutate
       }}
