@@ -9,7 +9,6 @@ import {
   FormField,
   FormItem,
 } from "@repo/ui/components/form";
-import { Textarea } from "@repo/ui/components/textarea";
 import { useToast } from "@repo/ui/components/use-toast";
 import { useQueryClient } from "@tanstack/react-query";
 import { ImageIcon } from "lucide-react";
@@ -251,7 +250,7 @@ export const PostTweet: FC<PostTweetProps> = ({
       <form className="p-2" onSubmit={form.handleSubmit(onSubmit)}>
         <div className="flex h-full p-2">
           <UserAvatar
-            className="my-2 mr-1"
+            className="mr-4"
             height={44}
             onClick={dontLinkToProfile ? null : "link"}
             user={session.user}
@@ -261,14 +260,38 @@ export const PostTweet: FC<PostTweetProps> = ({
             control={form.control}
             name="content"
             render={({ field }) => (
-              <FormItem className="ml-1 mt-2 w-full">
+              <FormItem className="mt-[0.6rem] h-fit w-full">
                 <FormControl>
-                  <Textarea
-                    autoComplete="off"
-                    className="h-[50px] min-h-[50px] border-none text-xl"
-                    placeholder={inputPlaceholder}
-                    {...field}
-                  />
+                  <div
+                    className="
+                      grid
+                      text-lg
+                      after:invisible
+                      after:overflow-hidden
+                      after:whitespace-pre-wrap
+                      after:break-words
+                      after:content-[attr(data-cloned-val)_'_']
+                      after:[grid-area:1/1/2/2]
+                      [&>textarea]:resize-none
+                      [&>textarea]:overflow-hidden
+                      [&>textarea]:[grid-area:1/1/2/2]
+                    "
+                  >
+                    <textarea
+                      className="max-w-full appearance-none overflow-hidden bg-background outline-none"
+                      id="message"
+                      onInput={(e) => {
+                        const parentNode = e.currentTarget
+                          .parentNode as HTMLDivElement;
+                        parentNode.dataset.clonedVal = e.currentTarget.value;
+                      }}
+                      placeholder={inputPlaceholder}
+                      required
+                      rows={1}
+                      wrap="hard"
+                      {...field}
+                    ></textarea>
+                  </div>
                 </FormControl>
               </FormItem>
             )}
@@ -283,7 +306,7 @@ export const PostTweet: FC<PostTweetProps> = ({
             }}
           />
         </div>
-        <div className="ml-14 flex justify-between border-t p-2">
+        <div className="ml-14 flex justify-between px-2 pb-2">
           <div>
             <Button
               className="m-0 rounded-full px-1.5 text-twitter-blue transition-colors hover:bg-twitter-blue/10 hover:text-twitter-blue"

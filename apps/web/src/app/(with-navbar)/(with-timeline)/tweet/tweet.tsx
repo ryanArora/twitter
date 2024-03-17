@@ -35,8 +35,7 @@ export const Tweet: FC<TweetProps> = ({ big, disableInteractions }) => {
   return (
     <div
       className={cn(
-        "border-b pb-2 pl-4 pr-2",
-        big ? "pt-4" : "pt-2",
+        "border-b pb-2 pl-4 pr-2 pt-2",
         disableInteractions || big
           ? null
           : "hover:cursor-pointer hover:bg-secondary/10",
