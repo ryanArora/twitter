@@ -1,6 +1,11 @@
+import { type Metadata } from "next";
 import { EditProfile } from "./edit-profile";
 import { ProfileProvider } from "../../(with-timeline)/[profile]/(with-profile)/profileContext";
 import { api } from "@/trpc/server";
+
+export const metadata: Metadata = {
+  title: "Profile Settings / Twitter",
+};
 
 export default async function ProfileSettingsPage() {
   const session = await api.auth.getSession();

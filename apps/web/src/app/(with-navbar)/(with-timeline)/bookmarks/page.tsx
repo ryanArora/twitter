@@ -1,5 +1,10 @@
+import { type Metadata } from "next";
 import { Header } from "../../header";
 import { Timeline } from "../timeline";
+
+export const metadata: Metadata = {
+  title: "Bookmarks / Twitter",
+};
 
 export default function BookmarksPage() {
   return (

@@ -1,5 +1,10 @@
+import { type Metadata } from "next";
 import { PostTweet } from "./post-tweet";
 import { Timeline } from "../timeline";
+
+export const metadata: Metadata = {
+  title: "Home / Twitter",
+};
 
 export default function HomePage() {
   return (

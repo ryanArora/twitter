@@ -1,3 +1,9 @@
+import { type Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Privacy and Safety Settings / Twitter",
+};
+
 export default function PrivacyAndSafetySettingsPage() {
   return (
     <>

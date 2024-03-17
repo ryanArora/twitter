@@ -1,3 +1,9 @@
+import { type Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Notifications Settings / Twitter",
+};
+
 export default function NotificationsSettingsPage() {
   return (
     <>
