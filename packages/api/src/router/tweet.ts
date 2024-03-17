@@ -41,6 +41,13 @@ export const selectTweetBasic = (sessionUserId: string) => {
     author: {
       select: selectUserBasic,
     },
+    bookmarks: {
+      select: {
+        createdAt: true,
+        user: { select: selectUserBasic },
+      },
+      where: { userId: sessionUserId },
+    },
     content: true,
     createdAt: true,
     id: true,
