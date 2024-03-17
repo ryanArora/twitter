@@ -1,6 +1,5 @@
 "use client";
 
-import { sleep } from "@repo/utils/sleep";
 import { useQueryClient } from "@tanstack/react-query";
 import { BookmarkIcon } from "lucide-react";
 import { type FC } from "react";
@@ -149,7 +148,6 @@ export const BookmarkInteraction: FC<BookmarkInteractionProps> = ({
     },
     onMutate: async () => {
       onMutate();
-      await sleep(1000);
 
       await utils.tweet.find.cancel({
         id: tweet.id,
@@ -231,7 +229,6 @@ export const BookmarkInteraction: FC<BookmarkInteractionProps> = ({
         e.stopPropagation();
 
         onMutate();
-        await sleep(500);
 
         if (active) {
           unbookmarkMutation.mutate({ tweetId: tweet.id });

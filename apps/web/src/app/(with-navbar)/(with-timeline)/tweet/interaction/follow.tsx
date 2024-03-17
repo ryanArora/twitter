@@ -1,4 +1,3 @@
-import { sleep } from "@repo/utils/sleep";
 import { UserPlusIcon } from "lucide-react";
 import { type FC } from "react";
 import { useTweet } from "../tweetContext";
@@ -16,7 +15,6 @@ export const FollowInteraction: FC<FollowInteractionProps> = ({ onMutate }) => {
       onClick={async (e) => {
         e.stopPropagation();
         onMutate();
-        await sleep(500);
 
         // mutate
       }}
