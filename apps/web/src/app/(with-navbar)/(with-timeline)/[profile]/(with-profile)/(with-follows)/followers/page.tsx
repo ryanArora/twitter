@@ -1,28 +1,15 @@
 "use client";
 
-import { type RouterInputs } from "@repo/api";
 import { Spinner } from "@repo/ui/components/spinner";
-import { type FC, Fragment } from "react";
+import { Fragment } from "react";
 import { useInView } from "react-intersection-observer";
-import { Tweet } from "./tweet/tweet";
-import { TweetProvider } from "./tweet/tweetContext";
-import { type TimelineInput } from "../../../../../../packages/api/src/router/timeline";
+import { useProfile } from "../../profileContext";
+import { FollowUser } from "../follow-user";
 import { api } from "@/trpc/react";
 
-export type TimelineSourceProps = {
-  noTweetsMeta: {
-    description: string;
-    title: string;
-  };
-  path: keyof RouterInputs["timeline"];
-  payload: TimelineInput;
-};
+export default function FollowersPage() {
+  const profile = useProfile();
 
-export const Timeline: FC<TimelineSourceProps> = ({
-  noTweetsMeta,
-  path,
-  payload,
-}) => {
   const {
     data,
     error,
@@ -30,8 +17,8 @@ export const Timeline: FC<TimelineSourceProps> = ({
     hasNextPage,
     isFetchingNextPage,
     status,
-  } = api.timeline[path].useInfiniteQuery(
-    { ...payload },
+  } = api.follow.timelineFollowers.useInfiniteQuery(
+    { userId: profile.id },
     {
       getNextPageParam: (lastPage) => lastPage.nextCursor,
     },
@@ -51,7 +38,10 @@ export const Timeline: FC<TimelineSourceProps> = ({
     return <p>Error: {error.message}</p>;
   }
 
-  const n = data.pages.reduce((accum, curr) => accum + curr.tweets.length, 0);
+  const n = data.pages.reduce(
+    (accum, curr) => accum + curr.followers.length,
+    0,
+  );
 
   if (n == 0) {
     return (
@@ -59,10 +49,11 @@ export const Timeline: FC<TimelineSourceProps> = ({
         <div className="flex justify-center pt-8">
           <div className="w-[300px]">
             <p className="mb-1 w-fit text-3xl font-bold">
-              {noTweetsMeta.title}
+              Looking for followers?
             </p>
             <p className="w-fit text-sm text-primary/50">
-              {noTweetsMeta.description}
+              When someone follows this account, they’ll show up here. Posting
+              and interacting with others helps boost followers.
             </p>
           </div>
         </div>
@@ -75,14 +66,12 @@ export const Timeline: FC<TimelineSourceProps> = ({
     <>
       {data.pages.map((group, i) => (
         <Fragment key={i}>
-          {group.tweets.map((tweet) => (
-            <TweetProvider key={tweet.id} tweet={tweet}>
-              <Tweet />
-            </TweetProvider>
+          {group.followers.map((user) => (
+            <FollowUser key={user.id} user={user} />
           ))}
         </Fragment>
       ))}
       {hasNextPage ? <Spinner ref={ref} /> : <div className="h-screen"></div>}
     </>
   );
-};
+}

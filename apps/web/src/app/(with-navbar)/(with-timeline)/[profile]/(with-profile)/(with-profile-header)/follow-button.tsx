@@ -1,33 +1,39 @@
 import { Button } from "@repo/ui/components/button";
 import { cn } from "@repo/ui/utils";
 import React, { forwardRef, useState } from "react";
-import { useProfile } from "./profileContext";
-import { useSession } from "../../../../sessionContext";
+import { type UserProfile } from "../../../../../../../../../packages/api/src/router/user";
+import { useSession } from "../../../../../sessionContext";
 import { api } from "@/trpc/react";
 
-export type FollowButtonProps = Record<string, unknown>;
+export type FollowButtonProps = {
+  user: Pick<UserProfile, "followers" | "id" | "username">;
+};
 
 export const FollowButton = forwardRef<
   React.ElementRef<typeof Button>,
   React.ComponentPropsWithoutRef<typeof Button> & FollowButtonProps
->(({ className, ...props }, ref) => {
-  const profile = useProfile();
+>(({ className, user, ...props }, ref) => {
   const session = useSession();
   const [showUnfollowButton, setShowUnfollowButton] = useState(false);
   const utils = api.useUtils();
 
   const unfollowMutation = api.follow.delete.useMutation({
-    onError: async (err, input, context) => {
+    onError: async (err, input, ctx) => {
       utils.user.find.setData(
-        { username: profile.username },
-        context!.previousProfile,
+        { username: user.username },
+        ctx!.previousProfileFind,
       );
+
+      utils.user.get.setData({ id: user.id }, ctx!.previousProfileFind);
     },
     onMutate: async () => {
-      await utils.user.find.cancel({ username: profile.username });
-      const previousProfile = utils.user.find.getData();
+      await utils.user.find.cancel({ username: user.username });
+      await utils.user.get.cancel({ id: user.id });
 
-      utils.user.find.setData({ username: profile.username }, (data) => {
+      const previousProfileFind = utils.user.find.getData();
+      const previousProfileGet = utils.user.get.getData();
+
+      utils.user.find.setData({ username: user.username }, (data) => {
         if (!data) return;
         return {
           ...data,
@@ -41,7 +47,7 @@ export const FollowButton = forwardRef<
         };
       });
 
-      utils.user.get.setData({ id: profile.id }, (data) => {
+      utils.user.get.setData({ id: user.id }, (data) => {
         if (!data) return;
         return {
           ...data,
@@ -55,22 +61,27 @@ export const FollowButton = forwardRef<
         };
       });
 
-      return { previousProfile };
+      return { previousProfileFind, previousProfileGet };
     },
   });
 
   const followMutation = api.follow.create.useMutation({
-    onError: (err, input, context) => {
+    onError: (err, input, ctx) => {
       utils.user.find.setData(
-        { username: profile.username },
-        context!.previousProfile,
+        { username: user.username },
+        ctx!.previousProfileFind,
       );
+
+      utils.user.get.setData({ id: user.id }, ctx!.previousProfileGet);
     },
     onMutate: async () => {
-      await utils.user.find.cancel({ username: profile.username });
-      const previousProfile = utils.user.find.getData();
+      await utils.user.find.cancel({ username: user.username });
+      await utils.user.get.cancel({ id: user.id });
 
-      utils.user.find.setData({ username: profile.username }, (data) => {
+      const previousProfileFind = utils.user.find.getData();
+      const previousProfileGet = utils.user.get.getData();
+
+      utils.user.find.setData({ username: user.username }, (data) => {
         if (!data) return;
         return {
           ...data,
@@ -88,7 +99,7 @@ export const FollowButton = forwardRef<
         };
       });
 
-      utils.user.get.setData({ id: profile.id }, (data) => {
+      utils.user.get.setData({ id: user.id }, (data) => {
         if (!data) return;
         return {
           ...data,
@@ -108,11 +119,11 @@ export const FollowButton = forwardRef<
 
       setShowUnfollowButton(false);
 
-      return { previousProfile };
+      return { previousProfileFind, previousProfileGet };
     },
   });
 
-  const isFollowing = profile.followers.some(
+  const isFollowing = user.followers.some(
     (follow) => follow.follower.id === session.user.id,
   );
 
@@ -125,8 +136,8 @@ export const FollowButton = forwardRef<
         )}
         onClick={(e) => {
           if (showUnfollowButton) {
-            e.preventDefault();
-            unfollowMutation.mutate({ profileId: profile.id });
+            e.stopPropagation();
+            unfollowMutation.mutate({ profileId: user.id });
           }
         }}
         onMouseOut={() => {
@@ -148,8 +159,8 @@ export const FollowButton = forwardRef<
       <Button
         className={cn("rounded-full font-semibold", className)}
         onClick={(e) => {
-          e.preventDefault();
-          followMutation.mutate({ profileId: profile.id });
+          e.stopPropagation();
+          followMutation.mutate({ profileId: user.id });
         }}
         ref={ref}
         type="button"

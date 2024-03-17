@@ -5,14 +5,14 @@ import { Image } from "@repo/ui/components/image";
 import { formatNumberShort } from "@repo/utils/str";
 import { CalendarRangeIcon } from "lucide-react";
 import Link from "next/link";
-import { type FC, type ReactNode } from "react";
+import { type ReactNode } from "react";
 import { FollowButton } from "./follow-button";
-import { useProfile } from "./profileContext";
-import { useSession } from "../../../../sessionContext";
+import { useSession } from "../../../../../sessionContext";
+import { useProfile } from "../profileContext";
 import { Header } from "@/app/(with-navbar)/header";
 import { UserAvatar } from "@/app/(with-navbar)/user-avatar";
 
-export const LayoutClient: FC<{ children: ReactNode }> = ({ children }) => {
+export default function Layout({ children }: { children: ReactNode }) {
   const session = useSession();
   const profile = useProfile();
 
@@ -47,7 +47,7 @@ export const LayoutClient: FC<{ children: ReactNode }> = ({ children }) => {
                 <Link href="/settings/profile">Edit profile</Link>
               </Button>
             ) : (
-              <FollowButton />
+              <FollowButton user={profile} />
             )}
           </div>
         </div>
@@ -87,27 +87,27 @@ export const LayoutClient: FC<{ children: ReactNode }> = ({ children }) => {
             </Link>
           </nav>
         </div>
-        <nav className="flex justify-evenly">
+        <nav className="flex justify-around">
           <Link
-            className="rounded-md p-4 hover:bg-secondary/90"
+            className="flex grow justify-center rounded-none p-4 text-primary/50 hover:bg-secondary/90"
             href={`/${profile.username}`}
           >
             Tweets
           </Link>
           <Link
-            className="rounded-md p-4 hover:bg-secondary/90"
+            className="flex grow justify-center rounded-none p-4 text-primary/50 hover:bg-secondary/90"
             href={`/${profile.username}/replies`}
           >
             Replies
           </Link>
           <Link
-            className="rounded-md p-4 hover:bg-secondary/90"
+            className="flex grow justify-center rounded-none p-4 text-primary/50 hover:bg-secondary/90"
             href={`/${profile.username}/media`}
           >
             Media
           </Link>
           <Link
-            className="rounded-md p-4 hover:bg-secondary/90"
+            className="flex grow justify-center rounded-none p-4 text-primary/50 hover:bg-secondary/90"
             href={`/${profile.username}/likes`}
           >
             Likes
@@ -117,4 +117,4 @@ export const LayoutClient: FC<{ children: ReactNode }> = ({ children }) => {
       {children}
     </div>
   );
-};
+}

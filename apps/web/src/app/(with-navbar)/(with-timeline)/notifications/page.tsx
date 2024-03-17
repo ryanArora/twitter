@@ -1,9 +1,9 @@
-import { TypographyH1 } from "@repo/ui/components/typography";
+import { Header } from "../../header";
 
 export default function NotificationsPage() {
   return (
-    <div className="p-2">
-      <TypographyH1>Notifications</TypographyH1>
+    <div className="h-full min-h-screen border-x">
+      <Header title="Notifications" />
     </div>
   );
 }

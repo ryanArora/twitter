@@ -12,6 +12,11 @@ export default function HomePage() {
         />
       </div>
       <Timeline
+        noTweetsMeta={{
+          description:
+            "This is the best place to see what’s happening in your world. Find some people to follow now.",
+          title: "Welcome to Twitter!",
+        }}
         path="home"
         payload={{
           profile_userId: "",
