@@ -19,7 +19,7 @@ export const ViewsInteraction = forwardRef<
     <Button
       {...props}
       className={cn(
-        `m-0 rounded-full p-2 text-primary/50 transition-colors hover:bg-twitter-blue/10 hover:text-twitter-blue`,
+        `ml-[-0.5rem] rounded-full p-2 text-primary/50 transition-colors hover:bg-twitter-blue/10 hover:text-twitter-blue`,
         className,
       )}
       onClick={(e) => {
@@ -30,7 +30,9 @@ export const ViewsInteraction = forwardRef<
       variant="ghost"
     >
       <BarChart2Icon />
-      <p className="ml-1">{formatNumberShort(tweet._count.views, 1)}</p>
+      {tweet._count.views > 0 ? (
+        <p className="ml-1">{formatNumberShort(tweet._count.views, 1)}</p>
+      ) : null}
     </Button>
   );
 });

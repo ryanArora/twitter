@@ -12,6 +12,7 @@ model User {
 
   sessions   Session[]
   tweets     Tweet[]
+  bookmarks  Bookmark[]
   retweets   Retweet[]
   likes      Like[]
   views      View[]
@@ -41,10 +42,23 @@ model Tweet {
   parent   Tweet?  @relation("replies", fields: [parentId], references: [id], onDelete: Cascade)
   parentId String?
 
+  bookmarks   Bookmark[]
   retweets    Retweet[]
   likes       Like[]
   views       View[]
   attachments Attachment[]
+}
+
+model Bookmark {
+  createdAt DateTime @default(now())
+
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId String
+
+  tweet   Tweet  @relation(fields: [tweetId], references: [id], onDelete: Cascade)
+  tweetId String
+
+  @@id([userId, tweetId])
 }
 
 model Retweet {

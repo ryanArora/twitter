@@ -200,7 +200,7 @@ export const RetweetInteraction = forwardRef<
     <Button
       {...props}
       className={cn(
-        `m-0 rounded-full p-2 text-primary/50 transition-colors hover:bg-twitter-retweet/10 hover:text-twitter-retweet`,
+        `ml-[-0.5rem] rounded-full p-2 text-primary/50 transition-colors hover:bg-twitter-retweet/10 hover:text-twitter-retweet`,
         active ? "text-twitter-retweet" : null,
         className,
       )}
@@ -218,7 +218,9 @@ export const RetweetInteraction = forwardRef<
       variant="ghost"
     >
       <Repeat2Icon />
-      <p className="ml-1">{formatNumberShort(tweet._count.retweets, 1)}</p>
+      {tweet._count.retweets > 0 ? (
+        <p className="ml-1">{formatNumberShort(tweet._count.retweets, 1)}</p>
+      ) : null}
     </Button>
   );
 });

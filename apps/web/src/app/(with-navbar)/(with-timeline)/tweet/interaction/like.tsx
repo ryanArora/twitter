@@ -196,7 +196,7 @@ export const LikeInteraction = forwardRef<
     <Button
       {...props}
       className={cn(
-        `m-0 rounded-full p-2 text-primary/50 transition-colors hover:bg-twitter-like/10 hover:text-twitter-like`,
+        `ml-[-0.5rem] rounded-full p-2 text-primary/50 transition-colors hover:bg-twitter-like/10 hover:text-twitter-like`,
         active ? "text-twitter-like" : null,
         className,
       )}
@@ -214,7 +214,9 @@ export const LikeInteraction = forwardRef<
       variant="ghost"
     >
       <HeartIcon className={active ? "fill-twitter-like" : undefined} />
-      <p className="ml-1">{formatNumberShort(tweet._count.likes, 1)}</p>
+      {tweet._count.likes > 0 ? (
+        <p className="ml-1">{formatNumberShort(tweet._count.likes, 1)}</p>
+      ) : null}
     </Button>
   );
 });
