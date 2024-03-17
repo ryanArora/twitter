@@ -1,5 +1,6 @@
 "use client";
 
+import { sleep } from "@repo/utils/sleep";
 import { useQueryClient } from "@tanstack/react-query";
 import { BookmarkIcon } from "lucide-react";
 import { type FC } from "react";
@@ -10,7 +11,13 @@ import { api } from "@/trpc/react";
 
 type TimelineInfiniteData = { pages: { tweets: TweetBasic[] }[] };
 
-export const BookmarkInteraction: FC = () => {
+type BookmarkInteractionProps = {
+  onMutate: () => void;
+};
+
+export const BookmarkInteraction: FC<BookmarkInteractionProps> = ({
+  onMutate,
+}) => {
   const tweet = useTweet();
   const session = useSession();
   const utils = api.useUtils();
@@ -141,6 +148,9 @@ export const BookmarkInteraction: FC = () => {
       }
     },
     onMutate: async () => {
+      onMutate();
+      await sleep(1000);
+
       await utils.tweet.find.cancel({
         id: tweet.id,
         username: tweet.author.username,
@@ -217,8 +227,12 @@ export const BookmarkInteraction: FC = () => {
   return (
     <button
       className="flex w-full items-center p-2 hover:cursor-pointer hover:bg-primary/10"
-      onClick={(e) => {
+      onClick={async (e) => {
         e.stopPropagation();
+
+        onMutate();
+        await sleep(1000);
+
         if (active) {
           unbookmarkMutation.mutate({ tweetId: tweet.id });
         } else {

@@ -8,7 +8,7 @@ import { cn } from "@repo/ui/utils";
 import { MoreHorizontalIcon } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { type FC } from "react";
+import { type FC, useState } from "react";
 import { BookmarkInteraction } from "./interaction/bookmark";
 import { DeleteInteraction } from "./interaction/delete";
 import { FollowInteraction } from "./interaction/follow";
@@ -30,6 +30,7 @@ export const Tweet: FC<TweetProps> = ({ big, disableInteractions }) => {
   const router = useRouter();
   const tweet = useTweet();
   const session = useSession();
+  const [open, setOpen] = useState(false);
 
   return (
     <div
@@ -88,7 +89,7 @@ export const Tweet: FC<TweetProps> = ({ big, disableInteractions }) => {
           )}
         </div>
         {disableInteractions ? null : (
-          <DropdownMenu>
+          <DropdownMenu onOpenChange={setOpen} open={open}>
             <DropdownMenuTrigger className="mt-[-4px] h-fit w-fit rounded-full p-1 text-primary/50 hover:bg-twitter-blue/10 hover:text-twitter-blue">
               <MoreHorizontalIcon className="p-1" />
             </DropdownMenuTrigger>
@@ -99,11 +100,19 @@ export const Tweet: FC<TweetProps> = ({ big, disableInteractions }) => {
                 </DropdownMenuItem>
               ) : (
                 <DropdownMenuItem asChild>
-                  <FollowInteraction />
+                  <FollowInteraction
+                    onMutate={() => {
+                      setOpen(false);
+                    }}
+                  />
                 </DropdownMenuItem>
               )}
               <DropdownMenuItem asChild>
-                <BookmarkInteraction />
+                <BookmarkInteraction
+                  onMutate={() => {
+                    setOpen(false);
+                  }}
+                />
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>

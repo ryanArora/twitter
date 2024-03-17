@@ -3,7 +3,8 @@
   "private": true,
   "exports": {
     "./str": "./src/str.ts",
-    "./types": "./src/types.ts"
+    "./types": "./src/types.ts",
+    "./sleep": "./src/sleep.ts"
   },
   "scripts": {
     "lint": "eslint .",
