@@ -205,7 +205,7 @@ export const EditProfile: FC = () => {
             <div className="flex items-center text-primary/50">
               <CalendarRangeIcon className="p-1" />
               <span className="ml-0.5 text-sm">
-                {`Joined ${profile.createdAt.toLocaleString("default", {
+                {`Joined ${profile.createdAt.toLocaleString("en-US", {
                   month: "long",
                   year: "numeric",
                 })}`}
