@@ -138,7 +138,7 @@ export const Tweet: FC<TweetProps> = ({ big, disableInteractions }) => {
 
         {big ? (
           <p className="mb-2 text-sm text-primary/50">
-            {new Intl.DateTimeFormat(undefined, {
+            {new Intl.DateTimeFormat("en-US", {
               day: "numeric",
               hour: "numeric",
               hour12: true,
